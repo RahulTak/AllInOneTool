@@ -56,13 +56,11 @@ export function init() {
         const sheetName = sheetSelect.value;
         const worksheet = workbook.Sheets[sheetName];
         
-        // Convert sheet data to raw HTML table
         let htmlTable = XLSX.utils.sheet_to_html(worksheet);
 
-        // Styled tables margins override
-        htmlTable = htmlTable.replace('<table>', '<table style="width:100%; border-collapse:collapse; text-align:left;">');
-        htmlTable = htmlTable.replace(/<td>/g, '<td style="border:1px solid var(--border-color); padding:6px; min-width:80px;">');
-        htmlTable = htmlTable.replace(/<th>/g, '<th style="border:1px solid var(--border-color); padding:6px; background-color:var(--bg-secondary);">');
+        htmlTable = htmlTable.replace('<table>', '<table style="width:100%; border-collapse:collapse; border:1px solid #cbd5e1; font-family:sans-serif;">');
+        htmlTable = htmlTable.replace(/<td>/g, '<td style="border:1px solid #cbd5e1; padding:6px; min-width:70px; color:#1e293b; font-size:11px;">');
+        htmlTable = htmlTable.replace(/<th>/g, '<th style="border:1px solid #cbd5e1; padding:6px; background-color:#f1f5f9; color:#0f172a; font-size:11px; font-weight:bold;">');
 
         previewGrid.innerHTML = htmlTable;
     }
@@ -78,6 +76,6 @@ export function init() {
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
 
-        html2pdf().set(opt).from(previewGrid.firstChild).save();
+        html2pdf().set(opt).from(previewGrid).save();
     });
 }

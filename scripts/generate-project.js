@@ -4804,18 +4804,18 @@ function generateProject() {
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             `;
             if (tool.id === 'protect-pdf' || tool.id === 'unlock-pdf') {
-                librariesStr += `
-                <script>window.exports = window.exports || {};</script>
-                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js"></script>
-                `;
-            } else if (tool.id === 'html-to-pdf' || tool.id === 'excel-to-pdf') {
+                // Encryption and decryption libraries are dynamically sandboxed and loaded in the tool JS module
+            } else if (tool.id === 'html-to-pdf' || tool.id === 'excel-to-pdf' || tool.id === 'word-to-pdf') {
                 librariesStr += `
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
                 `;
                 if (tool.id === 'excel-to-pdf') {
                     librariesStr += `
                     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+                    `;
+                } else if (tool.id === 'word-to-pdf') {
+                    librariesStr += `
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
                     `;
                 }
             }

@@ -451,7 +451,7 @@ module.exports = {
             const a = document.createElement('a');
             a.href = url;
             a.download = 'images_converted.pdf';
-            a.click();
+a.click();
             URL.revokeObjectURL(url);
         } catch (err) {
             alert('Failed to generate PDF: ' + err.message);
@@ -467,9 +467,14 @@ module.exports = {
                 <span class="upload-icon">📉</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop PDF here</h4>
-                    <p>Compress structural metadata and objects client-side</p>
+                    <p>Compress structural metadata, objects, and images client-side</p>
                 </div>
                 <input type="file" class="upload-input" id="compress-input" accept=".pdf">
+            </div>
+
+            <div id="compress-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span id="compress-progress-text" style="font-weight:600; color:var(--text-secondary);">Compressing page 0 of 0...</span>
             </div>
 
             <div id="compress-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
@@ -477,9 +482,9 @@ module.exports = {
                     <div class="form-group">
                         <label for="compress-level">Compression Level</label>
                         <select id="compress-level" class="input-control">
-                            <option value="low">Low Compression (Highest Quality)</option>
-                            <option value="medium" selected>Medium Compression (Balanced)</option>
-                            <option value="high">High Compression (Smallest File)</option>
+                            <option value="low">Low Compression (Strips metadata only, lossless)</option>
+                            <option value="medium" selected>Medium Compression (Balanced Quality & Size)</option>
+                            <option value="high">High Compression (Smallest Size, Downscaled Images)</option>
                         </select>
                     </div>
                 </div>
@@ -499,11 +504,20 @@ module.exports = {
                     <button class="btn btn-primary" id="compress-btn-download">Download Compressed PDF</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         `,
         logicJS: `export function init() {
     const dropzone = document.getElementById('compress-dropzone');
     const input = document.getElementById('compress-input');
+    const loader = document.getElementById('compress-loader');
+    const progressText = document.getElementById('compress-progress-text');
     const workspace = document.getElementById('compress-workspace');
     const levelSelect = document.getElementById('compress-level');
     const sizeOrig = document.getElementById('c-size-orig');
@@ -519,6 +533,9 @@ module.exports = {
     let originalSize = 0;
     let compressedBytes = null;
 
+    const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
     input.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
             const file = e.target.files[0];
@@ -533,6 +550,7 @@ module.exports = {
         compressedBytes = null;
         workspace.style.display = 'none';
         dropzone.style.display = 'flex';
+        loader.style.display = 'none';
     });
 
     levelSelect.addEventListener('change', compress);
@@ -546,37 +564,96 @@ module.exports = {
 
     async function compress() {
         if (!pdfBytes) return;
+        
+        workspace.style.display = 'none';
+        loader.style.display = 'flex';
+        progressText.textContent = 'Optimizing document structure...';
+
+        const level = levelSelect.value;
         try {
-            const doc = await PDFLib.PDFDocument.load(pdfBytes);
-            // Save doc with structure optimization enabled
-            const optimized = await doc.save({
-                useObjectStreams: true,
-                addDefaultPage: false
-            });
+            if (level === 'low') {
+                const doc = await PDFLib.PDFDocument.load(pdfBytes);
+                doc.setTitle('');
+                doc.setAuthor('');
+                doc.setSubject('');
+                doc.setCreator('');
+                doc.setProducer('');
+                doc.setKeywords([]);
 
-            compressedBytes = optimized;
-            const compSize = optimized.byteLength;
-
-            sizeOrig.textContent = (originalSize / (1024 * 1024)).toFixed(2) + ' MB';
-            sizeComp.textContent = (compSize / (1024 * 1024)).toFixed(2) + ' MB';
-
-            if (compSize >= originalSize) {
-                savings.textContent = '0 KB';
-                percentage.textContent = '0%';
-                banner.textContent = 'This PDF cannot be compressed further without affecting quality.';
-                banner.style.color = 'var(--warning-color)';
-                compressedBytes = pdfBytes; // Fallback to original
+                const optimized = await doc.save({
+                    useObjectStreams: true,
+                    addDefaultPage: false
+                });
+                applyCompressionResults(optimized);
             } else {
-                const diff = originalSize - compSize;
-                const pct = Math.round((diff / originalSize) * 100);
-                savings.textContent = (diff / 1024).toFixed(1) + ' KB';
-                percentage.textContent = pct + '%';
-                banner.textContent = '🎉 PDF successfully optimized and compressed by ' + pct + '%!';
-                banner.style.color = 'var(--success-color)';
+                const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+                const pdf = await loadingTask.promise;
+                const totalPages = pdf.numPages;
+
+                const newDoc = await PDFLib.PDFDocument.create();
+                
+                const scale = level === 'medium' ? 1.5 : 1.0;
+                const quality = level === 'medium' ? 0.75 : 0.50;
+
+                for (let i = 1; i <= totalPages; i++) {
+                    progressText.textContent = 'Compressing page ' + i + ' of ' + totalPages + '...';
+                    
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+                    const imgBytes = await blob.arrayBuffer();
+                    const imgRef = await newDoc.embedJpg(imgBytes);
+
+                    const newPage = newDoc.addPage([viewport.width, viewport.height]);
+                    newPage.drawImage(imgRef, {
+                        x: 0,
+                        y: 0,
+                        width: viewport.width,
+                        height: viewport.height
+                    });
+                }
+
+                const compressed = await newDoc.save({ useObjectStreams: true });
+                applyCompressionResults(compressed);
             }
         } catch (err) {
             console.error(err);
-            alert('Failed to optimize PDF document.');
+            alert('Failed to compress PDF: ' + err.message);
+            loader.style.display = 'none';
+            workspace.style.display = 'flex';
+        }
+    }
+
+    function applyCompressionResults(optimizedBytes) {
+        compressedBytes = optimizedBytes;
+        const compSize = optimizedBytes.byteLength;
+
+        sizeOrig.textContent = (originalSize / (1024 * 1024)).toFixed(2) + ' MB';
+        sizeComp.textContent = (compSize / (1024 * 1024)).toFixed(2) + ' MB';
+
+        loader.style.display = 'none';
+        workspace.style.display = 'flex';
+
+        if (compSize >= originalSize) {
+            savings.textContent = '0 KB';
+            percentage.textContent = '0%';
+            banner.textContent = 'This PDF is already optimized and cannot be compressed further without significant quality loss.';
+            banner.style.color = 'var(--warning-color)';
+            compressedBytes = pdfBytes;
+        } else {
+            const diff = originalSize - compSize;
+            const pct = Math.round((diff / originalSize) * 100);
+            savings.textContent = (diff / 1024).toFixed(1) + ' KB';
+            percentage.textContent = pct + '%';
+            banner.textContent = '🎉 PDF successfully compressed by ' + pct + '%!';
+            banner.style.color = 'var(--success-color)';
         }
     }
 
@@ -599,72 +676,136 @@ module.exports = {
             <div class="upload-zone" id="word-dropzone">
                 <span class="upload-icon">📝</span>
                 <div class="upload-text">
-                    <h4>Click or Drag & Drop DOC/DOCX here</h4>
-                    <p>Client-side guide and workflow validation</p>
+                    <h4>Click or Drag & Drop DOCX here</h4>
+                    <p>Convert Microsoft Word (.docx) documents to PDF client-side</p>
                 </div>
-                <input type="file" class="upload-input" id="word-input" accept=".doc,.docx">
+                <input type="file" class="upload-input" id="word-input" accept=".docx">
+            </div>
+
+            <div id="word-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Converting document layouts...</span>
             </div>
 
             <div id="word-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="color:var(--error-color); margin-bottom:0.75rem;">⚠️ Browser Security & Layout Limitations</h5>
-                    <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
-                        Standard browser runtimes cannot compile Microsoft Word file formats (.doc or .docx) directly into PDF vector binaries offline. Doing so requires advanced typesetting engines that are only native to server-side environments or native desktop applications.
-                    </p>
-                    <hr style="margin:1rem 0; border:0; border-top:1px solid var(--border-color);">
-                    <h6 style="font-weight:600; margin-bottom:0.5rem;">Uploaded File Details:</h6>
-                    <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
-                        <strong>Filename:</strong> <span id="word-file-name">-</span><br>
-                        <strong>File Size:</strong> <span id="word-file-size">-</span>
-                    </div>
+                    <div style="margin-bottom:0.5rem;">Filename: <strong id="word-file-name">-</strong></div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">Size: <strong id="word-file-size">-</strong></div>
                 </div>
 
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Recommended Secure Workflows:</h5>
-                    <ol style="font-size:0.85rem; line-height:1.7; padding-left:1.2rem; color:var(--text-secondary);">
-                        <li><strong>In MS Word:</strong> Open the file, go to <strong>File → Save As</strong> and choose <strong>PDF (*.pdf)</strong>.</li>
-                        <li><strong>In Google Docs:</strong> Upload the DOCX, open it, go to <strong>File → Download → PDF Document (.pdf)</strong>.</li>
-                        <li><strong>Print Preview:</strong> Open the file in any browser or reader, press <strong>Cmd+P / Ctrl+P</strong>, and choose <strong>Save as PDF</strong> as your destination printer.</li>
-                    </ol>
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">DOCX Content Preview</h5>
+                    <div id="word-preview-container" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--radius-xs); padding:1.5rem; max-height:250px; overflow-y:auto; font-size:0.9rem; line-height:1.6; color:#334155;"></div>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="word-btn-reset">Reset / Clear</button>
+                    <button class="btn btn-secondary" id="word-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="word-btn-action">Convert to PDF</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         `,
         logicJS: `export function init() {
     const dropzone = document.getElementById('word-dropzone');
     const input = document.getElementById('word-input');
+    const loader = document.getElementById('word-loader');
     const workspace = document.getElementById('word-workspace');
     const fileName = document.getElementById('word-file-name');
     const fileSize = document.getElementById('word-file-size');
+    const previewContainer = document.getElementById('word-preview-container');
     const reset = document.getElementById('word-btn-reset');
+    const action = document.getElementById('word-btn-action');
 
     if (!input) return;
+    let fileBuffer = null;
 
     input.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) process(e.target.files[0]);
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            process(file);
+        }
     });
 
     reset.addEventListener('click', () => {
         input.value = '';
+        fileBuffer = null;
+        previewContainer.innerHTML = '';
         workspace.style.display = 'none';
         dropzone.style.display = 'flex';
+        loader.style.display = 'none';
     });
 
-    function process(file) {
-        if (!file.name.toLowerCase().endsWith('.doc') && !file.name.toLowerCase().endsWith('.docx')) {
-            alert('Please upload a valid Microsoft Word (.doc or .docx) document.');
+    async function process(file) {
+        const nameLower = file.name.toLowerCase();
+        if (nameLower.endsWith('.doc')) {
+            alert('Legacy .doc formats are not supported. Please upload modern .docx documents.');
             input.value = '';
             return;
         }
+        if (!nameLower.endsWith('.docx')) {
+            alert('Please select a valid Microsoft Word (.docx) document.');
+            input.value = '';
+            return;
+        }
+
+        dropzone.style.display = 'none';
+        loader.style.display = 'flex';
+
         fileName.textContent = file.name;
         fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
-        dropzone.style.display = 'none';
-        workspace.style.display = 'flex';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            fileBuffer = e.target.result;
+            mammoth.convertToHtml({ arrayBuffer: fileBuffer })
+                .then(function(result) {
+                    previewContainer.innerHTML = result.value || '<p>No readable text content found in document.</p>';
+                    loader.style.display = 'none';
+                    workspace.style.display = 'flex';
+                })
+                .catch(function(err) {
+                    alert('Error parsing Word document: ' + err.message);
+                    reset.click();
+                });
+        };
+        reader.readAsArrayBuffer(file);
     }
+
+    action.addEventListener('click', () => {
+        if (!previewContainer.innerHTML) return;
+        
+        loader.style.display = 'flex';
+        workspace.style.display = 'none';
+
+        const opt = {
+            margin:       0.5,
+            filename:     'word_converted.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        const clone = previewContainer.cloneNode(true);
+        clone.style.maxHeight = 'none';
+        clone.style.overflow = 'visible';
+        clone.style.height = 'auto';
+
+        html2pdf().set(opt).from(clone).save().then(() => {
+            loader.style.display = 'none';
+            workspace.style.display = 'flex';
+        }).catch(err => {
+            alert('Failed to compile PDF: ' + err.message);
+            loader.style.display = 'none';
+            workspace.style.display = 'flex';
+        });
+    });
 }
 `
     }),
@@ -675,73 +816,148 @@ module.exports = {
                 <span class="upload-icon">📄</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop PDF here</h4>
-                    <p>Client-side guide and document details extractor</p>
+                    <p>Convert PDF documents into editable Word (.docx) files client-side</p>
                 </div>
                 <input type="file" class="upload-input" id="pdfword-input" accept=".pdf">
             </div>
 
+            <div id="pdfword-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span id="pdfword-progress" style="font-weight:600; color:var(--text-secondary);">Extracting page 0 of 0...</span>
+            </div>
+
             <div id="pdfword-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="color:var(--error-color); margin-bottom:0.75rem;">⚠️ Browser Formatting Limitations</h5>
-                    <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
-                        PDFs are compiled absolute-coordinate vector outputs. Converting absolute layout nodes back into editable flows of paragraphs, tables, and sections (.docx format) requires complex server-side optical character recognition (OCR) and layout styling engines.
-                    </p>
-                    <hr style="margin:1rem 0; border:0; border-top:1px solid var(--border-color);">
-                    <h6 style="font-weight:600; margin-bottom:0.5rem;">Uploaded File Details:</h6>
-                    <div style="font-size:0.85rem; color:var(--text-secondary);">
-                        <strong>Filename:</strong> <span id="pdfword-file-name">-</span><br>
-                        <strong>File Size:</strong> <span id="pdfword-file-size">-</span>
-                    </div>
+                    <div style="margin-bottom:0.5rem;">Filename: <strong id="pdfword-file-name">-</strong></div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">Size: <strong id="pdfword-file-size">-</strong></div>
                 </div>
 
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Recommended Conversion Workflows:</h5>
-                    <ol style="font-size:0.85rem; line-height:1.7; padding-left:1.2rem; color:var(--text-secondary);">
-                        <li><strong>In MS Word:</strong> Open MS Word, click <strong>File → Open</strong> and select your PDF file. MS Word will automatically convert the document with its layout engine.</li>
-                        <li><strong>Google Docs:</strong> Upload the PDF to Google Drive, double-click it, and select <strong>Open with Google Docs</strong>.</li>
-                        <li><strong>Adobe Reader:</strong> Use the export tool inside Adobe Acrobat Reader to export as Microsoft Word format.</li>
-                    </ol>
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Extracted Text Preview</h5>
+                    <textarea id="pdfword-preview-text" class="input-control" style="min-height:220px; font-family:var(--font-sans); font-size:0.9rem; line-height:1.6; background:#ffffff; color:#334155;" readonly></textarea>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="pdfword-btn-reset">Reset / Clear</button>
+                    <button class="btn btn-secondary" id="pdfword-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="pdfword-btn-action">Download as Word Document (.docx)</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         `,
         logicJS: `export function init() {
     const dropzone = document.getElementById('pdfword-dropzone');
     const input = document.getElementById('pdfword-input');
+    const loader = document.getElementById('pdfword-loader');
+    const progressText = document.getElementById('pdfword-progress');
     const workspace = document.getElementById('pdfword-workspace');
     const fileName = document.getElementById('pdfword-file-name');
     const fileSize = document.getElementById('pdfword-file-size');
+    const previewArea = document.getElementById('pdfword-preview-text');
     const reset = document.getElementById('pdfword-btn-reset');
+    const action = document.getElementById('pdfword-btn-action');
 
     if (!input) return;
+    let pdfBytes = null;
+    let extractedText = '';
+
+    const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
     input.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) process(e.target.files[0]);
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            process(file);
+        }
     });
 
     reset.addEventListener('click', () => {
         input.value = '';
+        pdfBytes = null;
+        extractedText = '';
+        previewArea.value = '';
         workspace.style.display = 'none';
         dropzone.style.display = 'flex';
+        loader.style.display = 'none';
     });
 
-    function process(file) {
-        fileName.textContent = file.name;
-        fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
         dropzone.style.display = 'none';
-        workspace.style.display = 'flex';
+        loader.style.display = 'flex';
+
+        try {
+            const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+            const pdf = await loadingTask.promise;
+            const totalPages = pdf.numPages;
+            
+            let fullText = '';
+            for (let i = 1; i <= totalPages; i++) {
+                progressText.textContent = 'Extracting text page ' + i + ' of ' + totalPages + '...';
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + '\\n\\n';
+            }
+
+            extractedText = fullText.trim();
+            previewArea.value = extractedText || 'No extractable text blocks found inside this PDF.';
+            
+            loader.style.display = 'none';
+            workspace.style.display = 'flex';
+        } catch (err) {
+            alert('Failed to parse PDF document: ' + err.message);
+            reset.click();
+        }
     }
+
+    action.addEventListener('click', () => {
+        if (!extractedText) return;
+        
+        const paragraphs = extractedText.split('\\n').filter(p => p.trim().length > 0);
+        const htmlContent = \`
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <title>Extracted Word Layout</title>
+          <style>
+            body { font-family: 'Calibri', 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; padding: 20px; }
+            p { margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>
+          \${paragraphs.map(p => \`<p>\${p}</p>\`).join('')}
+        </body>
+        </html>
+        \`;
+
+        const blob = new Blob([htmlContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'extracted_document.docx';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
 }
 `
     }),
     'protect-pdf': () => ({
         workspaceHTML: `
         <div class="tool-workspace">
-            <div class="upload-zone" id="protect-dropzone">
+            <div id="protect-loading" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Initializing secure encryption handler...</span>
+            </div>
+
+            <div class="upload-zone" id="protect-dropzone" style="display:none;">
                 <span class="upload-icon">🔒</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop PDF here</h4>
@@ -768,12 +984,20 @@ module.exports = {
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="protect-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="protect-btn-action">Encrypt & Download PDF</button>
+                    <button class="btn btn-primary" id="protect-btn-action" disabled>Encrypt & Download PDF</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         `,
         logicJS: `export function init() {
+    const loadingBlock = document.getElementById('protect-loading');
     const dropzone = document.getElementById('protect-dropzone');
     const input = document.getElementById('protect-input');
     const workspace = document.getElementById('protect-workspace');
@@ -785,6 +1009,66 @@ module.exports = {
 
     if (!input) return;
     let pdfBytes = null;
+    let isLoading = false;
+
+    checkLibs();
+
+    async function loadScriptText(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load ' + url);
+        return await res.text();
+    }
+
+    async function loadSecureLibraries() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            return;
+        }
+        const urls = [
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/crypto-minimal.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/pdf-encrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-rc4.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-aes.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/pdf-decrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js'
+        ];
+
+        const localExports = {};
+        const localModule = { exports: localExports };
+        const localRequire = function(moduleName) {
+            if (moduleName === 'pdf-lib') return window.PDFLib;
+            return localExports;
+        };
+
+        for (const url of urls) {
+            const code = await loadScriptText(url);
+            const fn = new Function('exports', 'module', 'require', code);
+            fn(localExports, localModule, localRequire);
+        }
+
+        window.exports = window.exports || {};
+        Object.assign(window.exports, localExports, localModule.exports);
+    }
+
+    async function checkLibs() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+            return;
+        }
+        if (isLoading) return;
+        isLoading = true;
+        try {
+            await loadSecureLibraries();
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+        } catch (err) {
+            console.error(err);
+            loadingBlock.querySelector('span').textContent = 'Error initializing secure handler: ' + err.message;
+        }
+    }
 
     input.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
@@ -824,12 +1108,6 @@ module.exports = {
         }
 
         try {
-            if (typeof exports === 'undefined' || !exports.encryptPDF) {
-                alert('Encryption libraries are still loading. Please try again.');
-                return;
-            }
-            
-            // Call exports.encryptPDF from our loaded CDN bundle
             const encrypted = await exports.encryptPDF(pdfBytes, pass);
             const blob = new Blob([encrypted], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
@@ -848,7 +1126,12 @@ module.exports = {
     'unlock-pdf': () => ({
         workspaceHTML: `
         <div class="tool-workspace">
-            <div class="upload-zone" id="unlock-dropzone">
+            <div id="unlock-loading" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Initializing decryption handler...</span>
+            </div>
+
+            <div class="upload-zone" id="unlock-dropzone" style="display:none;">
                 <span class="upload-icon">🔓</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop Locked PDF here</h4>
@@ -871,12 +1154,20 @@ module.exports = {
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="unlock-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="unlock-btn-action">Unlock & Download</button>
+                    <button class="btn btn-primary" id="unlock-btn-action" disabled>Unlock & Download</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         `,
         logicJS: `export function init() {
+    const loadingBlock = document.getElementById('unlock-loading');
     const dropzone = document.getElementById('unlock-dropzone');
     const input = document.getElementById('unlock-input');
     const workspace = document.getElementById('unlock-workspace');
@@ -887,6 +1178,66 @@ module.exports = {
 
     if (!input) return;
     let pdfBytes = null;
+    let isLoading = false;
+
+    checkLibs();
+
+    async function loadScriptText(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load ' + url);
+        return await res.text();
+    }
+
+    async function loadSecureLibraries() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            return;
+        }
+        const urls = [
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/crypto-minimal.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/pdf-encrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-rc4.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-aes.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/pdf-decrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js'
+        ];
+
+        const localExports = {};
+        const localModule = { exports: localExports };
+        const localRequire = function(moduleName) {
+            if (moduleName === 'pdf-lib') return window.PDFLib;
+            return localExports;
+        };
+
+        for (const url of urls) {
+            const code = await loadScriptText(url);
+            const fn = new Function('exports', 'module', 'require', code);
+            fn(localExports, localModule, localRequire);
+        }
+
+        window.exports = window.exports || {};
+        Object.assign(window.exports, localExports, localModule.exports);
+    }
+
+    async function checkLibs() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+            return;
+        }
+        if (isLoading) return;
+        isLoading = true;
+        try {
+            await loadSecureLibraries();
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+        } catch (err) {
+            console.error(err);
+            loadingBlock.querySelector('span').textContent = 'Error initializing secure handler: ' + err.message;
+        }
+    }
 
     input.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
@@ -919,11 +1270,12 @@ module.exports = {
         }
 
         try {
-            if (typeof exports === 'undefined' || !exports.decryptPDF) {
-                alert('Decryption libraries are still loading. Please try again.');
+            const isEncrypted = exports.isEncrypted ? exports.isEncrypted(pdfBytes) : true;
+            if (!isEncrypted) {
+                alert('This document does not appear to be encrypted/password protected.');
                 return;
             }
-            
+
             const decrypted = await exports.decryptPDF(pdfBytes, pass);
             const blob = new Blob([decrypted], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
@@ -933,7 +1285,14 @@ module.exports = {
             a.click();
             URL.revokeObjectURL(url);
         } catch (err) {
-            alert('Incorrect password. Please verify and try again.');
+            const msg = err.message || '';
+            if (msg.includes('corrupt') || msg.includes('header')) {
+                alert('Error: The uploaded file is corrupted or not a valid PDF.');
+            } else if (msg.includes('supported')) {
+                alert('Error: Unsupported encryption algorithm format.');
+            } else {
+                alert('Incorrect password. Please verify and try again.');
+            }
         }
     });
 }
@@ -1404,7 +1763,7 @@ module.exports = {
 
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; overflow-x:auto;">
                     <h5 style="margin-bottom:0.75rem; font-weight:600;">Sheet Table Grid Preview</h5>
-                    <div id="xls-grid-preview" style="background:#ffffff; border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-xs); min-height:150px; font-size:0.8rem;"></div>
+                    <div id="xls-grid-preview" style="background:#ffffff; border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-xs); min-height:150px;"></div>
                 </div>
 
                 <div class="action-row">
@@ -1472,13 +1831,11 @@ module.exports = {
         const sheetName = sheetSelect.value;
         const worksheet = workbook.Sheets[sheetName];
         
-        // Convert sheet data to raw HTML table
         let htmlTable = XLSX.utils.sheet_to_html(worksheet);
 
-        // Styled tables margins override
-        htmlTable = htmlTable.replace('<table>', '<table style="width:100%; border-collapse:collapse; text-align:left;">');
-        htmlTable = htmlTable.replace(/<td>/g, '<td style="border:1px solid var(--border-color); padding:6px; min-width:80px;">');
-        htmlTable = htmlTable.replace(/<th>/g, '<th style="border:1px solid var(--border-color); padding:6px; background-color:var(--bg-secondary);">');
+        htmlTable = htmlTable.replace('<table>', '<table style="width:100%; border-collapse:collapse; border:1px solid #cbd5e1; font-family:sans-serif;">');
+        htmlTable = htmlTable.replace(/<td>/g, '<td style="border:1px solid #cbd5e1; padding:6px; min-width:70px; color:#1e293b; font-size:11px;">');
+        htmlTable = htmlTable.replace(/<th>/g, '<th style="border:1px solid #cbd5e1; padding:6px; background-color:#f1f5f9; color:#0f172a; font-size:11px; font-weight:bold;">');
 
         previewGrid.innerHTML = htmlTable;
     }
@@ -1494,7 +1851,7 @@ module.exports = {
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
         };
 
-        html2pdf().set(opt).from(previewGrid.firstChild).save();
+        html2pdf().set(opt).from(previewGrid).save();
     });
 }
 `

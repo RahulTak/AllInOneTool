@@ -1,4 +1,5 @@
 export function init() {
+    const loadingBlock = document.getElementById('protect-loading');
     const dropzone = document.getElementById('protect-dropzone');
     const input = document.getElementById('protect-input');
     const workspace = document.getElementById('protect-workspace');
@@ -10,6 +11,66 @@ export function init() {
 
     if (!input) return;
     let pdfBytes = null;
+    let isLoading = false;
+
+    checkLibs();
+
+    async function loadScriptText(url) {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load ' + url);
+        return await res.text();
+    }
+
+    async function loadSecureLibraries() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            return;
+        }
+        const urls = [
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/crypto-minimal.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/pdf-encrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-rc4.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/crypto-aes.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/pdf-decrypt.js',
+            'https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js'
+        ];
+
+        const localExports = {};
+        const localModule = { exports: localExports };
+        const localRequire = function(moduleName) {
+            if (moduleName === 'pdf-lib') return window.PDFLib;
+            return localExports;
+        };
+
+        for (const url of urls) {
+            const code = await loadScriptText(url);
+            const fn = new Function('exports', 'module', 'require', code);
+            fn(localExports, localModule, localRequire);
+        }
+
+        window.exports = window.exports || {};
+        Object.assign(window.exports, localExports, localModule.exports);
+    }
+
+    async function checkLibs() {
+        if (window.exports && window.exports.encryptPDF && window.exports.decryptPDF) {
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+            return;
+        }
+        if (isLoading) return;
+        isLoading = true;
+        try {
+            await loadSecureLibraries();
+            loadingBlock.style.display = 'none';
+            dropzone.style.display = 'flex';
+            action.disabled = false;
+        } catch (err) {
+            console.error(err);
+            loadingBlock.querySelector('span').textContent = 'Error initializing secure handler: ' + err.message;
+        }
+    }
 
     input.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
@@ -49,12 +110,6 @@ export function init() {
         }
 
         try {
-            if (typeof exports === 'undefined' || !exports.encryptPDF) {
-                alert('Encryption libraries are still loading. Please try again.');
-                return;
-            }
-            
-            // Call exports.encryptPDF from our loaded CDN bundle
             const encrypted = await exports.encryptPDF(pdfBytes, pass);
             const blob = new Blob([encrypted], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);

@@ -21,10 +21,6 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             
-                <script>window.exports = window.exports || {};</script>
-                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js"></script>
-                
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -33,7 +29,12 @@
     <div id="tool-workspace">
         
         <div class="tool-workspace">
-            <div class="upload-zone" id="protect-dropzone">
+            <div id="protect-loading" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Initializing secure encryption handler...</span>
+            </div>
+
+            <div class="upload-zone" id="protect-dropzone" style="display:none;">
                 <span class="upload-icon">🔒</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop PDF here</h4>
@@ -60,9 +61,16 @@
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="protect-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="protect-btn-action">Encrypt & Download PDF</button>
+                    <button class="btn btn-primary" id="protect-btn-action" disabled>Encrypt & Download PDF</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         
     </div>

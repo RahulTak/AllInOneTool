@@ -179,7 +179,7 @@ export function init() {
             const a = document.createElement('a');
             a.href = url;
             a.download = 'images_converted.pdf';
-            a.click();
+a.click();
             URL.revokeObjectURL(url);
         } catch (err) {
             alert('Failed to generate PDF: ' + err.message);

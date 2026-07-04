@@ -21,6 +21,10 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+                
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+                    
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -32,39 +36,40 @@
             <div class="upload-zone" id="word-dropzone">
                 <span class="upload-icon">📝</span>
                 <div class="upload-text">
-                    <h4>Click or Drag & Drop DOC/DOCX here</h4>
-                    <p>Client-side guide and workflow validation</p>
+                    <h4>Click or Drag & Drop DOCX here</h4>
+                    <p>Convert Microsoft Word (.docx) documents to PDF client-side</p>
                 </div>
-                <input type="file" class="upload-input" id="word-input" accept=".doc,.docx">
+                <input type="file" class="upload-input" id="word-input" accept=".docx">
+            </div>
+
+            <div id="word-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Converting document layouts...</span>
             </div>
 
             <div id="word-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="color:var(--error-color); margin-bottom:0.75rem;">⚠️ Browser Security & Layout Limitations</h5>
-                    <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
-                        Standard browser runtimes cannot compile Microsoft Word file formats (.doc or .docx) directly into PDF vector binaries offline. Doing so requires advanced typesetting engines that are only native to server-side environments or native desktop applications.
-                    </p>
-                    <hr style="margin:1rem 0; border:0; border-top:1px solid var(--border-color);">
-                    <h6 style="font-weight:600; margin-bottom:0.5rem;">Uploaded File Details:</h6>
-                    <div style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1rem;">
-                        <strong>Filename:</strong> <span id="word-file-name">-</span><br>
-                        <strong>File Size:</strong> <span id="word-file-size">-</span>
-                    </div>
+                    <div style="margin-bottom:0.5rem;">Filename: <strong id="word-file-name">-</strong></div>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">Size: <strong id="word-file-size">-</strong></div>
                 </div>
 
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
-                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Recommended Secure Workflows:</h5>
-                    <ol style="font-size:0.85rem; line-height:1.7; padding-left:1.2rem; color:var(--text-secondary);">
-                        <li><strong>In MS Word:</strong> Open the file, go to <strong>File → Save As</strong> and choose <strong>PDF (*.pdf)</strong>.</li>
-                        <li><strong>In Google Docs:</strong> Upload the DOCX, open it, go to <strong>File → Download → PDF Document (.pdf)</strong>.</li>
-                        <li><strong>Print Preview:</strong> Open the file in any browser or reader, press <strong>Cmd+P / Ctrl+P</strong>, and choose <strong>Save as PDF</strong> as your destination printer.</li>
-                    </ol>
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">DOCX Content Preview</h5>
+                    <div id="word-preview-container" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--radius-xs); padding:1.5rem; max-height:250px; overflow-y:auto; font-size:0.9rem; line-height:1.6; color:#334155;"></div>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="word-btn-reset">Reset / Clear</button>
+                    <button class="btn btn-secondary" id="word-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="word-btn-action">Convert to PDF</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         
     </div>
