@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Markdown to HTML to render markdown layout scripts as compiled html elements in your browser securely.">
+    <meta name="keywords" content="markdown to html, text tools, online markdown to html">
+    <meta name="tool-id" content="markdown-to-html">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace" style="display:flex; flex-direction:column; gap:1.5rem;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                    <div class="form-group">
+                        <label for="markdown-input">Markdown Input</label>
+                        <textarea id="markdown-input" class="input-control" placeholder="Type Markdown here... e.g. # Hello World" style="min-height: 350px; font-family:var(--font-mono); font-size:0.85rem; line-height:1.6;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Live HTML Preview</label>
+                        <div id="html-preview" style="min-height: 350px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding:1rem; overflow-y:auto; background:#ffffff; color:#000;"></div>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="md-clear">Clear</button>
+                    <button class="btn btn-primary" id="md-copy">Copy HTML Code</button>
+                    <button class="btn btn-secondary" id="md-download">Download HTML File</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

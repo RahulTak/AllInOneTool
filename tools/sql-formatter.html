@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Formatter - Free Online Developer Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium SQL Formatter to beautify sql queries and capitalize standard syntax terms in your browser securely.">
+    <meta name="keywords" content="sql formatter, developer tools, online sql formatter">
+    <meta name="tool-id" content="sql-formatter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="sql-input">SQL Input</label>
+                    <textarea id="sql-input" class="input-control" placeholder="SELECT * FROM table WHERE id = 1" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
+                </div>
+
+                <div class="action-row" style="margin-bottom:1.5rem;">
+                    <button class="btn btn-primary" id="sql-beautify-upper">Beautify (UPPERCASE)</button>
+                    <button class="btn btn-secondary" id="sql-beautify-lower">Beautify (lowercase)</button>
+                    <button class="btn btn-secondary" id="sql-minify">Minify</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="sql-output">Formatted SQL</label>
+                    <textarea id="sql-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

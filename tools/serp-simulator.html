@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google SERP Simulator - Free Online SEO Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Google SERP Simulator to preview title tags and meta description lengths on search results in your browser securely.">
+    <meta name="keywords" content="google serp simulator, seo tools, online google serp simulator">
+    <meta name="tool-id" content="serp-simulator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid" style="grid-template-columns: 1fr; gap:0.75rem;">
+                    <div class="form-group">
+                        <label for="serp-title">SEO Title (50-60 chars max)</label>
+                        <input type="text" id="serp-title" class="input-control" value="My Website Home - Secure Client Tools Platform">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);" id="serp-title-counter">Length: 0 / 60</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="serp-desc">Meta Description (150-160 chars max)</label>
+                        <input type="text" id="serp-desc" class="input-control" value="Use our free web utilities to compress photos, merge PDF files, convert base converters, and run ciphers completely offline locally inside your browser memory.">
+                        <span style="font-size:0.75rem; color:var(--text-secondary);" id="serp-desc-counter">Length: 0 / 160</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="serp-url">URL</label>
+                        <input type="text" id="serp-url" class="input-control" value="https://example.com/tools">
+                    </div>
+                </div>
+
+                <div style="background:#ffffff; color:#1a0dab; font-family:arial,sans-serif; padding:1rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); margin-top:1.5rem;" id="serp-preview-box">
+                    <span style="font-size:14px; color:#4d5156; display:block;" id="preview-url">https://example.com/tools</span>
+                    <h3 style="font-size:20px; font-weight:normal; margin: 4px 0; color:#1a0dab; text-decoration:none; cursor:pointer;" id="preview-title">My Website Home</h3>
+                    <p style="font-size:14px; color:#4d5156; line-height:1.5; margin:0;" id="preview-desc">Use our free web utilities...</p>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

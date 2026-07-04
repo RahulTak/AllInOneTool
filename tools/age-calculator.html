@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator - Free Online Calculators | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Age Calculator to calculate your exact age in years, months, weeks, and days in your browser securely.">
+    <meta name="keywords" content="age calculator, calculator tools, online age calculator">
+    <meta name="tool-id" content="age-calculator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="age-dob">Date of Birth</label>
+                        <input type="date" id="age-dob" class="input-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="age-today">Calculate Age As Of</label>
+                        <input type="date" id="age-today" class="input-control">
+                    </div>
+                </div>
+
+                <div id="age-results-panel" style="display:none; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem;">
+                    <h3 style="margin-bottom:1rem;">Your Age:</h3>
+                    <div style="font-size:1.5rem; font-weight:800; color:var(--primary-color); margin-bottom:1rem;" id="age-exact">
+                        0 Years, 0 Months, 0 Days
+                    </div>
+                    <div class="options-grid" style="grid-template-columns: repeat(3, 1fr); text-align:center; font-size:0.9rem; gap: 1rem; margin-bottom: 1rem;">
+                        <div>Total Months: <strong id="age-tot-months">0</strong></div>
+                        <div>Total Weeks: <strong id="age-tot-weeks">0</strong></div>
+                        <div>Total Days: <strong id="age-tot-days">0</strong></div>
+                        <div>Total Hours: <strong id="age-tot-hours">0</strong></div>
+                        <div>Total Minutes: <strong id="age-tot-minutes">0</strong></div>
+                        <div>Total Seconds: <strong id="age-tot-seconds">0</strong></div>
+                    </div>
+                    <div style="margin-top:1rem; border-top:1px solid var(--border-color); padding-top:1rem; font-size:0.9rem;" id="age-birthday-countdown">
+                        Days until next birthday: <strong>-</strong>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

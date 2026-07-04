@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Diff Checker - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Text Diff Checker to compare two text pieces to highlight additions and deletions in your browser securely.">
+    <meta name="keywords" content="text diff checker, text tools, online text diff checker">
+    <meta name="tool-id" content="text-diff">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label for="diff-text-left">Original Text</label>
+                        <textarea id="diff-text-left" class="input-control" placeholder="Paste original text here..." style="min-height: 200px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="diff-text-right">Changed Text</label>
+                        <textarea id="diff-text-right" class="input-control" placeholder="Paste changed text here..." style="min-height: 200px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
+                    </div>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label for="diff-mode">Diff Mode</label>
+                        <select id="diff-mode" class="input-control">
+                            <option value="line">Line-by-Line</option>
+                            <option value="word">Word-by-Word</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; align-items:flex-end; gap:0.5rem;">
+                        <button class="btn btn-secondary" id="diff-btn-swap" style="width:100%;">Swap Texts</button>
+                        <button class="btn btn-secondary" id="diff-btn-clear" style="width:100%;">Clear</button>
+                    </div>
+                </div>
+
+                <div id="diff-results" style="display:none; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; margin-top:1rem;">
+                    <div style="display:flex; gap:1.5rem; margin-bottom:1rem; font-size:0.9rem;">
+                        <span>Similarity: <strong id="diff-stat-similarity">100%</strong></span>
+                        <span>Total Differences: <strong id="diff-stat-diffs">0</strong></span>
+                    </div>
+                    <div id="diff-output-container" style="font-family:var(--font-mono); white-space:pre-wrap; line-height:1.6; font-size:0.85rem; max-height:400px; overflow-y:auto; padding:1rem; border:1px solid var(--border-color); border-radius:var(--radius-xs); background:#ffffff; color:#000;"></div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

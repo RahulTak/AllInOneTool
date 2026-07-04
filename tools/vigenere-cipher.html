@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigenere Cipher Encoder - Free Online Password Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Vigenere Cipher Encoder to encrypt or decrypt messages using alphabet key letters in your browser securely.">
+    <meta name="keywords" content="vigenere cipher encoder, password tools, online vigenere cipher encoder">
+    <meta name="tool-id" content="vigenere-cipher">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label for="vig-input">Input String</label>
+                        <textarea id="vig-input" class="input-control" placeholder="Type text here..." style="min-height: 150px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="vig-output">Result String</label>
+                        <textarea id="vig-output" readonly class="input-control" placeholder="Cipher result..." style="min-height: 150px; background:var(--bg-primary);"></textarea>
+                    </div>
+                </div>
+
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="vig-mode">Operation Mode</label>
+                        <select id="vig-mode" class="input-control">
+                            <option value="encode">Encode</option>
+                            <option value="decode">Decode</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="vig-key">Secret Key (letters)</label>
+                        <input type="text" id="vig-key" class="input-control" value="key">
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="vig-clear">Clear</button>
+                    <button class="btn btn-primary" id="vig-copy">Copy Result</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

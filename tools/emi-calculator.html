@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan EMI Calculator - Free Online Calculators | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Loan EMI Calculator to calculate loan emis, total interest, and debt schedules in your browser securely.">
+    <meta name="keywords" content="loan emi calculator, calculator tools, online loan emi calculator">
+    <meta name="tool-id" content="emi-calculator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="emi-amount">Loan Amount ($)</label>
+                        <input type="number" id="emi-amount" class="input-control" value="100000">
+                    </div>
+                    <div class="form-group">
+                        <label for="emi-rate">Interest Rate (% Annual)</label>
+                        <input type="number" id="emi-rate" class="input-control" value="8" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label for="emi-tenure">Tenure</label>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="number" id="emi-tenure" class="input-control" value="10" style="flex:1;">
+                            <select id="emi-tenure-type" class="input-control" style="width:100px;">
+                                <option value="years">Years</option>
+                                <option value="months">Months</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="emi-results-panel" style="display:none; margin-top:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                        <div>
+                            <span>Monthly EMI:</span>
+                            <h2 style="font-size:2rem; font-weight:800; color:var(--primary-color);" id="emi-monthly-val">$0.00</h2>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="margin-bottom:0.25rem;">Total Interest: <strong id="emi-tot-interest">$0</strong></div>
+                            <div>Total Payment: <strong id="emi-tot-payment">$0</strong></div>
+                        </div>
+                    </div>
+
+                    <h3>Amortization Schedule</h3>
+                    <div style="max-height:250px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); margin-top:0.5rem;">
+                        <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:left;">
+                            <thead>
+                                <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-color);">
+                                    <th style="padding:0.5rem;">Month</th>
+                                    <th style="padding:0.5rem;">EMI</th>
+                                    <th style="padding:0.5rem;">Principal</th>
+                                    <th style="padding:0.5rem;">Interest</th>
+                                    <th style="padding:0.5rem;">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="emi-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

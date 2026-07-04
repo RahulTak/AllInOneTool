@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protect PDF - Free Online PDF Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Protect PDF to apply strong owner passwords to encrypt pdf documents in your browser securely.">
+    <meta name="keywords" content="protect pdf, pdf tools, online protect pdf">
+    <meta name="tool-id" content="protect-pdf">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+            <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="upload-zone" id="pdf-upload-zone">
+                    <span class="upload-icon">📄</span>
+                    <div class="upload-text">
+                        <h4>Click or Drag & Drop PDF files here</h4>
+                        <p>Processes completely inside your browser memory</p>
+                    </div>
+                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+                </div>
+
+                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
+                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+
+                    <div class="options-grid" id="pdf-options-block">
+                        <div class="form-group" id="pdf-opt-rotate">
+                            <label for="pdf-rotate-angle">Rotate Degree</label>
+                            <select id="pdf-rotate-angle" class="input-control">
+                                <option value="90">90° Clockwise</option>
+                                <option value="180">180° Half Turn</option>
+                                <option value="270">270° Counter-Clockwise</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
+                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

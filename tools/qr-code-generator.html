@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Free Online Developer Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium QR Code Generator to generate customizable, premium qr codes from text or links in your browser securely.">
+    <meta name="keywords" content="qr code generator, developer tools, online qr code generator">
+    <meta name="tool-id" content="qr-code-generator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="qr-data">Enter URL or text</label>
+                    <input type="text" id="qr-data" class="input-control" value="https://google.com">
+                </div>
+
+                <div style="display:flex; justify-content:center; margin:1.5rem 0;">
+                    <canvas id="qr-canvas"></canvas>
+                </div>
+
+                <div class="action-row">
+                    <a class="btn btn-primary" id="download-qr" href="#" download="qrcode.png">Download QR Code</a>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

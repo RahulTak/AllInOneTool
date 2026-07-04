@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator - Free Online Color Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium CSS Gradient Generator to create linear or radial css background gradient codes in your browser securely.">
+    <meta name="keywords" content="css gradient generator, color tools, online css gradient generator">
+    <meta name="tool-id" content="gradient-generator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="grad-type">Gradient Type</label>
+                        <select id="grad-type" class="input-control">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="grad-angle">Angle (Degrees)</label>
+                        <input type="number" id="grad-angle" class="input-control" value="90" min="0" max="360">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Color Stops</label>
+                    <div id="stops-container" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:1rem;"></div>
+                    <button class="btn btn-secondary" id="add-stop-btn">+ Add Color Stop</button>
+                </div>
+
+                <div id="grad-preview-box" style="height:150px; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin:1.5rem 0;"></div>
+
+                <div class="form-group">
+                    <label>Generated CSS Code</label>
+                    <textarea readonly id="grad-css-code" class="input-control" style="font-family:var(--font-mono); min-height:80px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="grad-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="grad-btn-copy">Copy CSS</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

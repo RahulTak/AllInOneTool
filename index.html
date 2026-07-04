@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AllInOneTool - Free Online Premium Client-Side Tools</title>
+    <meta name="description" content="Access 150+ free, premium, fast, and secure client-side tools for PDF editing, image conversion, developer utilities, ciphers, calculators, and text analysis.">
+    <meta name="keywords" content="free tools, pdf tools, image tools, online calculator, json formatter, word counter, qr generator, image compressor">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="./assets/css/variables.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/layout.css">
+    <link rel="stylesheet" href="./assets/css/components.css">
+    <link rel="stylesheet" href="./assets/css/pages/home.css">
+    
+    <!-- Script Dependency -->
+    <script src="./assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <!-- Hero Banner with Global Search -->
+    <section class="hero-banner">
+        <div class="container">
+            <h1>All the Tools You Need, in One Place</h1>
+            <p>Free, secure, and running 100% locally in your browser. No files are ever sent to a server.</p>
+            
+            <div class="search-input-wrapper" style="max-width: 600px; margin: 0 auto;">
+                <input type="text" placeholder="Search 150+ tools (e.g. image compressor, word counter)..." class="search-input" id="home-search-input" autocomplete="off" style="font-size: 1.1rem; padding: 1rem 1rem 1rem 3rem; border-radius: var(--radius-md);">
+                <svg class="search-icon-svg" viewBox="0 0 24 24" style="left: 1.25rem; width: 22px; height: 22px;">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+                <div class="search-suggestions" id="home-search-suggestions"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad Block Placeholder -->
+    <div class="container">
+        <div class="ad-box ad-banner" id="home-top-ad">
+            <span>Responsive Banner Ad Block</span>
+        </div>
+    </div>
+
+    <!-- Popular Tools Section -->
+    <section class="home-section" id="popular-tools-section">
+        <div class="container">
+            <div class="home-section-header" style="text-align: center; justify-content: center; margin-bottom: 2.5rem;">
+                <div>
+                    <h2 class="home-section-title">Most Popular Tools</h2>
+                    <p class="home-section-subtitle">Access our most frequently used browser-side utilities instantly.</p>
+                </div>
+            </div>
+            <div class="grid-cards" id="home-popular-tools-grid">
+                <!-- Populated dynamically by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="home-section" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Premium Tools</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Client-Side Processing</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">&lt; 1s</div>
+                    <div class="stat-label">Instant Load Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">Zero</div>
+                    <div class="stat-label">Uploaded User Files</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="home-section">
+        <div class="container">
+            <div class="home-section-header" style="text-align: center; justify-content: center;">
+                <div>
+                    <h2 class="home-section-title">Why Choose AllInOneTool?</h2>
+                    <p class="home-section-subtitle">We design our web tools with privacy, security, and performance at our core.</p>
+                </div>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔒</div>
+                    <h3>Absolute Security</h3>
+                    <p>All data and file transformations are completed locally in your browser memory. We never upload, save, or inspect your credentials or assets.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>High Performance</h3>
+                    <p>Powered by local WebAssembly and standard ES6 engine threads. Avoid slow network upload speeds and process batches instantly.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎨</div>
+                    <h3>Premium Experience</h3>
+                    <p>A completely unique design featuring smooth transitions, a full light/dark mode switcher, zero intrusive popups, and clean layout cards.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="home-section" style="background-color: var(--bg-secondary); border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="home-section-header" style="text-align: center; justify-content: center;">
+                <div>
+                    <h2 class="home-section-title">What Our Users Say</h2>
+                    <p class="home-section-subtitle">Loved by developers, content creators, and students worldwide.</p>
+                </div>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Using the image compressor is incredibly fast. I don't have to upload my photos to a remote server and wait for conversions anymore. Outstanding!"</p>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">JD</div>
+                        <div>
+                            <div class="testimonial-name">John Doe</div>
+                            <div class="testimonial-role">Graphic Designer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The JSON Formatter and UUID Generator are saved on my favorites bar. Completely private and works offline as well. Highly recommended."</p>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">AL</div>
+                        <div>
+                            <div class="testimonial-name">Alex Lee</div>
+                            <div class="testimonial-role">Full Stack Developer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The Calculators are intuitive and clean. Having 150+ tools in a single site with a beautiful dark mode and instant load speeds is a game changer."</p>
+                    <div class="testimonial-user">
+                        <div class="testimonial-avatar">SM</div>
+                        <div>
+                            <div class="testimonial-name">Sarah Miller</div>
+                            <div class="testimonial-role">Marketing Manager</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action Section -->
+    <div class="container">
+        <section class="cta-banner">
+            <h2>Ready to Experience Blazing Fast Productivity?</h2>
+            <p>Select any category or search above to find a premium, secure client-side utility helper.</p>
+            <a href="#categories-section" class="btn">Explore Categories</a>
+        </section>
+    </div>
+</body>
+</html>

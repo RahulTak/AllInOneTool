@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caesar Cipher Encoder - Free Online Password Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Caesar Cipher Encoder to encrypt or decrypt texts using letter shift steps in your browser securely.">
+    <meta name="keywords" content="caesar cipher encoder, password tools, online caesar cipher encoder">
+    <meta name="tool-id" content="caesar-cipher">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label for="caesar-input">Input String</label>
+                        <textarea id="caesar-input" class="input-control" placeholder="Type text here..." style="min-height: 150px;"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="caesar-output">Result String</label>
+                        <textarea id="caesar-output" readonly class="input-control" placeholder="Cipher result..." style="min-height: 150px; background:var(--bg-primary);"></textarea>
+                    </div>
+                </div>
+
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="caesar-mode">Operation Mode</label>
+                        <select id="caesar-mode" class="input-control">
+                            <option value="encode">Encode</option>
+                            <option value="decode">Decode</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="caesar-shift">Shift Value (1-25)</label>
+                        <input type="number" id="caesar-shift" class="input-control" min="1" max="25" value="3">
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="caesar-clear">Clear</button>
+                    <button class="btn btn-primary" id="caesar-copy">Copy Result</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

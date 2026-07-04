@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary/Octal/Hex/Decimal - Free Online Converters | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Binary/Octal/Hex/Decimal to convert integers between binary, octal, decimal, and hex bases in your browser securely.">
+    <meta name="keywords" content="binary/octal/hex/decimal, converter tools, online binary/octal/hex/decimal">
+    <meta name="tool-id" content="binary-converter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid" style="grid-template-columns:1fr 1fr; gap:1.25rem;">
+                    <div class="form-group">
+                        <label for="num-dec">Decimal (Base 10)</label>
+                        <input type="text" id="num-dec" class="input-control" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="num-bin">Binary (Base 2)</label>
+                        <input type="text" id="num-bin" class="input-control" value="1010">
+                    </div>
+                    <div class="form-group">
+                        <label for="num-oct">Octal (Base 8)</label>
+                        <input type="text" id="num-oct" class="input-control" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label for="num-hex">Hexadecimal (Base 16)</label>
+                        <input type="text" id="num-hex" class="input-control" value="A">
+                    </div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:var(--error-color);" id="num-error-msg"></div>
+            </div>
+            
+    </div>
+</body>
+</html>

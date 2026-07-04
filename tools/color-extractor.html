@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Palette Extractor - Free Online Color Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Color Palette Extractor to extract major color palettes from uploaded images in your browser securely.">
+    <meta name="keywords" content="color palette extractor, color tools, online color palette extractor">
+    <meta name="tool-id" content="color-extractor">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="upload-zone" id="color-upload-zone">
+                    <span class="upload-icon">📷</span>
+                    <div class="upload-text">
+                        <h4>Click or Drag & Drop Image here</h4>
+                        <p>Extract major dominant colors from photos</p>
+                    </div>
+                    <input type="file" class="upload-input" id="color-file-input" accept="image/jpeg,image/png,image/webp">
+                </div>
+
+                <div id="color-extract-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                    <div style="display:flex; justify-content:center; align-items:center;">
+                        <img id="extract-image-preview" style="max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Dominant Color Palette</h3>
+                        <button class="btn btn-secondary" id="download-palette-json">Download JSON</button>
+                    </div>
+                    <div style="display:flex; gap:1.5rem; flex-wrap:wrap; justify-content:center;" id="palette-colors-row"></div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

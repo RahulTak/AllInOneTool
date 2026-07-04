@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List Randomizer & Sorter - Free Online Miscellaneous | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium List Randomizer & Sorter to shuffle item rows in lists or sort them in your browser securely.">
+    <meta name="keywords" content="list randomizer & sorter, misc tools, online list randomizer & sorter">
+    <meta name="tool-id" content="list-randomizer">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="list-input">Enter List Items (one per line)</label>
+                    <textarea id="list-input" class="input-control" placeholder="Item 1\nItem 2\nItem 3" style="min-height: 180px;"></textarea>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+                    <button class="btn btn-primary" id="list-randomize">Shuffle</button>
+                    <button class="btn btn-secondary" id="list-sort-az">Sort A-Z</button>
+                    <button class="btn btn-secondary" id="list-sort-za">Sort Z-A</button>
+                    <button class="btn btn-secondary" id="list-dedupe">Deduplicate</button>
+                </div>
+
+                <div class="form-group" style="margin-top:1.5rem;">
+                    <label for="list-output">Processed List</label>
+                    <textarea id="list-output" readonly class="input-control" style="min-height: 180px; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="list-reset">Reset</button>
+                    <button class="btn btn-primary" id="list-copy">Copy Output</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

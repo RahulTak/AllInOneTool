@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Converter - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Case Converter to convert text to uppercase, lowercase, title case, or sentence case in your browser securely.">
+    <meta name="keywords" content="case converter, text tools, online case converter">
+    <meta name="tool-id" content="case-converter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="text-input">Text Input</label>
+                    <textarea class="input-control" id="text-input" placeholder="Type or paste your text here..." style="min-height: 150px;"></textarea>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                    <button class="btn btn-secondary" data-case="upper">UPPERCASE</button>
+                    <button class="btn btn-secondary" data-case="lower">lowercase</button>
+                    <button class="btn btn-secondary" data-case="title">Title Case</button>
+                    <button class="btn btn-secondary" data-case="sentence">Sentence case</button>
+                    <button class="btn btn-secondary" data-case="camel">camelCase</button>
+                    <button class="btn btn-secondary" data-case="snake">snake_case</button>
+                    <button class="btn btn-secondary" data-case="kebab">kebab-case</button>
+                    <button class="btn btn-secondary" data-case="constant">CONSTANT_CASE</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="text-output">Result Output</label>
+                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="clear-text">Clear</button>
+                    <button class="btn btn-primary" id="copy-text">Copy Result</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

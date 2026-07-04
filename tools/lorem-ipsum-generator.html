@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum Generator - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Lorem Ipsum Generator to generate standard dummy placeholder layout text in your browser securely.">
+    <meta name="keywords" content="lorem ipsum generator, text tools, online lorem ipsum generator">
+    <meta name="tool-id" content="lorem-ipsum-generator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="lorem-type">Generate By</label>
+                        <select id="lorem-type" class="input-control">
+                            <option value="paragraphs">Paragraphs</option>
+                            <option value="sentences">Sentences</option>
+                            <option value="words">Words</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lorem-count">Quantity</label>
+                        <input type="number" id="lorem-count" class="input-control" value="5" min="1" max="100">
+                    </div>
+                    <div class="form-group" style="display:flex; align-items:center; margin-top:1.5rem;">
+                        <label style="cursor:pointer;"><input type="checkbox" id="lorem-start" checked> Start with "Lorem ipsum..."</label>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-primary" id="lorem-generate">Generate Text</button>
+                    <button class="btn btn-secondary" id="lorem-reset">Reset</button>
+                </div>
+
+                <div id="lorem-output-section" style="display:none; margin-top:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; font-size:0.85rem;">
+                        <span>Words: <strong id="lorem-words-count">0</strong> | Paragraphs: <strong id="lorem-paras-count">0</strong></span>
+                        <div style="display:flex; gap:0.5rem;">
+                            <button class="btn btn-secondary" id="lorem-copy" style="font-size:0.8rem; padding:0.25rem 0.5rem;">Copy</button>
+                            <button class="btn btn-secondary" id="lorem-download" style="font-size:0.8rem; padding:0.25rem 0.5rem;">Download TXT</button>
+                        </div>
+                    </div>
+                    <textarea id="lorem-output" class="input-control" readonly style="min-height: 250px; font-family:var(--font-sans); background:var(--bg-primary); line-height:1.6;"></textarea>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

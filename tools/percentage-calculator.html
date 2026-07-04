@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator - Free Online Calculators | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Percentage Calculator to solve common percentage proportions and margin increments in your browser securely.">
+    <meta name="keywords" content="percentage calculator, calculator tools, online percentage calculator">
+    <meta name="tool-id" content="percentage-calculator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                    <!-- Mode 1 -->
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                        <h4 style="margin-bottom:0.75rem;">What is X% of Y?</h4>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <span>What is</span>
+                            <input type="number" id="perc-x1" class="input-control" style="width:100px;" value="10">
+                            <span>% of</span>
+                            <input type="number" id="perc-y1" class="input-control" style="width:150px;" value="200">
+                            <span>=</span>
+                            <strong id="perc-res1" style="color:var(--primary-color);">20</strong>
+                        </div>
+                    </div>
+
+                    <!-- Mode 2 -->
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                        <h4 style="margin-bottom:0.75rem;">X is what percent of Y?</h4>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <input type="number" id="perc-x2" class="input-control" style="width:100px;" value="50">
+                            <span>is what percent of</span>
+                            <input type="number" id="perc-y2" class="input-control" style="width:150px;" value="250">
+                            <span>=</span>
+                            <strong id="perc-res2" style="color:var(--primary-color);">20%</strong>
+                        </div>
+                    </div>
+
+                    <!-- Mode 3 -->
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                        <h4 style="margin-bottom:0.75rem;">Percentage Increase / Decrease</h4>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <span>From</span>
+                            <input type="number" id="perc-x3" class="input-control" style="width:100px;" value="100">
+                            <span>to</span>
+                            <input type="number" id="perc-y3" class="input-control" style="width:150px;" value="150">
+                            <span>=</span>
+                            <strong id="perc-res3" style="color:var(--success-color);">50% Increase</strong>
+                        </div>
+                    </div>
+
+                    <!-- Mode 4 -->
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                        <h4 style="margin-bottom:0.75rem;">Percentage Difference</h4>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <span>Between</span>
+                            <input type="number" id="perc-x4" class="input-control" style="width:100px;" value="50">
+                            <span>and</span>
+                            <input type="number" id="perc-y4" class="input-control" style="width:150px;" value="60">
+                            <span>=</span>
+                            <strong id="perc-res4" style="color:var(--primary-color);">18.18%</strong>
+                        </div>
+                    </div>
+
+                    <!-- Mode 5 -->
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                        <h4 style="margin-bottom:0.75rem;">Discount Calculator</h4>
+                        <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                            <span>Price</span>
+                            <input type="number" id="perc-x5" class="input-control" style="width:100px;" value="100">
+                            <span>Discount</span>
+                            <input type="number" id="perc-y5" class="input-control" style="width:100px;" value="20">
+                            <span>% = Net Price</span>
+                            <strong id="perc-res5" style="color:var(--success-color);">$80.00</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

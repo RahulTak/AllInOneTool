@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Converter - Free Online Color Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Color Converter to convert colors between hex, rgb, hsl, and cmyk in your browser securely.">
+    <meta name="keywords" content="color converter, color tools, online color converter">
+    <meta name="tool-id" content="color-converter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="color-hex">HEX</label>
+                        <input type="text" id="color-hex" class="input-control" value="#6366f1">
+                    </div>
+                    <div class="form-group">
+                        <label for="color-rgb">RGB</label>
+                        <input type="text" id="color-rgb" class="input-control" value="rgb(99, 102, 241)">
+                    </div>
+                    <div class="form-group">
+                        <label for="color-hsl">HSL</label>
+                        <input type="text" id="color-hsl" class="input-control" value="hsl(239, 84%, 67%)">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; align-items:center; flex-direction:column; margin: 1.5rem 0; gap:1rem;">
+                    <input type="color" id="picker-color" value="#6366f1" style="width:100px; height:80px; border-radius:var(--radius-md); border:1px solid var(--border-color); cursor:pointer; padding:0;">
+                    <div id="color-preview-block" style="width: 150px; height: 50px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background-color: rgb(99, 102, 241);"></div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

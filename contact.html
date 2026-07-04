@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - AllInOneTool</title>
+    <meta name="description" content="Get in touch with support or submit feature requests for AllInOneTool.">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="./assets/css/variables.css">
+    <link rel="stylesheet" href="./assets/css/base.css">
+    <link rel="stylesheet" href="./assets/css/layout.css">
+    <link rel="stylesheet" href="./assets/css/components.css">
+    
+    <!-- Script Dependency -->
+    <script src="./assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div class="container" style="max-width: 800px; padding: 4rem 1.5rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1.5rem;">Contact Us</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Have questions, bug reports, or ideas for new client-side tools? Drop us a line below or reach out at <strong>support@allinonetool.com</strong>.</p>
+        
+        <form onsubmit="event.preventDefault(); alert('Inquiry submitted successfully (simulation-only).'); this.reset();" style="display: flex; flex-direction: column; gap: 1.25rem; background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 2.5rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
+            <div class="form-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" class="input-control" id="contact-name" placeholder="John Doe" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact-email">Email Address</label>
+                <input type="email" class="input-control" id="contact-email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contact-msg">Message</label>
+                <textarea class="input-control" id="contact-msg" placeholder="Describe your inquiry..." required style="min-height: 120px;"></textarea>
+            </div>
+
+            <button class="btn btn-primary" type="submit" style="align-self: flex-start; padding: 0.75rem 2rem;">Send Message</button>
+        </form>
+    </div>
+</body>
+</html>

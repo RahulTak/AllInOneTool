@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress PDF - Free Online PDF Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Compress PDF to reduce the file size of pdf documents client-side in your browser securely.">
+    <meta name="keywords" content="compress pdf, pdf tools, online compress pdf">
+    <meta name="tool-id" content="compress-pdf">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+            <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="upload-zone" id="pdf-upload-zone">
+                    <span class="upload-icon">📦</span>
+                    <div class="upload-text">
+                        <h4>Click or Drag & Drop PDF here</h4>
+                        <p>Analyze and structurally compress PDF documents</p>
+                    </div>
+                    <input type="file" class="upload-input" id="pdf-file-input" accept=".pdf">
+                </div>
+
+                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong id="pdf-name">document.pdf</strong>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);" id="pdf-size-info">Original Size: 0 Bytes</p>
+                        </div>
+                        <button class="btn btn-secondary" id="remove-pdf-btn">Remove</button>
+                    </div>
+
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label for="pdf-compress-level">Compression Level</label>
+                            <select id="pdf-compress-level" class="input-control">
+                                <option value="low">Low (Object Stream Packing)</option>
+                                <option value="medium" selected>Medium (Standard Compression)</option>
+                                <option value="high">High (Maximum Optimization)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
+                        <button class="btn btn-primary" id="process-pdf-btn">Compress PDF</button>
+                    </div>
+
+                    <div id="compress-metrics-panel" style="display: none; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem; margin-top: 1rem;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">
+                            <span>Original Size:</span>
+                            <strong id="metric-original">0 KB</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; border-bottom:1px solid var(--border-color); padding-bottom:0.5rem;">
+                            <span>Compressed Size:</span>
+                            <strong id="metric-compressed">0 KB</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-weight:700;">
+                            <span>Saved Space:</span>
+                            <strong id="metric-saved" style="color:var(--success-color);">0%</strong>
+                        </div>
+                        <a class="btn btn-primary" id="download-compressed-btn" href="#" download="compressed.pdf" style="width:100%; text-align:center; margin-top:1rem; display:block;">Download Compressed PDF</a>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

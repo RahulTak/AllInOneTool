@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Contrast Checker - Free Online Color Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Color Contrast Checker to check wcag contrast compliance rates for text in your browser securely.">
+    <meta name="keywords" content="color contrast checker, color tools, online color contrast checker">
+    <meta name="tool-id" content="contrast-checker">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="color-fg">Text Color (Foreground)</label>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="color" id="picker-fg" value="#6366f1" style="width:50px; height:45px; border-radius:var(--radius-xs); border:1px solid var(--border-color); padding:0; cursor:pointer;">
+                            <input type="text" id="color-fg" class="input-control" value="#6366f1" placeholder="#6366f1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="color-bg">Background Color</label>
+                        <div style="display:flex; gap:0.5rem;">
+                            <input type="color" id="picker-bg" value="#ffffff" style="width:50px; height:45px; border-radius:var(--radius-xs); border:1px solid var(--border-color); padding:0; cursor:pointer;">
+                            <input type="text" id="color-bg" class="input-control" value="#ffffff" placeholder="#ffffff">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="padding: 1.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: #ffffff; color: #6366f1; text-align: center; font-size: 1.2rem; font-weight:600; margin: 1.5rem 0;" id="contrast-preview">
+                    Sample Text Preview (Click and change colors)
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: repeat(4, 1fr); text-align: center;">
+                    <div class="form-group">
+                        <label>Contrast Ratio</label>
+                        <h2 id="contrast-ratio" style="font-weight:800; font-size: 1.75rem;">1.0:1</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>AA Normal</label>
+                        <span class="badge" id="wcag-aa-normal" style="padding:0.25rem 0.5rem; border-radius:var(--radius-xs); font-weight:700; display:block;">FAIL</span>
+                    </div>
+                    <div class="form-group">
+                        <label>AAA Normal</label>
+                        <span class="badge" id="wcag-aaa-normal" style="padding:0.25rem 0.5rem; border-radius:var(--radius-xs); font-weight:700; display:block;">FAIL</span>
+                    </div>
+                    <div class="form-group">
+                        <label>AA Large</label>
+                        <span class="badge" id="wcag-aa-large" style="padding:0.25rem 0.5rem; border-radius:var(--radius-xs); font-weight:700; display:block;">FAIL</span>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

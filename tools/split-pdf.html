@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split PDF - Free Online PDF Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Split PDF to split a pdf document into separate page files in your browser securely.">
+    <meta name="keywords" content="split pdf, pdf tools, online split pdf">
+    <meta name="tool-id" content="split-pdf">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+            <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="upload-zone" id="pdf-upload-zone">
+                    <span class="upload-icon">📄</span>
+                    <div class="upload-text">
+                        <h4>Click or Drag & Drop PDF here</h4>
+                        <p>Select PDF file to split</p>
+                    </div>
+                    <input type="file" class="upload-input" id="pdf-file-input" accept=".pdf">
+                </div>
+
+                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
+                    <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong id="pdf-name">document.pdf</strong>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);" id="pdf-page-count">Total Pages: 0</p>
+                        </div>
+                        <button class="btn btn-secondary" id="remove-pdf-btn">Remove</button>
+                    </div>
+
+                    <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="form-group">
+                            <label for="split-mode">Split Mode</label>
+                            <select id="split-mode" class="input-control">
+                                <option value="range">Split by Page Ranges</option>
+                                <option value="extract">Extract Specific Pages</option>
+                                <option value="every">Split Every Page</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="split-range-input-group">
+                            <label for="split-range-val">Pages / Ranges</label>
+                            <input type="text" id="split-range-val" class="input-control" value="1-3, 4-6" placeholder="e.g. 1-3, 4-6 or 1,3,5">
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
+                        <button class="btn btn-primary" id="process-pdf-btn">Split and Download</button>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch and Timer - Free Online Miscellaneous | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Stopwatch and Timer to track time intervals with a stopwatch or set countdown timers in your browser securely.">
+    <meta name="keywords" content="stopwatch and timer, misc tools, online stopwatch and timer">
+    <meta name="tool-id" content="stopwatch-timer">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div style="display:flex; justify-content:center; gap:2rem; margin-bottom:1.5rem;">
+                    <button class="btn btn-secondary tab-toggle" id="tab-stopwatch-btn">Stopwatch</button>
+                    <button class="btn btn-secondary" id="tab-timer-btn">Timer</button>
+                </div>
+
+                <!-- Stopwatch View -->
+                <div id="stopwatch-view" style="display:block; text-align:center;">
+                    <div style="font-size:3rem; font-weight:800; font-family:var(--font-mono); margin-bottom:1.5rem;" id="stopwatch-display">00:00:00.000</div>
+                    <div style="display:flex; justify-content:center; gap:0.5rem; margin-bottom:1rem;">
+                        <button class="btn btn-primary" id="stopwatch-start">Start</button>
+                        <button class="btn btn-secondary" id="stopwatch-lap">Lap</button>
+                        <button class="btn btn-secondary" id="stopwatch-reset">Reset</button>
+                    </div>
+                    <div style="max-height:150px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); max-width:300px; margin:0 auto;" id="stopwatch-laps"></div>
+                </div>
+
+                <!-- Timer View -->
+                <div id="timer-view" style="display:none; text-align:center;">
+                    <div style="display:flex; justify-content:center; gap:0.5rem; margin-bottom:1.5rem;">
+                        <input type="number" id="timer-h" class="input-control" style="width:70px;" value="0" min="0" placeholder="HH">
+                        <input type="number" id="timer-m" class="input-control" style="width:70px;" value="5" min="0" placeholder="MM">
+                        <input type="number" id="timer-s" class="input-control" style="width:70px;" value="0" min="0" placeholder="SS">
+                    </div>
+                    <div style="font-size:3rem; font-weight:800; font-family:var(--font-mono); margin-bottom:1.5rem;" id="timer-display">00:05:00</div>
+                    
+                    <div style="height:10px; background:var(--border-color); border-radius:var(--radius-xs); overflow:hidden; max-width:300px; margin:0 auto 1.5rem auto;">
+                        <div id="timer-bar" style="height:100%; width:100%; background:var(--primary-color);"></div>
+                    </div>
+
+                    <div style="display:flex; justify-content:center; gap:0.5rem;">
+                        <button class="btn btn-primary" id="timer-start">Start</button>
+                        <button class="btn btn-secondary" id="timer-reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>

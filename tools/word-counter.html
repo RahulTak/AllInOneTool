@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Word Counter to count words, characters, sentences, paragraphs, and reading times in your browser securely.">
+    <meta name="keywords" content="word counter, text tools, online word counter">
+    <meta name="tool-id" content="word-counter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="text-input">Enter Text below</label>
+                    <textarea class="input-control" id="text-input" placeholder="Type or paste your text here..." style="min-height: 200px; font-family: var(--font-sans);"></textarea>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: repeat(4, 1fr); text-align: center;">
+                    <div class="form-group">
+                        <label>Words</label>
+                        <h2 style="font-size: 2rem; font-weight: 800;" id="count-words">0</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Characters</label>
+                        <h2 style="font-size: 2rem; font-weight: 800;" id="count-chars">0</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Sentences</label>
+                        <h2 style="font-size: 2rem; font-weight: 800;" id="count-sentences">0</h2>
+                    </div>
+                    <div class="form-group">
+                        <label>Reading Time</label>
+                        <h2 style="font-size: 2rem; font-weight: 800;" id="count-reading">0m</h2>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="clear-text">Clear</button>
+                    <button class="btn btn-primary" id="copy-text">Copy Text</button>
+                </div>
+            </div>
+            
+    </div>
+</body>
+</html>
