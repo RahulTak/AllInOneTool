@@ -17,6 +17,9 @@
     
     <!-- Libraries -->
     
+            <script src="https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -29,23 +32,35 @@
                 <span class="upload-icon">🎞️</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop GIF here</h4>
-                    <p>Extract frames in your browser</p>
+                    <p>Decompress every animation frame into separate PNG images</p>
                 </div>
                 <input type="file" class="upload-input" id="gif-input" accept="image/gif">
             </div>
 
+            <div id="gif-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span style="font-weight:600; color:var(--text-secondary);">Extracting Frames...</span>
+            </div>
+
             <div id="gif-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
                 <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
-                    Total Frames Found: <strong id="gif-frames-count">0</strong>
+                    Extracted frames count: <strong id="gif-frames-count">0</strong>
                 </div>
 
-                <div id="gif-frames-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(80px, 1fr)); gap:0.5rem; max-height:220px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.5rem; background:#ffffff;"></div>
+                <div id="gif-frames-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr)); gap:1rem; max-height:300px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; background:#ffffff;"></div>
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="gif-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="gif-btn-download">Download Frame #1</button>
+                    <button class="btn btn-primary" id="gif-btn-download">Download All Frames (ZIP)</button>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         
     </div>

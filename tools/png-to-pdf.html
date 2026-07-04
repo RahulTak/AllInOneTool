@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../assets/css/tool.css">
     
     <!-- Libraries -->
-    
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -29,28 +29,37 @@
                 <span class="upload-icon">📄</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop PNGs here</h4>
+                    <p>Accepts multiple files for compilation</p>
                 </div>
                 <input type="file" class="upload-input" id="pdf-input" accept="image/png" multiple>
             </div>
 
             <div id="pdf-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
-                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
-                    Uploaded files count: <strong id="pdf-files-count">0</strong>
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Images Layout List (Preview order, delete, or rearrange)</h5>
+                    <div id="pdf-thumbnails-list" style="display:flex; flex-direction:column; gap:0.5rem;"></div>
                 </div>
 
                 <div class="options-grid">
                     <div class="form-group">
-                        <label for="pdf-page-size">Page Envelope</label>
+                        <label for="pdf-page-size">Page Size</label>
                         <select id="pdf-page-size" class="input-control">
-                            <option value="A4">A4 Layout</option>
-                            <option value="LETTER">Letter Layout</option>
+                            <option value="A4">A4 (595 x 842 pt)</option>
+                            <option value="LETTER">Letter (612 x 792 pt)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pdf-page-orient">Orientation</label>
+                        <select id="pdf-page-orient" class="input-control">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="pdf-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="pdf-btn-convert">Download PDF</button>
+                    <button class="btn btn-secondary" id="pdf-btn-reset">Reset / Clear</button>
+                    <button class="btn btn-primary" id="pdf-btn-convert">Download Compiled PDF</button>
                 </div>
             </div>
         </div>

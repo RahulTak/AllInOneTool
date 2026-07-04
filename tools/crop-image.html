@@ -25,17 +25,83 @@
     <div id="tool-workspace">
         
         <div class="tool-workspace">
+            <style>
+                .crop-container {
+                    position: relative;
+                    display: inline-block;
+                    max-width: 100%;
+                    background: var(--bg-primary);
+                    border: 1px solid var(--border-color);
+                    border-radius: var(--radius-sm);
+                    overflow: hidden;
+                    user-select: none;
+                    margin: 0 auto;
+                }
+                .crop-img {
+                    display: block;
+                    max-width: 100%;
+                    max-height: 400px;
+                    pointer-events: none;
+                }
+                .crop-overlay {
+                    position: absolute;
+                    top: 10%;
+                    left: 10%;
+                    width: 80%;
+                    height: 80%;
+                    border: 2px dashed #3b82f6;
+                    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+                    cursor: move;
+                    box-sizing: border-box;
+                }
+                .crop-handle {
+                    position: absolute;
+                    width: 12px;
+                    height: 12px;
+                    background: #3b82f6;
+                    border: 2px solid #ffffff;
+                    border-radius: 50%;
+                    box-sizing: border-box;
+                }
+                .handle-tl { top: -6px; left: -6px; cursor: nwse-resize; }
+                .handle-tr { top: -6px; right: -6px; cursor: nesw-resize; }
+                .handle-bl { bottom: -6px; left: -6px; cursor: nesw-resize; }
+                .handle-br { bottom: -6px; right: -6px; cursor: nwse-resize; }
+                .crop-preview-box {
+                    border: 1px solid var(--border-color);
+                    border-radius: var(--radius-sm);
+                    padding: 1rem;
+                    background: var(--bg-primary);
+                    text-align: center;
+                }
+                .crop-preview-canvas {
+                    max-width: 100%;
+                    max-height: 150px;
+                    border: 1px dashed var(--border-color);
+                    margin-top: 0.5rem;
+                }
+            </style>
+
             <div class="upload-zone" id="crop-dropzone">
                 <span class="upload-icon">✂️</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop Image to Crop</h4>
+                    <p>Supports PNG, JPG, JPEG, WEBP</p>
                 </div>
                 <input type="file" class="upload-input" id="crop-input" accept="image/*">
             </div>
 
             <div id="crop-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
-                <div style="display:flex; justify-content:center; align-items:center; position:relative; overflow:hidden; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-primary); padding:1rem;">
-                    <canvas id="crop-canvas" style="max-width:100%; max-height:350px;"></canvas>
+                <div style="display:flex; justify-content:center; align-items:center; overflow:hidden; padding:1rem; background:var(--bg-secondary); border-radius:var(--radius-sm);">
+                    <div class="crop-container" id="crop-wrapper">
+                        <img id="crop-target-img" class="crop-img">
+                        <div class="crop-overlay" id="crop-box">
+                            <div class="crop-handle handle-tl" data-handle="tl"></div>
+                            <div class="crop-handle handle-tr" data-handle="tr"></div>
+                            <div class="crop-handle handle-bl" data-handle="bl"></div>
+                            <div class="crop-handle handle-br" data-handle="br"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="options-grid">
@@ -46,13 +112,21 @@
                             <option value="1:1">Square (1:1)</option>
                             <option value="16:9">Widescreen (16:9)</option>
                             <option value="4:3">Standard (4:3)</option>
+                            <option value="3:2">Photo (3:2)</option>
                         </select>
+                    </div>
+
+                    <div class="crop-preview-box">
+                        <label>Live Crop Preview</label>
+                        <div>
+                            <canvas id="crop-preview-canvas" class="crop-preview-canvas"></canvas>
+                        </div>
                     </div>
                 </div>
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="crop-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="crop-btn-action">Download Cropped Image</button>
+                    <button class="btn btn-primary" id="crop-btn-action">Crop & Download</button>
                 </div>
             </div>
         </div>

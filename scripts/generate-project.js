@@ -4806,6 +4806,15 @@ function generateProject() {
             librariesStr = '<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>';
         } else if (tool.id === 'markdown-to-html') {
             librariesStr = '<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>';
+        } else if (tool.id === 'gif-to-png') {
+            librariesStr = `
+            <script src="https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+            `;
+        } else if (tool.id === 'image-exif-extractor') {
+            librariesStr = '<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>';
+        } else if (tool.id === 'png-to-pdf') {
+            librariesStr = '<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>';
         }
 
         const htmlContent = `<!DOCTYPE html>

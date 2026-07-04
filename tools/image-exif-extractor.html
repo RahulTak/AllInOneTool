@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../assets/css/tool.css">
     
     <!-- Libraries -->
-    
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -29,18 +29,19 @@
                 <span class="upload-icon">🔍</span>
                 <div class="upload-text">
                     <h4>Click or Drag & Drop JPEG to extract EXIF</h4>
+                    <p>Loads standard camera EXIF metadata labels client-side</p>
                 </div>
                 <input type="file" class="upload-input" id="exif-input" accept="image/jpeg,image/jpg">
             </div>
 
             <div id="exif-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
-                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-size:0.85rem; line-height:1.6;" id="exif-data-panel">
-                    No EXIF metadata found.
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem;" id="exif-results-table"></table>
                 </div>
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="exif-btn-reset">Reset</button>
-                    <button class="btn btn-primary" id="exif-btn-copy">Copy Metadata</button>
+                    <button class="btn btn-primary" id="exif-btn-copy">Copy Metadata Text</button>
                 </div>
             </div>
         </div>

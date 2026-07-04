@@ -33,17 +33,38 @@
                 <input type="file" class="upload-input" id="b64-input" accept="image/*">
             </div>
 
+            <div id="b64-loader" style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:3rem; gap:1rem;">
+                <div class="loader" style="border:4px solid var(--border-color); border-top:4px solid var(--primary-color); border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite;"></div>
+                <span id="b64-status" style="font-weight:600; color:var(--text-secondary);">Converting...</span>
+            </div>
+
             <div id="b64-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
-                <div class="form-group">
-                    <label>Base64 Data String</label>
-                    <textarea id="b64-output-text" readonly class="input-control" style="min-height:180px; font-family:var(--font-mono); font-size:0.8rem; background:var(--bg-primary);"></textarea>
+                <div style="display:grid; grid-template-columns:1fr 200px; gap:1.5rem; align-items:start;">
+                    <div class="form-group">
+                        <label>Base64 Data String</label>
+                        <textarea id="b64-output-text" readonly class="input-control" style="min-height:180px; font-family:var(--font-mono); font-size:0.8rem; background:var(--bg-primary);"></textarea>
+                    </div>
+                    <div style="text-align:center;">
+                        <label style="display:block; margin-bottom:0.5rem; font-weight:600;">Image Preview</label>
+                        <div style="border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.5rem; background:#ffffff;">
+                            <img id="b64-preview-img" style="max-width:100%; max-height:150px; border-radius:var(--radius-xs);">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="b64-btn-reset">Reset</button>
                     <button class="btn btn-primary" id="b64-btn-copy">Copy to Clipboard</button>
+                    <a id="b64-btn-download" class="btn btn-secondary" style="display:inline-flex; align-items:center; justify-content:center;">Download TXT</a>
                 </div>
             </div>
+
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
         </div>
         
     </div>
