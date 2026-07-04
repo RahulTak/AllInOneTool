@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Encoder / Decoder - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium HTML Encoder / Decoder to encode special characters into xml/html entities or decode them in your browser securely.">
+    <meta name="keywords" content="html encoder / decoder, text tools, online html encoder / decoder">
+    <meta name="tool-id" content="html-encoder-decoder">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label for="html-ed-input">Text String</label>
+                    <textarea id="html-ed-input" class="input-control" placeholder="Type text here..." style="min-height:180px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="html-ed-output">Processed Output</label>
+                    <textarea id="html-ed-output" readonly class="input-control" style="min-height:180px; background:var(--bg-primary);"></textarea>
+                </div>
+            </div>
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-secondary" id="html-ed-clear">Clear</button>
+                <button class="btn btn-primary" id="html-ed-encode">Encode entities</button>
+                <button class="btn btn-primary" id="html-ed-decode">Decode entities</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

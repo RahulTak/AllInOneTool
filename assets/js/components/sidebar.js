@@ -1,6 +1,6 @@
 import { CATEGORIES } from '../data/categories.js';
 
-export function renderSidebar(currentCat = '', pathPrefix = '') {
+export function renderSidebar(currentCat = '', pathPrefix = '', toolsSummary = []) {
     // List of static popular tools for quick navigation
     const popularTools = [
         { name: 'Image Compressor', slug: 'image-compressor', cat: 'image' },
@@ -33,10 +33,11 @@ export function renderSidebar(currentCat = '', pathPrefix = '') {
             <nav class="sidebar-menu">
                 ${CATEGORIES.map(cat => {
                     const isActive = cat.id === currentCat ? 'active' : '';
+                    const count = toolsSummary && toolsSummary.length > 0 ? toolsSummary.filter(t => t.category === cat.id).length : cat.count;
                     return `
                     <a href="${pathPrefix}index.html#category-${cat.id}" class="sidebar-menu-link ${isActive}">
                         <span>${cat.icon} ${cat.name}</span>
-                        <span style="font-size: 0.75rem; opacity: 0.6;">${cat.count}</span>
+                        <span style="font-size: 0.75rem; opacity: 0.6;">${count}</span>
                     </a>
                     `;
                 }).join('')}

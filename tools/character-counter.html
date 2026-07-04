@@ -24,24 +24,32 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="cc-text-area">Input String</label>
+                <textarea id="cc-text-area" class="input-control" placeholder="Type text here to start counting..." style="min-height: 180px;"></textarea>
+            </div>
 
+            <div class="options-grid" style="grid-template-columns: repeat(4, 1fr); text-align: center;">
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label>Characters</label>
+                    <h2 style="font-size: 2rem; font-weight: 800;" id="cc-char-total">0</h2>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label>No Spaces</label>
+                    <h2 style="font-size: 2rem; font-weight: 800;" id="cc-char-nospaces">0</h2>
+                </div>
+                <div class="form-group">
+                    <label>Words</label>
+                    <h2 style="font-size: 2rem; font-weight: 800;" id="cc-words-total">0</h2>
+                </div>
+                <div class="form-group">
+                    <label>Reading Time</label>
+                    <h2 style="font-size: 2rem; font-weight: 800;" id="cc-read-time">0m</h2>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

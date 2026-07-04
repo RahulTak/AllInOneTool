@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Sorter - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Text Sorter to sort input rows alphabetically, numerically, or random order in your browser securely.">
+    <meta name="keywords" content="text sorter, text tools, online text sorter">
+    <meta name="tool-id" content="text-sorter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="sort-input-text">Raw Text Input</label>
+                <textarea id="sort-input-text" class="input-control" placeholder="Banana\nApple\nOrange" style="min-height: 150px;"></textarea>
+            </div>
+
+            <div class="options-grid" style="grid-template-columns: repeat(4, 1fr); text-align:center;">
+                <button class="btn btn-secondary" id="sort-btn-az">Sort A-Z</button>
+                <button class="btn btn-secondary" id="sort-btn-za">Sort Z-A</button>
+                <button class="btn btn-secondary" id="sort-btn-num">Numeric Sort</button>
+                <button class="btn btn-secondary" id="sort-btn-shuffle">Random Shuffle</button>
+            </div>
+
+            <div class="form-group" style="margin-top:1.5rem;">
+                <label for="sort-output-text">Sorted Result</label>
+                <textarea id="sort-output-text" readonly class="input-control" style="min-height: 150px; background:var(--bg-primary);"></textarea>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

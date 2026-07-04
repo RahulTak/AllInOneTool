@@ -2168,5 +2168,215 @@ export const TOOLS_SUMMARY = [
             "misc tools",
             "online nato audio speller"
         ]
+    },
+    {
+        "id": "qr-code-scanner",
+        "name": "QR Code Scanner",
+        "slug": "qr-code-scanner",
+        "category": "developer",
+        "categoryName": "Developer Tools",
+        "icon": "💻",
+        "description": "Scan and decode QR codes from image files or real-time camera feeds.",
+        "keywords": [
+            "qr code scanner",
+            "developer tools",
+            "online qr code scanner"
+        ]
+    },
+    {
+        "id": "uuid-validator",
+        "name": "UUID Validator",
+        "slug": "uuid-validator",
+        "category": "developer",
+        "categoryName": "Developer Tools",
+        "icon": "💻",
+        "description": "Validate UUID layout strings and check version metadata.",
+        "keywords": [
+            "uuid validator",
+            "developer tools",
+            "online uuid validator"
+        ]
+    },
+    {
+        "id": "html-encoder-decoder",
+        "name": "HTML Encoder / Decoder",
+        "slug": "html-encoder-decoder",
+        "category": "text",
+        "categoryName": "Text Tools",
+        "icon": "✍️",
+        "description": "Encode special characters into XML/HTML entities or decode them.",
+        "keywords": [
+            "html encoder / decoder",
+            "text tools",
+            "online html encoder / decoder"
+        ]
+    },
+    {
+        "id": "html-escape-unescape",
+        "name": "HTML Escape / Unescape",
+        "slug": "html-escape-unescape",
+        "category": "text",
+        "categoryName": "Text Tools",
+        "icon": "✍️",
+        "description": "Escape tag structures into raw characters or unescape text.",
+        "keywords": [
+            "html escape / unescape",
+            "text tools",
+            "online html escape / unescape"
+        ]
+    },
+    {
+        "id": "cron-expression-generator",
+        "name": "Cron Expression Generator",
+        "slug": "cron-expression-generator",
+        "category": "developer",
+        "categoryName": "Developer Tools",
+        "icon": "💻",
+        "description": "Generate cron schedule syntax and show structural details.",
+        "keywords": [
+            "cron expression generator",
+            "developer tools",
+            "online cron expression generator"
+        ]
+    },
+    {
+        "id": "unix-timestamp-converter",
+        "name": "Unix Timestamp Converter",
+        "slug": "unix-timestamp-converter",
+        "category": "converter",
+        "categoryName": "Converters",
+        "icon": "🔄",
+        "description": "Convert UNIX epoch timestamp seconds into standard dates.",
+        "keywords": [
+            "unix timestamp converter",
+            "converter tools",
+            "online unix timestamp converter"
+        ]
+    },
+    {
+        "id": "remove-duplicate-lines",
+        "name": "Remove Duplicate Lines",
+        "slug": "remove-duplicate-lines",
+        "category": "text",
+        "categoryName": "Text Tools",
+        "icon": "✍️",
+        "description": "Remove duplicate lines from text list elements instantly.",
+        "keywords": [
+            "remove duplicate lines",
+            "text tools",
+            "online remove duplicate lines"
+        ]
+    },
+    {
+        "id": "text-sorter",
+        "name": "Text Sorter",
+        "slug": "text-sorter",
+        "category": "text",
+        "categoryName": "Text Tools",
+        "icon": "✍️",
+        "description": "Sort input rows alphabetically, numerically, or random order.",
+        "keywords": [
+            "text sorter",
+            "text tools",
+            "online text sorter"
+        ]
+    },
+    {
+        "id": "url-slug-checker",
+        "name": "URL Slug Checker",
+        "slug": "url-slug-checker",
+        "category": "seo",
+        "categoryName": "SEO Tools",
+        "icon": "📈",
+        "description": "Check URL slug lengths and keyword SEO characteristics.",
+        "keywords": [
+            "url slug checker",
+            "seo tools",
+            "online url slug checker"
+        ]
+    },
+    {
+        "id": "html-table-generator",
+        "name": "HTML Table Generator",
+        "slug": "html-table-generator",
+        "category": "developer",
+        "categoryName": "Developer Tools",
+        "icon": "💻",
+        "description": "Generate clean HTML table elements with customized grid counts.",
+        "keywords": [
+            "html table generator",
+            "developer tools",
+            "online html table generator"
+        ]
+    },
+    {
+        "id": "random-number-generator",
+        "name": "Random Number Generator",
+        "slug": "random-number-generator",
+        "category": "misc",
+        "categoryName": "Miscellaneous",
+        "icon": "⚙️",
+        "description": "Generate sets of random numbers within ranges.",
+        "keywords": [
+            "random number generator",
+            "misc tools",
+            "online random number generator"
+        ]
+    },
+    {
+        "id": "dice-roller",
+        "name": "Dice Roller Simulator",
+        "slug": "dice-roller",
+        "category": "misc",
+        "categoryName": "Miscellaneous",
+        "icon": "⚙️",
+        "description": "Roll digital gaming dice and track total scoring.",
+        "keywords": [
+            "dice roller simulator",
+            "misc tools",
+            "online dice roller simulator"
+        ]
+    },
+    {
+        "id": "coin-flip",
+        "name": "Coin Flip Simulator",
+        "slug": "coin-flip",
+        "category": "misc",
+        "categoryName": "Miscellaneous",
+        "icon": "⚙️",
+        "description": "Flip virtual coins and track session outcomes ratios.",
+        "keywords": [
+            "coin flip simulator",
+            "misc tools",
+            "online coin flip simulator"
+        ]
+    },
+    {
+        "id": "unit-price-calculator",
+        "name": "Unit Price Calculator",
+        "slug": "unit-price-calculator",
+        "category": "calculator",
+        "categoryName": "Calculators",
+        "icon": "🧮",
+        "description": "Compare pricing ratios to see which package represents the best deal.",
+        "keywords": [
+            "unit price calculator",
+            "calculator tools",
+            "online unit price calculator"
+        ]
+    },
+    {
+        "id": "fuel-cost-calculator",
+        "name": "Fuel Cost Calculator",
+        "slug": "fuel-cost-calculator",
+        "category": "calculator",
+        "categoryName": "Calculators",
+        "icon": "🧮",
+        "description": "Calculate trip fuel consumption, cost estimates, and mileage margins.",
+        "keywords": [
+            "fuel cost calculator",
+            "calculator tools",
+            "online fuel cost calculator"
+        ]
     }
 ];

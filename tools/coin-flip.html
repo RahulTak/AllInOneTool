@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin Flip Simulator - Free Online Miscellaneous | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Coin Flip Simulator to flip virtual coins and track session outcomes ratios in your browser securely.">
+    <meta name="keywords" content="coin flip simulator, misc tools, online coin flip simulator">
+    <meta name="tool-id" content="coin-flip">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div style="display:flex; justify-content:center; align-items:center; margin:2rem 0;">
+                <div id="coin-visual-flip" style="width:120px; height:120px; border-radius:50%; background:#e2e8f0; border:6px solid #94a3b8; display:flex; justify-content:center; align-items:center; font-size:1.5rem; font-weight:800; color:#475569; transition: transform 0.3s ease;">
+                    Flip
+                </div>
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; text-align:center; margin-bottom:1.5rem;" id="coin-totals">
+                Heads: 0 | Tails: 0
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-primary" id="coin-btn-flip-action" style="width:100%;">Flip Coin</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix Timestamp Converter - Free Online Converters | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Unix Timestamp Converter to convert unix epoch timestamp seconds into standard dates in your browser securely.">
+    <meta name="keywords" content="unix timestamp converter, converter tools, online unix timestamp converter">
+    <meta name="tool-id" content="unix-timestamp-converter">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                <div>
+                    <h4 style="margin-bottom:0.75rem;">Convert Timestamp to Date</h4>
+                    <div class="form-group">
+                        <label for="unix-val">Epoch Timestamp (Seconds)</label>
+                        <input type="number" id="unix-val" class="input-control" value="1719878400">
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
+                        <div>Local Calendar: <strong id="unix-local">-</strong></div>
+                        <div>UTC Calendar: <strong id="unix-utc">-</strong></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 style="margin-bottom:0.75rem;">Convert Date to Timestamp</h4>
+                    <div class="form-group">
+                        <label for="unix-date-input">Calendar Date Time</label>
+                        <input type="datetime-local" id="unix-date-input" class="input-control">
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-size:0.85rem;">
+                        UNIX Seconds: <strong id="unix-result-seconds">-</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

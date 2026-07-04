@@ -1,25 +1,23 @@
 export function init() {
-    const input = document.getElementById('text-input');
-    const output = document.getElementById('text-output');
-    const processBtn = document.getElementById('process-text');
-    const clearBtn = document.getElementById('clear-text');
-    const copyBtn = document.getElementById('copy-text');
+    const area = document.getElementById('cc-text-area');
+    const total = document.getElementById('cc-char-total');
+    const nosp = document.getElementById('cc-char-nospaces');
+    const words = document.getElementById('cc-words-total');
+    const read = document.getElementById('cc-read-time');
 
-    if (!processBtn) return;
+    if (!area) return;
 
-    processBtn.addEventListener('click', () => {
-        const text = input.value;
-        output.textContent = text.toUpperCase();
-    });
+    area.addEventListener('input', () => {
+        const val = area.value;
+        const count = val.length;
+        const noSpaceCount = val.replace(/\s/g, '').length;
+        const wordsArr = val.trim().split(/\s+/).filter(w => w.length > 0);
+        const wCount = wordsArr.length;
+        const minutes = Math.ceil(wCount / 200);
 
-    clearBtn.addEventListener('click', () => {
-        input.value = '';
-        output.textContent = '';
-    });
-
-    copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(output.textContent || '').then(() => {
-            alert('Copied!');
-        });
+        total.textContent = count;
+        nosp.textContent = noSpaceCount;
+        words.textContent = wCount;
+        read.textContent = minutes + 'm';
     });
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Escape / Unescape - Free Online Text Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium HTML Escape / Unescape to escape tag structures into raw characters or unescape text in your browser securely.">
+    <meta name="keywords" content="html escape / unescape, text tools, online html escape / unescape">
+    <meta name="tool-id" content="html-escape-unescape">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                <div class="form-group">
+                    <label for="html-esc-input">HTML Text</label>
+                    <textarea id="html-esc-input" class="input-control" placeholder="<div>Hello World</div>" style="min-height:180px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="html-esc-output">Escaped Output</label>
+                    <textarea id="html-esc-output" readonly class="input-control" style="min-height:180px; background:var(--bg-primary);"></textarea>
+                </div>
+            </div>
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-secondary" id="html-esc-reset">Reset</button>
+                <button class="btn btn-primary" id="html-esc-escape">Escape Tag characters</button>
+                <button class="btn btn-primary" id="html-esc-unescape">Unescape Entities</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

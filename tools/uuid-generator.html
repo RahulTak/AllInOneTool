@@ -24,24 +24,26 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="uuid-quantity">Number of UUIDs</label>
+                    <input type="number" id="uuid-quantity" class="input-control" value="5" min="1" max="1000">
                 </div>
             </div>
-            
+
+            <div class="form-group" style="margin-top:1.5rem;">
+                <label>Generated UUID v4 Keys</label>
+                <textarea readonly id="uuid-output" class="input-control" style="font-family:var(--font-mono); min-height:180px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="uuid-btn-generate">Generate</button>
+                <button class="btn btn-primary" id="uuid-btn-copy">Copy All</button>
+                <button class="btn btn-secondary" id="uuid-btn-download">Download TXT</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

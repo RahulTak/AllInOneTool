@@ -1,25 +1,29 @@
 export function init() {
-    const input = document.getElementById('text-input');
-    const output = document.getElementById('text-output');
-    const processBtn = document.getElementById('process-text');
-    const clearBtn = document.getElementById('clear-text');
-    const copyBtn = document.getElementById('copy-text');
+    const csv = document.getElementById('csv-val');
+    const json = document.getElementById('json-val');
+    const convert = document.getElementById('csv-btn-convert');
 
-    if (!processBtn) return;
+    if (!convert) return;
 
-    processBtn.addEventListener('click', () => {
-        const text = input.value;
-        output.textContent = text.toUpperCase();
-    });
+    convert.addEventListener('click', () => {
+        const lines = csv.value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length < 2) {
+            alert('Please input headers and row items separated by commas.');
+            return;
+        }
 
-    clearBtn.addEventListener('click', () => {
-        input.value = '';
-        output.textContent = '';
-    });
+        const headers = lines[0].split(',');
+        const result = [];
 
-    copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(output.textContent || '').then(() => {
-            alert('Copied!');
-        });
+        for(let i=1; i<lines.length; i++) {
+            const cells = lines[i].split(',');
+            const obj = {};
+            headers.forEach((h, idx) => {
+                obj[h.trim()] = (cells[idx] || '').trim();
+            });
+            result.push(obj);
+        }
+
+        json.value = JSON.stringify(result, null, 4);
     });
 }

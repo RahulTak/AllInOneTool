@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Price Calculator - Free Online Calculators | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Unit Price Calculator to compare pricing ratios to see which package represents the best deal in your browser securely.">
+    <meta name="keywords" content="unit price calculator, calculator tools, online unit price calculator">
+    <meta name="tool-id" content="unit-price-calculator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="options-grid" style="grid-template-columns:1fr 1fr; gap:1.5rem;">
+                <div>
+                    <h4 style="margin-bottom:0.75rem;">Package A</h4>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="p-price-a" class="input-control" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity / Weight</label>
+                        <input type="number" id="p-qty-a" class="input-control" value="2">
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.75rem;">Package B</h4>
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="p-price-b" class="input-control" value="18">
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity / Weight</label>
+                        <input type="number" id="p-qty-b" class="input-control" value="4">
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem; display:flex; flex-direction:column; gap:0.5rem;">
+                <div>Package A Unit Cost: <strong id="unit-cost-a">$5.00</strong></div>
+                <div>Package B Unit Cost: <strong id="unit-cost-b">$4.50</strong></div>
+                <div style="margin-top:0.5rem; font-weight:700; color:var(--success-color);" id="cheaper-recommendation">Package B is 10% cheaper!</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

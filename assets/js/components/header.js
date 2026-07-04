@@ -2,8 +2,13 @@ import { SITE_CONFIG } from '../constants/site.js';
 
 export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = []) {
     // Helper to get tools under a category
-    const getTools = (catId, limit = 5) => {
-        return toolsSummary.filter(t => t.category === catId).slice(0, limit);
+    const getTools = (catId, limit = 10) => {
+        const list = toolsSummary.filter(t => t.category === catId);
+        let items = list.slice(0, limit).map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`);
+        if (list.length > limit) {
+            items.push(`<a href="${pathPrefix}index.html#category-${catId}" class="mega-menu-link" style="font-weight: 700; color: var(--primary-color);">View all (${list.length}) →</a>`);
+        }
+        return items.join('');
     };
 
     return `
@@ -27,11 +32,11 @@ export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = [
                             <div class="mega-menu-column">
                                 <h4 class="mega-menu-title">🖼️ Image Tools</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('image').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('image')}
                                 </div>
                                 <h4 class="mega-menu-title" style="margin-top: 1rem;">🎨 Color Tools</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('color').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('color')}
                                 </div>
                             </div>
                             
@@ -39,11 +44,11 @@ export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = [
                             <div class="mega-menu-column">
                                 <h4 class="mega-menu-title">📄 PDF Tools</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('pdf').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('pdf')}
                                 </div>
                                 <h4 class="mega-menu-title" style="margin-top: 1rem;">⚙️ Miscellaneous</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('misc').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('misc')}
                                 </div>
                             </div>
                             
@@ -51,11 +56,11 @@ export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = [
                             <div class="mega-menu-column">
                                 <h4 class="mega-menu-title">✍️ Text Tools</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('text').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('text')}
                                 </div>
                                 <h4 class="mega-menu-title" style="margin-top: 1rem;">📈 SEO Tools</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('seo').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('seo')}
                                 </div>
                             </div>
                             
@@ -63,11 +68,11 @@ export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = [
                             <div class="mega-menu-column">
                                 <h4 class="mega-menu-title">🧮 Calculators</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('calculator').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('calculator')}
                                 </div>
                                 <h4 class="mega-menu-title" style="margin-top: 1rem;">🔑 Passwords</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('password').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('password')}
                                 </div>
                             </div>
                             
@@ -75,11 +80,11 @@ export function renderHeader(activePath = '/', pathPrefix = '', toolsSummary = [
                             <div class="mega-menu-column">
                                 <h4 class="mega-menu-title">🔄 Converters</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('converter').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('converter')}
                                 </div>
                                 <h4 class="mega-menu-title" style="margin-top: 1rem;">💻 Developer</h4>
                                 <div class="mega-menu-links">
-                                    ${getTools('developer').map(t => `<a href="${pathPrefix}tools/${t.slug}.html" class="mega-menu-link">${t.name}</a>`).join('')}
+                                    ${getTools('developer')}
                                 </div>
                             </div>
                         </div>

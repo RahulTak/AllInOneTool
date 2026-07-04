@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID Validator - Free Online Developer Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium UUID Validator to validate uuid layout strings and check version metadata in your browser securely.">
+    <meta name="keywords" content="uuid validator, developer tools, online uuid validator">
+    <meta name="tool-id" content="uuid-validator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="uuid-val-input">UUID String to Validate</label>
+                <input type="text" id="uuid-val-input" class="input-control" value="123e4567-e89b-12d3-a456-426614174000">
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem; text-align:center;">
+                Verification Status: <strong id="uuid-status-label" style="font-size:1.15rem; color:var(--error-color);">Invalid Format</strong>
+                <div id="uuid-details" style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.5rem;">Please check length or syntax parameters.</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

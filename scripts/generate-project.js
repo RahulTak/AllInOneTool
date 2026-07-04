@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const newToolsDefs = require('./new-tools-definitions.js');
 
 const CATEGORIES = [
     { id: 'image', name: 'Image Tools', icon: '🖼️' },
@@ -182,13 +183,29 @@ const TOOLS = [
     { id: 'password-hash-checker', name: 'Password Hash Checker', cat: 'password', arch: 'text-action', desc: 'Verify hashes or compute local SHA/MD5 check values.' },
     { id: 'caesar-cipher', name: 'Caesar Cipher Encoder', cat: 'password', arch: 'caesar-cipher', desc: 'Encrypt or decrypt texts using letter shift steps.' },
     { id: 'vigenere-cipher', name: 'Vigenere Cipher Encoder', cat: 'password', arch: 'vigenere-cipher', desc: 'Encrypt or decrypt messages using alphabet key letters.' },
-
     // --- MISCELLANEOUS TOOLS (5) ---
     { id: 'morse-translator', name: 'Morse Code Translator', cat: 'misc', arch: 'morse-translator', desc: 'Translate alphabet texts to Morse signals.' },
     { id: 'stopwatch-timer', name: 'Stopwatch and Timer', cat: 'misc', arch: 'stopwatch-timer', desc: 'Track time intervals with a stopwatch or set countdown timers.' },
     { id: 'world-clock', name: 'World Clock', cat: 'misc', arch: 'world-clock', desc: 'View current dates and times across major time zones.' },
     { id: 'list-randomizer', name: 'List Randomizer & Sorter', cat: 'misc', arch: 'list-randomizer', desc: 'Shuffle item rows in lists or sort them.' },
-    { id: 'nato-audio-player', name: 'NATO Audio Speller', cat: 'misc', arch: 'static-info', desc: 'Generate spelling voice synthesizers for NATO indicators.' }
+    { id: 'nato-audio-player', name: 'NATO Audio Speller', cat: 'misc', arch: 'static-info', desc: 'Generate spelling voice synthesizers for NATO indicators.' },
+
+    // --- 25 NEW OR COMPREHENSIVE TOOLS EXTENSION ---
+    { id: 'qr-code-scanner', name: 'QR Code Scanner', cat: 'developer', arch: 'qr-scanner', desc: 'Scan and decode QR codes from image files or real-time camera feeds.' },
+    { id: 'uuid-validator', name: 'UUID Validator', cat: 'developer', arch: 'uuid-validator', desc: 'Validate UUID layout strings and check version metadata.' },
+    { id: 'html-encoder-decoder', name: 'HTML Encoder / Decoder', cat: 'text', arch: 'html-encoder-decoder', desc: 'Encode special characters into XML/HTML entities or decode them.' },
+    { id: 'html-escape-unescape', name: 'HTML Escape / Unescape', cat: 'text', arch: 'html-escape-unescape', desc: 'Escape tag structures into raw characters or unescape text.' },
+    { id: 'cron-expression-generator', name: 'Cron Expression Generator', cat: 'developer', arch: 'cron-gen', desc: 'Generate cron schedule syntax and show structural details.' },
+    { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter', cat: 'converter', arch: 'timestamp-converter', desc: 'Convert UNIX epoch timestamp seconds into standard dates.' },
+    { id: 'remove-duplicate-lines', name: 'Remove Duplicate Lines', cat: 'text', arch: 'remove-duplicates', desc: 'Remove duplicate lines from text list elements instantly.' },
+    { id: 'text-sorter', name: 'Text Sorter', cat: 'text', arch: 'text-sorter', desc: 'Sort input rows alphabetically, numerically, or random order.' },
+    { id: 'url-slug-checker', name: 'URL Slug Checker', cat: 'seo', arch: 'slug-checker', desc: 'Check URL slug lengths and keyword SEO characteristics.' },
+    { id: 'html-table-generator', name: 'HTML Table Generator', cat: 'developer', arch: 'table-generator', desc: 'Generate clean HTML table elements with customized grid counts.' },
+    { id: 'random-number-generator', name: 'Random Number Generator', cat: 'misc', arch: 'random-num', desc: 'Generate sets of random numbers within ranges.' },
+    { id: 'dice-roller', name: 'Dice Roller Simulator', cat: 'misc', arch: 'dice-roller', desc: 'Roll digital gaming dice and track total scoring.' },
+    { id: 'coin-flip', name: 'Coin Flip Simulator', cat: 'misc', arch: 'coin-flip', desc: 'Flip virtual coins and track session outcomes ratios.' },
+    { id: 'unit-price-calculator', name: 'Unit Price Calculator', cat: 'calculator', arch: 'unit-price', desc: 'Compare pricing ratios to see which package represents the best deal.' },
+    { id: 'fuel-cost-calculator', name: 'Fuel Cost Calculator', cat: 'calculator', arch: 'fuel-cost', desc: 'Calculate trip fuel consumption, cost estimates, and mileage margins.' }
 ];
 
 // Helper to ensure target directories exist
@@ -268,7 +285,11 @@ function generateProject() {
         let workspaceHTML = '';
         let logicJS = '';
 
-        if (tool.id === 'password-hash-checker') {
+        if (newToolsDefs[tool.id]) {
+            const def = newToolsDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (tool.id === 'password-hash-checker') {
             workspaceHTML = `
             <div class="tool-workspace">
                 <div class="form-group">
@@ -4774,6 +4795,10 @@ function generateProject() {
             `;
         } else if (tool.id === 'qr-code-generator') {
             librariesStr = '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>';
+        } else if (tool.id === 'qr-code-scanner') {
+            librariesStr = '<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>';
+        } else if (tool.id === 'barcode-generator') {
+            librariesStr = '<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>';
         } else if (tool.id === 'markdown-to-html') {
             librariesStr = '<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>';
         }

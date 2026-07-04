@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller Simulator - Free Online Miscellaneous | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Dice Roller Simulator to roll digital gaming dice and track total scoring in your browser securely.">
+    <meta name="keywords" content="dice roller simulator, misc tools, online dice roller simulator">
+    <meta name="tool-id" content="dice-roller">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="options-grid">
+                <div class="form-group">
+                    <label for="dice-qty-select">Dice Quantity (1-10)</label>
+                    <input type="number" id="dice-qty-select" class="input-control" value="2" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="dice-type-select">Dice Faces</label>
+                    <select id="dice-type-select" class="input-control">
+                        <option value="4">d4 (Tetrahedron)</option>
+                        <option value="6" selected>d6 (Cube)</option>
+                        <option value="8">d8 (Octahedron)</option>
+                        <option value="10">d10 (Decahedron)</option>
+                        <option value="12">d12 (Dodecahedron)</option>
+                        <option value="20">d20 (Icosahedron)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem; text-align:center; font-size:1.5rem; font-weight:800;" id="dice-rolling-result">
+                Roll values: -
+            </div>
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-primary" id="dice-btn-action" style="width:100%;">Roll Dice</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

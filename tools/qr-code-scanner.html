@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner - Free Online Developer Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium QR Code Scanner to scan and decode qr codes from image files or real-time camera feeds in your browser securely.">
+    <meta name="keywords" content="qr code scanner, developer tools, online qr code scanner">
+    <meta name="tool-id" content="qr-code-scanner">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="upload-zone" id="qr-scan-dropzone">
+                <span class="upload-icon">📷</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop QR Image here</h4>
+                    <p>Or use the Camera option below</p>
+                </div>
+                <input type="file" class="upload-input" id="qr-scan-input" accept="image/*">
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:1rem; margin-top:1rem;">
+                <button class="btn btn-secondary" id="qr-btn-camera">Start Camera Scan</button>
+            </div>
+
+            <div id="camera-container" style="display:none; flex-direction:column; align-items:center; gap:1rem; margin-top:1.5rem;">
+                <video id="camera-preview" style="max-width:100%; width:320px; border-radius:var(--radius-sm); transform:scaleX(-1);"></video>
+                <button class="btn btn-secondary" id="qr-btn-camera-stop">Stop Camera</button>
+            </div>
+
+            <div id="qr-scan-workspace" style="display:none; flex-direction:column; gap:1.5rem; margin-top:1.5rem;">
+                <div style="display:flex; justify-content:center; align-items:center;">
+                    <canvas id="qr-scan-canvas" style="max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--border-color);"></canvas>
+                </div>
+
+                <div class="form-group">
+                    <label>Decoded QR Output</label>
+                    <textarea readonly id="qr-scan-output" class="input-control" placeholder="Scanned QR code content will display here..." style="min-height:100px; font-family:var(--font-mono);"></textarea>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="qr-scan-btn-reset">Scan Another</button>
+                    <button class="btn btn-primary" id="qr-scan-btn-copy">Copy Output</button>
+                    <a class="btn btn-primary" id="qr-scan-btn-open" href="#" target="_blank" style="display:none;">Open Link</a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

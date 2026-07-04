@@ -142,7 +142,7 @@ async function assembleToolPage(toolId, toolsSummary, pathPrefix) {
                     </div>
 
                     <!-- Right Sidebar -->
-                    ${renderSidebar(config.category, pathPrefix)}
+                    ${renderSidebar(config.category, pathPrefix, toolsSummary)}
                 </div>
             </div>
         </main>

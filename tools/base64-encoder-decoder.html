@@ -24,24 +24,26 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="tool-panels" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="b64-input">Input Data</label>
+                    <textarea id="b64-input" class="input-control" placeholder="Type plain text to encode, or Base64 to decode..." style="min-height: 180px;"></textarea>
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="b64-output">Processed Result</label>
+                    <textarea id="b64-output" readonly class="input-control" placeholder="Results display here..." style="min-height: 180px; background:var(--bg-primary);"></textarea>
                 </div>
             </div>
-            
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-secondary" id="b64-clear">Clear</button>
+                <button class="btn btn-primary" id="b64-encode">Encode Text</button>
+                <button class="btn btn-primary" id="b64-decode">Decode Base64</button>
+                <button class="btn btn-secondary" id="b64-download">Download Result</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

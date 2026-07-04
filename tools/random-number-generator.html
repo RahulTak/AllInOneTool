@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Number Generator - Free Online Miscellaneous | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Random Number Generator to generate sets of random numbers within ranges in your browser securely.">
+    <meta name="keywords" content="random number generator, misc tools, online random number generator">
+    <meta name="tool-id" content="random-number-generator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="options-grid">
+                <div class="form-group">
+                    <label for="rand-min">Minimum Limit</label>
+                    <input type="number" id="rand-min" class="input-control" value="1">
+                </div>
+                <div class="form-group">
+                    <label for="rand-max">Maximum Limit</label>
+                    <input type="number" id="rand-max" class="input-control" value="100">
+                </div>
+                <div class="form-group">
+                    <label for="rand-quantity">Quantity</label>
+                    <input type="number" id="rand-quantity" class="input-control" value="5" min="1" max="1000">
+                </div>
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem; text-align:center; font-size:1.5rem; font-weight:800; color:var(--primary-color);" id="rand-result">
+                -
+            </div>
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-primary" id="rand-btn-generate" style="width:100%;">Generate Random Numbers</button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

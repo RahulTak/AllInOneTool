@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron Expression Generator - Free Online Developer Tools | AllInOneTool</title>
+    <meta name="description" content="Use our free, premium Cron Expression Generator to generate cron schedule syntax and show structural details in your browser securely.">
+    <meta name="keywords" content="cron expression generator, developer tools, online cron expression generator">
+    <meta name="tool-id" content="cron-expression-generator">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/components.css">
+    <link rel="stylesheet" href="../assets/css/tool.css">
+    
+    <!-- Libraries -->
+    
+    
+    <!-- Script Dependency -->
+    <script src="../assets/js/app.js" type="module" defer></script>
+</head>
+<body>
+    <div id="tool-workspace">
+        
+        <div class="tool-workspace">
+            <div class="options-grid">
+                <div class="form-group">
+                    <label for="cron-min">Minute (0-59)</label>
+                    <input type="text" id="cron-min" class="input-control" value="*">
+                </div>
+                <div class="form-group">
+                    <label for="cron-hour">Hour (0-23)</label>
+                    <input type="text" id="cron-hour" class="input-control" value="*">
+                </div>
+                <div class="form-group">
+                    <label for="cron-dom">Day of Month (1-31)</label>
+                    <input type="text" id="cron-dom" class="input-control" value="*">
+                </div>
+                <div class="form-group">
+                    <label for="cron-month">Month (1-12)</label>
+                    <input type="text" id="cron-month" class="input-control" value="*">
+                </div>
+                <div class="form-group">
+                    <label for="cron-dow">Day of Week (0-6)</label>
+                    <input type="text" id="cron-dow" class="input-control" value="*">
+                </div>
+            </div>
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-top:1.5rem; display:flex; flex-direction:column; gap:0.5rem;">
+                <div>Generated Cron Expression: <strong id="cron-expression" style="font-family:var(--font-mono); color:var(--primary-color);">* * * * *</strong></div>
+                <div style="font-size:0.9rem; color:var(--text-secondary);" id="cron-desc">Runs at every minute of every hour of every day.</div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
