@@ -1,138 +1,76 @@
 export function init() {
-    const uploadZone = document.getElementById('img-upload-zone');
-    const fileInput = document.getElementById('img-file-input');
-    const workspace = document.getElementById('image-workspace');
-    const originalPreview = document.getElementById('original-preview');
-    const processedPreview = document.getElementById('processed-preview');
-    const originalInfo = document.getElementById('original-info');
-    const processedInfo = document.getElementById('processed-info');
-    const widthInput = document.getElementById('size-width');
-    const heightInput = document.getElementById('size-height');
-    const rotateSelect = document.getElementById('rotate-select');
-    const formatSelect = document.getElementById('format-select');
-    const downloadBtn = document.getElementById('download-processed');
-    const resetBtn = document.getElementById('reset-image');
+    const dropzone = document.getElementById('svg-dropzone');
+    const input = document.getElementById('svg-input');
+    const workspace = document.getElementById('svg-workspace');
+    const preview = document.getElementById('svg-preview-container');
+    const bgSelect = document.getElementById('svg-bg-select');
+    const infoDims = document.getElementById('svg-info-dims');
+    const infoSize = document.getElementById('svg-info-size');
+    const reset = document.getElementById('svg-btn-reset');
+    const convert = document.getElementById('svg-btn-convert');
 
-    let originalFile = null;
-    let canvas = document.createElement('canvas');
+    if (!input) return;
+    let svgText = '';
+    let svgWidth = 300;
+    let svgHeight = 300;
 
-    if (!fileInput) return;
-
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) processFile(file);
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) process(e.target.files[0]);
     });
 
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            processFile(files[0]);
-        }
-    });
-
-    resetBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        originalFile = null;
+    reset.addEventListener('click', () => {
+        input.value = '';
+        svgText = '';
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    [widthInput, heightInput, rotateSelect, formatSelect].forEach(el => {
-        if (el) el.addEventListener('input', updateProcessedImage);
+    convert.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = svgWidth;
+        canvas.height = svgHeight;
+        const ctx = canvas.getContext('2d');
+
+        if (bgSelect.value === 'white') {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, svgWidth, svgHeight);
+        }
+
+        const img = new Image();
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL('image/png');
+            a.download = 'vector_convert.png';
+            a.click();
+        };
     });
 
-    function processFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Unsupported format. Please select an image file.');
+    function process(file) {
+        if (!file.name.toLowerCase().endsWith('.svg')) {
+            alert('Please upload an SVG file only.');
             return;
         }
 
-        originalFile = file;
         const reader = new FileReader();
-        reader.onload = function(evt) {
-            originalPreview.src = evt.target.result;
-            originalInfo.textContent = 'Size: ' + formatBytes(file.size);
-            uploadZone.style.display = 'none';
-            workspace.style.display = 'flex';
-
-            const img = new Image();
-            img.src = evt.target.result;
-            img.onload = () => {
-                widthInput.value = img.naturalWidth;
-                heightInput.value = img.naturalHeight;
-                updateProcessedImage();
-            };
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function updateProcessedImage() {
-        const img = new Image();
-        img.src = originalPreview.src;
-        img.onload = function() {
-            const ctx = canvas.getContext('2d');
-            const targetW = parseInt(widthInput.value) || img.naturalWidth;
-            const targetH = parseInt(heightInput.value) || img.naturalHeight;
-            const angle = parseInt(rotateSelect.value) || 0;
-
-            if (angle === 90 || angle === 270) {
-                canvas.width = targetH;
-                canvas.height = targetW;
+        reader.onload = (e) => {
+            svgText = e.target.result;
+            preview.innerHTML = svgText;
+            const svgElement = preview.querySelector('svg');
+            if (svgElement) {
+                svgWidth = parseFloat(svgElement.getAttribute('width')) || svgElement.viewBox.baseVal.width || 300;
+                svgHeight = parseFloat(svgElement.getAttribute('height')) || svgElement.viewBox.baseVal.height || 300;
+                svgElement.setAttribute('width', '100%');
+                svgElement.setAttribute('height', '100%');
+                infoDims.textContent = Math.round(svgWidth) + ' x ' + Math.round(svgHeight) + ' px';
             } else {
-                canvas.width = targetW;
-                canvas.height = targetH;
+                infoDims.textContent = 'Auto';
             }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate((angle * Math.PI) / 180);
-            ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
-            ctx.restore();
-
-            if (window.location.pathname.includes('grayscale-filter')) {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;
-                    data[i + 1] = avg;
-                    data[i + 2] = avg;
-                }
-                ctx.putImageData(imgData, 0, 0);
-            }
-
-            const mime = formatSelect.value;
-            const dataUrl = canvas.toDataURL(mime, 0.85);
-            processedPreview.src = dataUrl;
-
-            const head = 'data:' + mime + ';base64,';
-            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'Size: ' + formatBytes(sizeInBytes);
-
-            downloadBtn.href = dataUrl;
-            downloadBtn.download = 'processed_' + originalFile.name.replace(/\.[^/.]+$/, "") + '.' + mime.split('/')[1];
+            infoSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+            dropzone.style.display = 'none';
+            workspace.style.display = 'flex';
         };
-    }
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        reader.readAsText(file);
     }
 }

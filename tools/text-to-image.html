@@ -24,24 +24,47 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="tti-text">Banner Text</label>
+                    <input type="text" id="tti-text" class="input-control" value="AllInOneTool">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="tti-font">Font Family</label>
+                    <select id="tti-font" class="input-control">
+                        <option value="sans-serif">Sans-Serif</option>
+                        <option value="serif">Serif</option>
+                        <option value="monospace">Monospace</option>
+                    </select>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="tti-size">Font Size (px)</label>
+                    <input type="number" id="tti-size" class="input-control" value="48">
                 </div>
             </div>
-            
+
+            <div class="options-grid" style="grid-template-columns:1fr 1fr; gap:1rem; margin-top:1rem;">
+                <div class="form-group">
+                    <label for="tti-color-fg">Text Color</label>
+                    <input type="color" id="tti-color-fg" class="input-control" value="#ffffff" style="height:45px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label for="tti-color-bg">Background Color</label>
+                    <input type="color" id="tti-color-bg" class="input-control" value="#6366f1" style="height:45px; padding:2px;">
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:center; align-items:center; margin:2rem 0; min-height:150px;">
+                <canvas id="tti-canvas" style="border:1px solid var(--border-color); border-radius:var(--radius-sm); max-width:100%;"></canvas>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="tti-btn-reset">Reset</button>
+                <button class="btn btn-primary" id="tti-btn-download">Download PNG</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

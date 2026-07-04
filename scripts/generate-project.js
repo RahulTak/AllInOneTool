@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const newToolsDefs = require('./new-tools-definitions.js');
+const imageToolsDefs = require('./image-tools-definitions.js');
 
 const CATEGORIES = [
     { id: 'image', name: 'Image Tools', icon: '🖼️' },
@@ -285,7 +286,11 @@ function generateProject() {
         let workspaceHTML = '';
         let logicJS = '';
 
-        if (newToolsDefs[tool.id]) {
+        if (imageToolsDefs[tool.id]) {
+            const def = imageToolsDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (newToolsDefs[tool.id]) {
             const def = newToolsDefs[tool.id]();
             workspaceHTML = def.workspaceHTML;
             logicJS = def.logicJS;
