@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const newToolsDefs = require('./new-tools-definitions.js');
 const imageToolsDefs = require('./image-tools-definitions.js');
+const pdfToolsDefs = require('./pdf-tools-definitions.js');
 
 const CATEGORIES = [
     { id: 'image', name: 'Image Tools', icon: '🖼️' },
@@ -288,6 +289,10 @@ function generateProject() {
 
         if (imageToolsDefs[tool.id]) {
             const def = imageToolsDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (pdfToolsDefs[tool.id]) {
+            const def = pdfToolsDefs[tool.id]();
             workspaceHTML = def.workspaceHTML;
             logicJS = def.logicJS;
         } else if (newToolsDefs[tool.id]) {
@@ -4798,6 +4803,22 @@ function generateProject() {
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             `;
+            if (tool.id === 'protect-pdf' || tool.id === 'unlock-pdf') {
+                librariesStr += `
+                <script>window.exports = window.exports || {};</script>
+                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js"></script>
+                `;
+            } else if (tool.id === 'html-to-pdf' || tool.id === 'excel-to-pdf') {
+                librariesStr += `
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+                `;
+                if (tool.id === 'excel-to-pdf') {
+                    librariesStr += `
+                    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+                    `;
+                }
+            }
         } else if (tool.id === 'qr-code-generator') {
             librariesStr = '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>';
         } else if (tool.id === 'qr-code-scanner') {

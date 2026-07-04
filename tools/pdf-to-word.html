@@ -28,24 +28,45 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+        <div class="tool-workspace">
+            <div class="upload-zone" id="pdfword-dropzone">
+                <span class="upload-icon">📄</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Client-side guide and document details extractor</p>
+                </div>
+                <input type="file" class="upload-input" id="pdfword-input" accept=".pdf">
+            </div>
+
+            <div id="pdfword-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h5 style="color:var(--error-color); margin-bottom:0.75rem;">⚠️ Browser Formatting Limitations</h5>
+                    <p style="font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
+                        PDFs are compiled absolute-coordinate vector outputs. Converting absolute layout nodes back into editable flows of paragraphs, tables, and sections (.docx format) requires complex server-side optical character recognition (OCR) and layout styling engines.
+                    </p>
+                    <hr style="margin:1rem 0; border:0; border-top:1px solid var(--border-color);">
+                    <h6 style="font-weight:600; margin-bottom:0.5rem;">Uploaded File Details:</h6>
+                    <div style="font-size:0.85rem; color:var(--text-secondary);">
+                        <strong>Filename:</strong> <span id="pdfword-file-name">-</span><br>
+                        <strong>File Size:</strong> <span id="pdfword-file-size">-</span>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Recommended Conversion Workflows:</h5>
+                    <ol style="font-size:0.85rem; line-height:1.7; padding-left:1.2rem; color:var(--text-secondary);">
+                        <li><strong>In MS Word:</strong> Open MS Word, click <strong>File → Open</strong> and select your PDF file. MS Word will automatically convert the document with its layout engine.</li>
+                        <li><strong>Google Docs:</strong> Upload the PDF to Google Drive, double-click it, and select <strong>Open with Google Docs</strong>.</li>
+                        <li><strong>Adobe Reader:</strong> Use the export tool inside Adobe Acrobat Reader to export as Microsoft Word format.</li>
+                    </ol>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <button class="btn btn-secondary" id="pdfword-btn-reset">Reset / Clear</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

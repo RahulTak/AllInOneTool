@@ -28,37 +28,60 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="pdf-upload-zone">
-                    <span class="upload-icon">📄</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop PDF files here</h4>
-                        <p>Processes completely inside your browser memory</p>
-                    </div>
-                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="num-dropzone">
+                <span class="upload-icon">🔢</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Apply dynamic page counters to PDF margins</p>
+                </div>
+                <input type="file" class="upload-input" id="num-input" accept=".pdf">
+            </div>
+
+            <div id="num-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
+                    Loaded Filename: <strong id="num-file-name">-</strong>
                 </div>
 
-                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-
-                    <div class="options-grid" id="pdf-options-block">
-                        <div class="form-group" id="pdf-opt-rotate">
-                            <label for="pdf-rotate-angle">Rotate Degree</label>
-                            <select id="pdf-rotate-angle" class="input-control">
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="num-start">Start Counter At</label>
+                        <input type="number" id="num-start" class="input-control" value="1" min="1">
                     </div>
 
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
+                    <div class="form-group">
+                        <label for="num-pos">Counter Position</label>
+                        <select id="num-pos" class="input-control">
+                            <option value="bottom-center" selected>Bottom Center</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="bottom-right">Bottom Right</option>
+                            <option value="top-center">Top Center</option>
+                            <option value="top-right">Top Right</option>
+                        </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="num-size">Font Size</label>
+                        <select id="num-size" class="input-control">
+                            <option value="10">10 pt</option>
+                            <option value="12" selected>12 pt</option>
+                            <option value="14">14 pt</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="num-color">Counter Color</label>
+                        <input type="color" id="num-color" class="input-control" value="#000000" style="height:45px; padding:2px;">
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="num-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="num-btn-action">Number Pages & Download</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

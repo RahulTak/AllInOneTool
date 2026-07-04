@@ -1,105 +1,134 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('crop-dropzone');
+    const input = document.getElementById('crop-input');
+    const workspace = document.getElementById('crop-workspace');
+    const fileName = document.getElementById('crop-file-name');
+    const canvas = document.getElementById('crop-preview-canvas');
+    const wrapper = document.getElementById('crop-canvas-wrapper');
+    const overlay = document.getElementById('crop-overlay-box');
+    const scopeSelect = document.getElementById('crop-scope');
+    const reset = document.getElementById('crop-btn-reset');
+    const action = document.getElementById('crop-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
+    let naturalWidth = 0;
+    let naturalHeight = 0;
 
-    if (!fileInput) return;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let startLeft = 0, startTop = 0;
 
-    fileInput.addEventListener('change', handleFiles);
+    const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        pdfBytes = null;
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
+    // Simple Drag overlay
+    overlay.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('mouseup', stopDrag);
 
-        try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
+    function startDrag(e) {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseFloat(overlay.style.left) || 15;
+        startTop = parseFloat(overlay.style.top) || 15;
+    }
 
-            let pdfDoc = await PDFLib.PDFDocument.create();
+    function drag(e) {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
 
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
+        const containerRect = wrapper.getBoundingClientRect();
+        
+        let leftPercent = startLeft + (dx / containerRect.width) * 100;
+        let topPercent = startTop + (dy / containerRect.height) * 100;
 
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
-                }
-            }
+        leftPercent = Math.max(0, Math.min(leftPercent, 100 - parseFloat(overlay.style.width)));
+        topPercent = Math.max(0, Math.min(topPercent, 100 - parseFloat(overlay.style.height)));
 
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
-        }
-    });
+        overlay.style.left = leftPercent.toFixed(1) + '%';
+        overlay.style.top = topPercent.toFixed(1) + '%';
+    }
 
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
+    function stopDrag() {
+        isDragging = false;
+    }
 
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        
+        const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+        const pdf = await loadingTask.promise;
+        
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 0.6 });
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-        uploadZone.style.display = 'none';
+        naturalWidth = viewport.width;
+        naturalHeight = viewport.height;
+
+        dropzone.style.display = 'none';
         workspace.style.display = 'flex';
     }
+
+    action.addEventListener('click', async () => {
+        if (!pdfBytes) return;
+        try {
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            const pages = doc.getPages();
+
+            const leftPct = parseFloat(overlay.style.left) / 100;
+            const topPct = parseFloat(overlay.style.top) / 100;
+            const widthPct = parseFloat(overlay.style.width) / 100;
+            const heightPct = parseFloat(overlay.style.height) / 100;
+
+            const scope = scopeSelect.value;
+            const limit = scope === 'current' ? 1 : pages.length;
+
+            for (let i = 0; i < limit; i++) {
+                const page = pages[i];
+                const { width, height } = page.getSize();
+
+                // Compute cropbox bounds
+                const x = width * leftPct;
+                const y = height * (1 - topPct - heightPct); // PDF coordinates (bottom-left = 0,0)
+                const w = width * widthPct;
+                const h = height * heightPct;
+
+                page.setCropBox(x, y, w, h);
+            }
+
+            const croppedBytes = await doc.save();
+            const blob = new Blob([croppedBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cropped_document.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to crop PDF document.');
+        }
+    });
 }

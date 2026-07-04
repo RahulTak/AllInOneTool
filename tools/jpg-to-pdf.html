@@ -28,53 +28,54 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="jpg-upload-zone">
-                    <span class="upload-icon">🖼️</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop Images here</h4>
-                        <p>Supports multiple JPG, PNG files</p>
-                    </div>
-                    <input type="file" class="upload-input" id="jpg-file-input" multiple accept="image/jpeg,image/png">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="jpg-dropzone">
+                <span class="upload-icon">🖼️</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop Images here</h4>
+                    <p>Compile multiple images into a clean single PDF</p>
+                </div>
+                <input type="file" class="upload-input" id="jpg-input" accept="image/jpeg,image/png,image/jpg" multiple>
+            </div>
+
+            <div id="jpg-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Images Sequence (Drag or use arrows to sort)</h5>
+                    <div id="jpg-list" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
                 </div>
 
-                <div id="jpg-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="image-list-container" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-
-                    <div class="options-grid">
-                        <div class="form-group">
-                            <label for="page-size">Page Size</label>
-                            <select id="page-size" class="input-control">
-                                <option value="A4">A4 (Standard)</option>
-                                <option value="Letter">US Letter</option>
-                                <option value="Legal">US Legal</option>
-                                <option value="Auto">Auto (Fit Image size)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="page-orientation">Orientation</label>
-                            <select id="page-orientation" class="input-control">
-                                <option value="portrait">Portrait</option>
-                                <option value="landscape">Landscape</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="page-margins">Margins</label>
-                            <select id="page-margins" class="input-control">
-                                <option value="0">None (0px)</option>
-                                <option value="20" selected>Small (20px)</option>
-                                <option value="40">Medium (40px)</option>
-                            </select>
-                        </div>
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="jpg-pdf-size">Page Size</label>
+                        <select id="jpg-pdf-size" class="input-control">
+                            <option value="A4">A4 (595 x 842 pt)</option>
+                            <option value="LETTER">Letter (612 x 792 pt)</option>
+                        </select>
                     </div>
-
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-jpg">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Compile Images to PDF</button>
+                    <div class="form-group">
+                        <label for="jpg-pdf-orient">Orientation</label>
+                        <select id="jpg-pdf-orient" class="input-control">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
                     </div>
+                    <div class="form-group">
+                        <label for="jpg-pdf-margin">Margins</label>
+                        <select id="jpg-pdf-margin" class="input-control">
+                            <option value="none">No Margin</option>
+                            <option value="small">Small Margin (20pt)</option>
+                            <option value="large">Large Margin (40pt)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="jpg-btn-reset">Reset / Clear</button>
+                    <button class="btn btn-primary" id="jpg-btn-action">Convert Images to PDF</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

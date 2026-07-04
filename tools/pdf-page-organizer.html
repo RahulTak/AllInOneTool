@@ -28,37 +28,33 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="pdf-upload-zone">
-                    <span class="upload-icon">📄</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop PDF files here</h4>
-                        <p>Processes completely inside your browser memory</p>
-                    </div>
-                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="po-dropzone">
+                <span class="upload-icon">🗂️</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Reorder, rotate, or delete individual pages visually</p>
+                </div>
+                <input type="file" class="upload-input" id="po-input" accept=".pdf">
+            </div>
+
+            <div id="po-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                    Name: <strong id="po-file-name">-</strong>
                 </div>
 
-                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Organize Pages (Drag & Drop or use arrows to rearrange)</h5>
+                    <div id="po-thumbnails-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:1rem; max-height:350px; overflow-y:auto; padding:0.5rem; background:#ffffff; border:1px solid var(--border-color); border-radius:var(--radius-xs);"></div>
+                </div>
 
-                    <div class="options-grid" id="pdf-options-block">
-                        <div class="form-group" id="pdf-opt-rotate">
-                            <label for="pdf-rotate-angle">Rotate Degree</label>
-                            <select id="pdf-rotate-angle" class="input-control">
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
-                    </div>
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="po-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="po-btn-action">Compile & Download Organized PDF</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

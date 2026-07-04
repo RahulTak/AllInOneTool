@@ -28,37 +28,84 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="pdf-upload-zone">
-                    <span class="upload-icon">📄</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop PDF files here</h4>
-                        <p>Processes completely inside your browser memory</p>
-                    </div>
-                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="wm-dropzone">
+                <span class="upload-icon">🖋️</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Apply customizable text or image watermark stamps</p>
+                </div>
+                <input type="file" class="upload-input" id="wm-input" accept=".pdf">
+            </div>
+
+            <div id="wm-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; text-align:center;">
+                    Loaded Filename: <strong id="wm-file-name">-</strong>
                 </div>
 
-                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-
-                    <div class="options-grid" id="pdf-options-block">
-                        <div class="form-group" id="pdf-opt-rotate">
-                            <label for="pdf-rotate-angle">Rotate Degree</label>
-                            <select id="pdf-rotate-angle" class="input-control">
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="wm-type">Watermark Type</label>
+                        <select id="wm-type" class="input-control">
+                            <option value="text">Text Watermark</option>
+                            <option value="image">Image Watermark</option>
+                        </select>
                     </div>
 
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
+                    <div class="form-group" id="wm-text-block">
+                        <label for="wm-text">Watermark Text</label>
+                        <input type="text" id="wm-text" class="input-control" value="COPYRIGHT BRAND">
                     </div>
+
+                    <div class="form-group" id="wm-image-block" style="display:none;">
+                        <label for="wm-image">Upload Watermark Image</label>
+                        <input type="file" id="wm-image" class="input-control" accept="image/*">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wm-pos">Stamp Position</label>
+                        <select id="wm-pos" class="input-control">
+                            <option value="center" selected>Center</option>
+                            <option value="top-left">Top Left</option>
+                            <option value="top-right">Top Right</option>
+                            <option value="bottom-left">Bottom Left</option>
+                            <option value="bottom-right">Bottom Right</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wm-opacity">Opacity</label>
+                        <select id="wm-opacity" class="input-control">
+                            <option value="0.2">Low (20%)</option>
+                            <option value="0.4" selected>Medium (40%)</option>
+                            <option value="0.7">High (70%)</option>
+                            <option value="1.0">Solid (100%)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="wm-rotate">Rotation (Degrees)</label>
+                        <select id="wm-rotate" class="input-control">
+                            <option value="0" selected>0° (Horizontal)</option>
+                            <option value="45">45° Diagonal</option>
+                            <option value="90">90° Vertical</option>
+                            <option value="-45">-45° Diagonal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="wm-color-block">
+                        <label for="wm-color">Text Color</label>
+                        <input type="color" id="wm-color" class="input-control" value="#ff0000" style="height:45px; padding:2px;">
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="wm-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="wm-btn-action">Stamp & Download PDF</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

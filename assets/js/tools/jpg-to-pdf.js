@@ -1,182 +1,175 @@
 export function init() {
-    const uploadZone = document.getElementById('jpg-upload-zone');
-    const fileInput = document.getElementById('jpg-file-input');
+    const dropzone = document.getElementById('jpg-dropzone');
+    const input = document.getElementById('jpg-input');
     const workspace = document.getElementById('jpg-workspace');
-    const listContainer = document.getElementById('image-list-container');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-jpg');
-    const pageSizeSelect = document.getElementById('page-size');
-    const orientationSelect = document.getElementById('page-orientation');
-    const marginSelect = document.getElementById('page-margins');
+    const list = document.getElementById('jpg-list');
+    const pageSizeSelect = document.getElementById('jpg-pdf-size');
+    const pageOrientSelect = document.getElementById('jpg-pdf-orient');
+    const pageMarginSelect = document.getElementById('jpg-pdf-margin');
+    const reset = document.getElementById('jpg-btn-reset');
+    const action = document.getElementById('jpg-btn-action');
 
-    let uploadedFiles = [];
+    if (!input) return;
+    let imageFiles = []; // { file, dataUrl }
 
-    if (!fileInput) return;
-
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) process(Array.from(e.target.files));
     });
 
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            handleFiles({ target: { files } });
-        }
-    });
-
-    resetBtn.addEventListener('click', resetWorkspace);
-
-    function resetWorkspace() {
-        uploadedFiles = [];
-        fileInput.value = '';
-        listContainer.innerHTML = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        imageFiles = [];
+        list.innerHTML = '';
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
-    }
+        dropzone.style.display = 'flex';
+    });
 
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
+    function process(files) {
         files.forEach(file => {
-            if (file.type.startsWith('image/')) {
-                uploadedFiles.push({
-                    file,
-                    rotation: 0
-                });
-            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                imageFiles.push({ file, dataUrl: event.target.result });
+                renderList();
+            };
+            reader.readAsDataURL(file);
         });
-
-        renderList();
-        uploadZone.style.display = 'none';
+        dropzone.style.display = 'none';
         workspace.style.display = 'flex';
     }
 
     function renderList() {
-        listContainer.innerHTML = '';
-        uploadedFiles.forEach((item, index) => {
-            const row = document.createElement('div');
-            row.style.display = 'flex';
-            row.style.alignItems = 'center';
-            row.style.justifyContent = 'space-between';
-            row.style.padding = '0.75rem 1rem';
-            row.style.border = '1px solid var(--border-color)';
-            row.style.borderRadius = 'var(--radius-sm)';
-            row.style.background = 'var(--bg-primary)';
-            
-            row.innerHTML = '<div style="display:flex; align-items:center; gap:1rem;">' +
-                '<span style="font-weight:700; color:var(--text-tertiary);">' + (index+1) + '</span>' +
-                '<span style="font-weight:500; font-size:0.9rem;">' + item.file.name + '</span>' +
-                '<span style="font-size:0.75rem; color:var(--text-tertiary);">(' + Math.round(item.file.size/1024) + ' KB)</span>' +
-                '<button class="btn btn-secondary btn-icon rotate-btn" style="padding:0.25rem; font-size:0.8rem;" data-idx="' + index + '">Rotate 🔄 (' + item.rotation + '°)</button>' +
-                '</div>' +
-                '<div style="display:flex; gap:0.25rem;">' +
-                '<button class="btn btn-secondary btn-icon move-up" data-idx="' + index + '">▲</button>' +
-                '<button class="btn btn-secondary btn-icon move-down" data-idx="' + index + '">▼</button>' +
-                '<button class="btn btn-secondary btn-icon delete-btn" data-idx="' + index + '" style="color:var(--error-color);">×</button>' +
-                '</div>';
-            listContainer.appendChild(row);
-        });
+        list.innerHTML = '';
+        imageFiles.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.style.display = 'flex';
+            card.style.alignItems = 'center';
+            card.style.gap = '1rem';
+            card.style.padding = '0.5rem';
+            card.style.border = '1px solid var(--border-color)';
+            card.style.borderRadius = 'var(--radius-sm)';
+            card.style.background = 'var(--bg-secondary)';
+            card.setAttribute('draggable', 'true');
 
-        listContainer.querySelectorAll('.move-up').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                if (idx > 0) {
-                    const temp = uploadedFiles[idx];
-                    uploadedFiles[idx] = uploadedFiles[idx-1];
-                    uploadedFiles[idx-1] = temp;
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', idx);
+            });
+            card.addEventListener('dragover', (e) => { e.preventDefault(); });
+            card.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                if (fromIdx !== idx) {
+                    const temp = imageFiles[fromIdx];
+                    imageFiles.splice(fromIdx, 1);
+                    imageFiles.splice(idx, 0, temp);
                     renderList();
                 }
             });
-        });
 
-        listContainer.querySelectorAll('.move-down').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                if (idx < uploadedFiles.length - 1) {
-                    const temp = uploadedFiles[idx];
-                    uploadedFiles[idx] = uploadedFiles[idx+1];
-                    uploadedFiles[idx+1] = temp;
-                    renderList();
-                }
-            });
-        });
+            const img = document.createElement('img');
+            img.src = item.dataUrl;
+            img.style.width = '50px';
+            img.style.height = '50px';
+            img.style.objectFit = 'contain';
+            img.style.border = '1px solid var(--border-color)';
+            img.style.borderRadius = 'var(--radius-xs)';
 
-        listContainer.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                uploadedFiles.splice(idx, 1);
-                if (uploadedFiles.length === 0) {
-                    resetWorkspace();
+            const title = document.createElement('span');
+            title.textContent = item.file.name;
+            title.style.fontSize = '0.85rem';
+            title.style.flexGrow = '1';
+
+            const controls = document.createElement('div');
+            controls.style.display = 'flex';
+            controls.style.gap = '0.25rem';
+
+            const btnUp = document.createElement('button');
+            btnUp.className = 'btn';
+            btnUp.style.padding = '2px 8px';
+            btnUp.style.fontSize = '0.75rem';
+            btnUp.textContent = '▲';
+            btnUp.disabled = idx === 0;
+            btnUp.onclick = () => {
+                const temp = imageFiles[idx];
+                imageFiles[idx] = imageFiles[idx - 1];
+                imageFiles[idx - 1] = temp;
+                renderList();
+            };
+
+            const btnDown = document.createElement('button');
+            btnDown.className = 'btn';
+            btnDown.style.padding = '2px 8px';
+            btnDown.style.fontSize = '0.75rem';
+            btnDown.textContent = '▼';
+            btnDown.disabled = idx === imageFiles.length - 1;
+            btnDown.onclick = () => {
+                const temp = imageFiles[idx];
+                imageFiles[idx] = imageFiles[idx + 1];
+                imageFiles[idx + 1] = temp;
+                renderList();
+            };
+
+            const btnDel = document.createElement('button');
+            btnDel.className = 'btn';
+            btnDel.style.padding = '2px 8px';
+            btnDel.style.fontSize = '0.75rem';
+            btnDel.style.backgroundColor = 'var(--error-color)';
+            btnDel.style.color = '#ffffff';
+            btnDel.textContent = '✕';
+            btnDel.onclick = () => {
+                imageFiles.splice(idx, 1);
+                if (imageFiles.length === 0) {
+                    reset.click();
                 } else {
                     renderList();
                 }
-            });
-        });
+            };
 
-        listContainer.querySelectorAll('.rotate-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.getAttribute('data-idx'));
-                uploadedFiles[idx].rotation = (uploadedFiles[idx].rotation + 90) % 360;
-                renderList();
-            });
+            controls.appendChild(btnUp);
+            controls.appendChild(btnDown);
+            controls.appendChild(btnDel);
+
+            row = card;
+            row.appendChild(img);
+            row.appendChild(title);
+            row.appendChild(controls);
+            list.appendChild(row);
         });
     }
 
-    processBtn.addEventListener('click', async () => {
-        if (uploadedFiles.length === 0) return;
-
+    action.addEventListener('click', async () => {
+        if (imageFiles.length === 0) return;
         try {
             const pdfDoc = await PDFLib.PDFDocument.create();
+            const isPortrait = pageOrientSelect.value === 'portrait';
+            const pageW = pageSizeSelect.value === 'A4' ? 595 : 612;
+            const pageH = pageSizeSelect.value === 'A4' ? 842 : 792;
 
-            const pSize = pageSizeSelect.value;
-            const pOrient = orientationSelect.value;
-            const pMargin = parseInt(marginSelect.value) || 0;
+            const docWidth = isPortrait ? pageW : pageH;
+            const docHeight = isPortrait ? pageH : pageW;
 
-            for (let item of uploadedFiles) {
-                const imgBytes = await item.file.arrayBuffer();
-                let img = null;
-                if (item.file.type === 'image/png') {
-                    img = await pdfDoc.embedPng(imgBytes);
+            let margin = 0;
+            if (pageMarginSelect.value === 'small') margin = 20;
+            else if (pageMarginSelect.value === 'large') margin = 40;
+
+            for (const item of imageFiles) {
+                const page = pdfDoc.addPage([docWidth, docHeight]);
+                const arrayBuffer = await item.file.arrayBuffer();
+                
+                let imgRef;
+                if (item.file.name.toLowerCase().endsWith('.png')) {
+                    imgRef = await pdfDoc.embedPng(arrayBuffer);
                 } else {
-                    img = await pdfDoc.embedJpg(imgBytes);
+                    imgRef = await pdfDoc.embedJpg(arrayBuffer);
                 }
 
-                let pageW = 595.28, pageH = 841.89;
-                if (pSize === 'Letter') { pageW = 612; pageH = 792; }
-                else if (pSize === 'Legal') { pageW = 612; pageH = 1008; }
-                else if (pSize === 'Auto') { pageW = img.width + pMargin * 2; pageH = img.height + pMargin * 2; }
+                const fitWidth = docWidth - (margin * 2);
+                const fitHeight = docHeight - (margin * 2);
 
-                if (pOrient === 'landscape' && pSize !== 'Auto') {
-                    const t = pageW; pageW = pageH; pageH = t;
-                }
-
-                const page = pdfDoc.addPage([pageW, pageH]);
-                const printableW = pageW - pMargin * 2;
-                const printableH = pageH - pMargin * 2;
-
-                let imgW = img.width, imgH = img.height;
-                const scale = Math.min(printableW / imgW, printableH / imgH);
-                imgW = imgW * scale;
-                imgH = imgH * scale;
-
-                const drawX = pMargin + (printableW - imgW) / 2;
-                const drawY = pMargin + (printableH - imgH) / 2;
-
-                page.drawImage(img, {
-                    x: drawX,
-                    y: drawY,
-                    width: imgW,
-                    height: imgH
+                page.drawImage(imgRef, {
+                    x: margin,
+                    y: margin,
+                    width: fitWidth,
+                    height: fitHeight
                 });
             }
 
@@ -188,8 +181,8 @@ export function init() {
             a.download = 'images_converted.pdf';
             a.click();
             URL.revokeObjectURL(url);
-        } catch (e) {
-            alert('Failed to generate PDF: ' + e.message);
+        } catch (err) {
+            alert('Failed to generate PDF: ' + err.message);
         }
     });
 }

@@ -1,105 +1,130 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('dp-dropzone');
+    const input = document.getElementById('dp-input');
+    const workspace = document.getElementById('dp-workspace');
+    const fileName = document.getElementById('dp-file-name');
+    const grid = document.getElementById('dp-thumbnails-grid');
+    const reset = document.getElementById('dp-btn-reset');
+    const action = document.getElementById('dp-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
+    let pagesCount = 0;
 
-    if (!fileInput) return;
+    const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        pdfBytes = null;
+        grid.innerHTML = '';
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        
+        const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+        const pdf = await loadingTask.promise;
+        pagesCount = pdf.numPages;
 
-        try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
+        grid.innerHTML = '';
+        for (let i = 1; i <= pagesCount; i++) {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 0.2 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-            let pdfDoc = await PDFLib.PDFDocument.create();
+            const cell = document.createElement('div');
+            cell.style.textAlign = 'center';
+            cell.style.border = '1px solid var(--border-color)';
+            cell.style.borderRadius = 'var(--radius-xs)';
+            cell.style.padding = '0.5rem';
+            cell.style.background = 'var(--bg-secondary)';
 
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL();
+            img.style.maxWidth = '100%';
+            img.style.height = '65px';
+            img.style.objectFit = 'contain';
+            img.style.display = 'block';
+            img.style.margin = '0 auto 0.5rem';
 
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
-                }
-            }
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = i - 1; // 0-indexed page reference
+            checkbox.id = 'page-check-' + i;
 
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
+            const label = document.createElement('label');
+            label.htmlFor = 'page-check-' + i;
+            label.textContent = ' Page ' + i;
+            label.style.fontSize = '0.75rem';
+            label.style.cursor = 'pointer';
+
+            cell.appendChild(img);
+            cell.appendChild(checkbox);
+            cell.appendChild(label);
+            grid.appendChild(cell);
         }
-    });
 
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
-
-        uploadZone.style.display = 'none';
+        dropzone.style.display = 'none';
         workspace.style.display = 'flex';
     }
+
+    action.addEventListener('click', async () => {
+        if (!pdfBytes) return;
+        const deleteIndices = [];
+        grid.querySelectorAll('input[type="checkbox"]').forEach(box => {
+            if (box.checked) {
+                deleteIndices.push(parseInt(box.value));
+            }
+        });
+
+        if (deleteIndices.length === 0) {
+            alert('Please check at least one page to delete.');
+            return;
+        }
+
+        if (deleteIndices.length === pagesCount) {
+            alert('Cannot delete all pages. At least one page must remain.');
+            return;
+        }
+
+        const keepIndices = [];
+        for (let i = 0; i < pagesCount; i++) {
+            if (!deleteIndices.includes(i)) {
+                keepIndices.push(i);
+            }
+        }
+
+        try {
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            const prunedDoc = await PDFLib.PDFDocument.create();
+            const copiedPages = await prunedDoc.copyPages(doc, keepIndices);
+            copiedPages.forEach(p => prunedDoc.addPage(p));
+
+            const outBytes = await prunedDoc.save();
+            const blob = new Blob([outBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pages_deleted.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to delete pages: ' + err.message);
+        }
+    });
 }

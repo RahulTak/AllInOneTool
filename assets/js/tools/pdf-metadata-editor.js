@@ -1,105 +1,75 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('meta-dropzone');
+    const input = document.getElementById('meta-input');
+    const workspace = document.getElementById('meta-workspace');
+    const fileName = document.getElementById('meta-file-name');
+    const titleInput = document.getElementById('meta-title');
+    const authorInput = document.getElementById('meta-author');
+    const subjectInput = document.getElementById('meta-subject');
+    const keywordsInput = document.getElementById('meta-keywords');
+    const creatorInput = document.getElementById('meta-creator');
+    const producerInput = document.getElementById('meta-producer');
+    const reset = document.getElementById('meta-btn-reset');
+    const action = document.getElementById('meta-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
 
-    if (!fileInput) return;
-
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        pdfBytes = null;
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
-
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        
         try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            titleInput.value = doc.getTitle() || '';
+            authorInput.value = doc.getAuthor() || '';
+            subjectInput.value = doc.getSubject() || '';
+            keywordsInput.value = (doc.getKeywords() || '').split(';').join(', ');
+            creatorInput.value = doc.getCreator() || 'AllInOneTool';
+            producerInput.value = doc.getProducer() || 'pdf-lib (v1.17.1)';
 
-            let pdfDoc = await PDFLib.PDFDocument.create();
+            dropzone.style.display = 'none';
+            workspace.style.display = 'flex';
+        } catch (err) {
+            alert('Failed to load PDF metadata.');
+        }
+    }
 
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
+    action.addEventListener('click', async () => {
+        if (!pdfBytes) return;
+        try {
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            doc.setTitle(titleInput.value);
+            doc.setAuthor(authorInput.value);
+            doc.setSubject(subjectInput.value);
+            
+            const kwArray = keywordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            doc.setKeywords(kwArray);
 
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
-                }
-            }
-
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
+            const savedBytes = await doc.save();
+            const blob = new Blob([savedBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'updated_metadata.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to save metadata.');
         }
     });
-
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
-
-        uploadZone.style.display = 'none';
-        workspace.style.display = 'flex';
-    }
 }

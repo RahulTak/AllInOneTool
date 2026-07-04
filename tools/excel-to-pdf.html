@@ -21,6 +21,10 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+                
+                    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+                    
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -28,24 +32,38 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+        <div class="tool-workspace">
+            <div class="upload-zone" id="xls-dropzone">
+                <span class="upload-icon">📊</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop Excel here</h4>
+                    <p>Supports XLS, XLSX workbooks</p>
+                </div>
+                <input type="file" class="upload-input" id="xls-input" accept=".xls,.xlsx">
+            </div>
+
+            <div id="xls-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                    Workbook Name: <strong id="xls-file-name">-</strong>
                 </div>
 
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="xls-sheet-select">Select Sheet Name</label>
+                    <select id="xls-sheet-select" class="input-control"></select>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; overflow-x:auto;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Sheet Table Grid Preview</h5>
+                    <div id="xls-grid-preview" style="background:#ffffff; border:1px solid var(--border-color); padding:1rem; border-radius:var(--radius-xs); min-height:150px; font-size:0.8rem;"></div>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <button class="btn btn-secondary" id="xls-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="xls-btn-action">Generate PDF from Sheet</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

@@ -28,37 +28,33 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="pdf-upload-zone">
-                    <span class="upload-icon">📄</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop PDF files here</h4>
-                        <p>Processes completely inside your browser memory</p>
-                    </div>
-                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="dp-dropzone">
+                <span class="upload-icon">🗑️</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Select unwanted pages to delete from document layout</p>
+                </div>
+                <input type="file" class="upload-input" id="dp-input" accept=".pdf">
+            </div>
+
+            <div id="dp-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem;">
+                    Name: <strong id="dp-file-name">-</strong>
                 </div>
 
-                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h5 style="margin-bottom:0.75rem; font-weight:600;">Check Pages to Delete</h5>
+                    <div id="dp-thumbnails-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(100px, 1fr)); gap:1rem; max-height:280px; overflow-y:auto; padding:0.5rem; background:#ffffff; border:1px solid var(--border-color); border-radius:var(--radius-xs);"></div>
+                </div>
 
-                    <div class="options-grid" id="pdf-options-block">
-                        <div class="form-group" id="pdf-opt-rotate">
-                            <label for="pdf-rotate-angle">Rotate Degree</label>
-                            <select id="pdf-rotate-angle" class="input-control">
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
-                    </div>
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="dp-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="dp-btn-action" style="background-color:var(--error-color); border-color:var(--error-color); color:#ffffff;">Delete Selected Pages</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

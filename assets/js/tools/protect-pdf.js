@@ -1,105 +1,70 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('protect-dropzone');
+    const input = document.getElementById('protect-input');
+    const workspace = document.getElementById('protect-workspace');
+    const fileName = document.getElementById('protect-file-name');
+    const passInput = document.getElementById('protect-pass');
+    const passConfirm = document.getElementById('protect-pass-confirm');
+    const reset = document.getElementById('protect-btn-reset');
+    const action = document.getElementById('protect-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
 
-    if (!fileInput) return;
-
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        passInput.value = '';
+        passConfirm.value = '';
+        pdfBytes = null;
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
-
-        try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
-
-            let pdfDoc = await PDFLib.PDFDocument.create();
-
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
-
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
-                }
-            }
-
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
-        }
-    });
-
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
-
-        uploadZone.style.display = 'none';
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        dropzone.style.display = 'none';
         workspace.style.display = 'flex';
     }
+
+    action.addEventListener('click', async () => {
+        if (!pdfBytes) return;
+        const pass = passInput.value;
+        const confirm = passConfirm.value;
+
+        if (!pass) {
+            alert('Please enter a password.');
+            return;
+        }
+        if (pass !== confirm) {
+            alert('Passwords do not match. Please verify.');
+            return;
+        }
+
+        try {
+            if (typeof exports === 'undefined' || !exports.encryptPDF) {
+                alert('Encryption libraries are still loading. Please try again.');
+                return;
+            }
+            
+            // Call exports.encryptPDF from our loaded CDN bundle
+            const encrypted = await exports.encryptPDF(pdfBytes, pass);
+            const blob = new Blob([encrypted], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'protected_document.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to encrypt PDF: ' + err.message);
+        }
+    });
 }

@@ -21,6 +21,10 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
             
+                <script>window.exports = window.exports || {};</script>
+                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-encrypt-lite@1.0.2/dist/index.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/@pdfsmaller/pdf-decrypt@1.0.1/dist/index.js"></script>
+                
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -28,37 +32,39 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="pdf-upload-zone">
-                    <span class="upload-icon">📄</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop PDF files here</h4>
-                        <p>Processes completely inside your browser memory</p>
-                    </div>
-                    <input type="file" class="upload-input" id="pdf-file-input" multiple accept=".pdf">
+        <div class="tool-workspace">
+            <div class="upload-zone" id="protect-dropzone">
+                <span class="upload-icon">🔒</span>
+                <div class="upload-text">
+                    <h4>Click or Drag & Drop PDF here</h4>
+                    <p>Apply strong owner/user passwords client-side</p>
+                </div>
+                <input type="file" class="upload-input" id="protect-input" accept=".pdf">
+            </div>
+
+            <div id="protect-workspace" style="display:none; flex-direction:column; gap:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    Filename: <strong id="protect-file-name">-</strong>
                 </div>
 
-                <div id="pdf-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div id="pdf-file-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
-
-                    <div class="options-grid" id="pdf-options-block">
-                        <div class="form-group" id="pdf-opt-rotate">
-                            <label for="pdf-rotate-angle">Rotate Degree</label>
-                            <select id="pdf-rotate-angle" class="input-control">
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
+                <div class="options-grid">
+                    <div class="form-group">
+                        <label for="protect-pass">Enter Password</label>
+                        <input type="password" id="protect-pass" class="input-control" placeholder="••••••••">
                     </div>
-
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-pdf">Reset</button>
-                        <button class="btn btn-primary" id="process-pdf-btn">Process and Download</button>
+                    <div class="form-group">
+                        <label for="protect-pass-confirm">Confirm Password</label>
+                        <input type="password" id="protect-pass-confirm" class="input-control" placeholder="••••••••">
                     </div>
+                </div>
+
+                <div class="action-row">
+                    <button class="btn btn-secondary" id="protect-btn-reset">Reset</button>
+                    <button class="btn btn-primary" id="protect-btn-action">Encrypt & Download PDF</button>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

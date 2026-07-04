@@ -1,105 +1,83 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('num-dropzone');
+    const input = document.getElementById('num-input');
+    const workspace = document.getElementById('num-workspace');
+    const fileName = document.getElementById('num-file-name');
+    const startInput = document.getElementById('num-start');
+    const posSelect = document.getElementById('num-pos');
+    const sizeSelect = document.getElementById('num-size');
+    const colorInput = document.getElementById('num-color');
+    const reset = document.getElementById('num-btn-reset');
+    const action = document.getElementById('num-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
 
-    if (!fileInput) return;
-
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        pdfBytes = null;
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
-
-        try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
-
-            let pdfDoc = await PDFLib.PDFDocument.create();
-
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
-
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
-                }
-            }
-
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
-        }
-    });
-
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
-
-        uploadZone.style.display = 'none';
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        dropzone.style.display = 'none';
         workspace.style.display = 'flex';
     }
+
+    action.addEventListener('click', async () => {
+        if (!pdfBytes) return;
+        try {
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            const pages = doc.getPages();
+            const startNum = parseInt(startInput.value) || 1;
+            const size = parseInt(sizeSelect.value) || 12;
+            const pos = posSelect.value;
+
+            pages.forEach((page, idx) => {
+                const { width, height } = page.getSize();
+                const numText = String(startNum + idx);
+
+                let x = width / 2;
+                let y = 30;
+
+                if (pos === 'bottom-left') { x = 40; }
+                else if (pos === 'bottom-right') { x = width - 60; }
+                else if (pos === 'top-center') { y = height - 40; }
+                else if (pos === 'top-right') { x = width - 60; y = height - 40; }
+
+                const hexColor = colorInput.value;
+                const r = parseInt(hexColor.slice(1,3), 16) / 255;
+                const g = parseInt(hexColor.slice(3,5), 16) / 255;
+                const b = parseInt(hexColor.slice(5,7), 16) / 255;
+
+                page.drawText(numText, {
+                    x,
+                    y,
+                    size,
+                    color: PDFLib.rgb(r, g, b)
+                });
+            });
+
+            const numbered = await doc.save();
+            const blob = new Blob([numbered], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'numbered_document.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to stamp page numbers onto PDF.');
+        }
+    });
 }

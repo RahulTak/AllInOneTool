@@ -1,25 +1,27 @@
 export function init() {
-    const input = document.getElementById('text-input');
-    const output = document.getElementById('text-output');
-    const processBtn = document.getElementById('process-text');
-    const clearBtn = document.getElementById('clear-text');
-    const copyBtn = document.getElementById('copy-text');
+    const dropzone = document.getElementById('pdfword-dropzone');
+    const input = document.getElementById('pdfword-input');
+    const workspace = document.getElementById('pdfword-workspace');
+    const fileName = document.getElementById('pdfword-file-name');
+    const fileSize = document.getElementById('pdfword-file-size');
+    const reset = document.getElementById('pdfword-btn-reset');
 
-    if (!processBtn) return;
+    if (!input) return;
 
-    processBtn.addEventListener('click', () => {
-        const text = input.value;
-        output.textContent = text.toUpperCase();
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) process(e.target.files[0]);
     });
 
-    clearBtn.addEventListener('click', () => {
+    reset.addEventListener('click', () => {
         input.value = '';
-        output.textContent = '';
+        workspace.style.display = 'none';
+        dropzone.style.display = 'flex';
     });
 
-    copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(output.textContent || '').then(() => {
-            alert('Copied!');
-        });
-    });
+    function process(file) {
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+        dropzone.style.display = 'none';
+        workspace.style.display = 'flex';
+    }
 }

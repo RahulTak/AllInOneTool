@@ -1,105 +1,175 @@
 export function init() {
-    const uploadZone = document.getElementById('pdf-upload-zone');
-    const fileInput = document.getElementById('pdf-file-input');
-    const workspace = document.getElementById('pdf-workspace');
-    const fileList = document.getElementById('pdf-file-list');
-    const processBtn = document.getElementById('process-pdf-btn');
-    const resetBtn = document.getElementById('reset-pdf');
-    const rotateAngle = document.getElementById('pdf-rotate-angle');
+    const dropzone = document.getElementById('po-dropzone');
+    const input = document.getElementById('po-input');
+    const workspace = document.getElementById('po-workspace');
+    const fileName = document.getElementById('po-file-name');
+    const list = document.getElementById('po-thumbnails-list');
+    const reset = document.getElementById('po-btn-reset');
+    const action = document.getElementById('po-btn-action');
 
-    let selectedFiles = [];
-    const path = window.location.pathname;
+    if (!input) return;
+    let pdfBytes = null;
+    let pagesArr = []; // { originalIdx, currentRot, thumbUrl }
 
-    if (!fileInput) return;
+    const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-    fileInput.addEventListener('change', handleFiles);
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFiles({ target: { files } });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const file = e.target.files[0];
+            fileName.textContent = file.name;
+            process(file);
         }
     });
 
-    resetBtn.addEventListener('click', () => {
-        selectedFiles = [];
-        fileInput.value = '';
+    reset.addEventListener('click', () => {
+        input.value = '';
+        pdfBytes = null;
+        pagesArr = [];
+        list.innerHTML = '';
         workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
+        dropzone.style.display = 'flex';
     });
 
-    processBtn.addEventListener('click', async () => {
-        if (selectedFiles.length === 0) return;
+    async function process(file) {
+        pdfBytes = await file.arrayBuffer();
+        
+        const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+        const pdf = await loadingTask.promise;
+        const total = pdf.numPages;
 
+        pagesArr = [];
+        for (let i = 1; i <= total; i++) {
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 0.25 });
+            const canvas = document.createElement('canvas');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            
+            pagesArr.push({
+                originalIdx: i - 1, // 0-indexed
+                currentRot: 0, // rotation offset: 0, 90, 180, 270
+                thumbUrl: canvas.toDataURL()
+            });
+        }
+
+        dropzone.style.display = 'none';
+        workspace.style.display = 'flex';
+        renderPages();
+    }
+
+    function renderPages() {
+        list.innerHTML = '';
+        pagesArr.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.border = '1px solid var(--border-color)';
+            card.style.borderRadius = 'var(--radius-xs)';
+            card.style.padding = '0.5rem';
+            card.style.background = 'var(--bg-secondary)';
+            card.style.textAlign = 'center';
+            card.setAttribute('draggable', 'true');
+
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', idx);
+            });
+            card.addEventListener('dragover', (e) => { e.preventDefault(); });
+            card.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+                if (fromIdx !== idx) {
+                    const temp = pagesArr[fromIdx];
+                    pagesArr.splice(fromIdx, 1);
+                    pagesArr.splice(idx, 0, temp);
+                    renderPages();
+                }
+            });
+
+            const img = document.createElement('img');
+            img.src = item.thumbUrl;
+            img.style.maxWidth = '100%';
+            img.style.height = '60px';
+            img.style.objectFit = 'contain';
+            img.style.transform = 'rotate(' + item.currentRot + 'deg)';
+            img.style.transition = 'transform 0.2s';
+            img.style.display = 'block';
+            img.style.margin = '0 auto 0.5rem';
+
+            const label = document.createElement('div');
+            label.textContent = 'Page ' + (item.originalIdx + 1);
+            label.style.fontSize = '0.75rem';
+            label.style.fontWeight = '600';
+            label.style.marginBottom = '0.5rem';
+
+            const controls = document.createElement('div');
+            controls.style.display = 'flex';
+            controls.style.justifyContent = 'center';
+            controls.style.gap = '0.2rem';
+
+            const btnRot = document.createElement('button');
+            btnRot.className = 'btn';
+            btnRot.style.padding = '2px 6px';
+            btnRot.style.fontSize = '0.7rem';
+            btnRot.textContent = '⟳';
+            btnRot.onclick = () => {
+                item.currentRot = (item.currentRot + 90) % 360;
+                img.style.transform = 'rotate(' + item.currentRot + 'deg)';
+            };
+
+            const btnDel = document.createElement('button');
+            btnDel.className = 'btn';
+            btnDel.style.padding = '2px 6px';
+            btnDel.style.fontSize = '0.7rem';
+            btnDel.style.backgroundColor = 'var(--error-color)';
+            btnDel.style.color = '#ffffff';
+            btnDel.textContent = '✕';
+            btnDel.onclick = () => {
+                pagesArr.splice(idx, 1);
+                if (pagesArr.length === 0) {
+                    reset.click();
+                } else {
+                    renderPages();
+                }
+            };
+
+            controls.appendChild(btnRot);
+            controls.appendChild(btnDel);
+
+            card.appendChild(img);
+            card.appendChild(label);
+            card.appendChild(controls);
+            list.appendChild(card);
+        });
+    }
+
+    action.addEventListener('click', async () => {
+        if (!pdfBytes || pagesArr.length === 0) return;
         try {
-            if (typeof PDFLib === 'undefined') {
-                alert('Loading PDF engine... Please try again in a second.');
-                return;
-            }
+            const doc = await PDFLib.PDFDocument.load(pdfBytes);
+            const organizedDoc = await PDFLib.PDFDocument.create();
 
-            let pdfDoc = await PDFLib.PDFDocument.create();
-
-            if (path.includes('merge-pdf')) {
-                for (const file of selectedFiles) {
-                    const bytes = await file.arrayBuffer();
-                    const doc = await PDFLib.PDFDocument.load(bytes);
-                    const copiedPages = await pdfDoc.copyPages(doc, doc.getPageIndices());
-                    copiedPages.forEach(p => pdfDoc.addPage(p));
-                }
-            } else {
-                const bytes = await selectedFiles[0].arrayBuffer();
-                pdfDoc = await PDFLib.PDFDocument.load(bytes);
-
-                if (path.includes('rotate-pdf')) {
-                    const deg = parseInt(rotateAngle.value) || 90;
-                    const pages = pdfDoc.getPages();
-                    pages.forEach(page => {
-                        const currRot = page.getRotation().angle;
-                        page.setRotation(PDFLib.degrees(currRot + deg));
-                    });
+            for (const item of pagesArr) {
+                const copiedPages = await organizedDoc.copyPages(doc, [item.originalIdx]);
+                const page = organizedDoc.addPage(copiedPages[0]);
+                if (item.currentRot > 0) {
+                    const rot = page.getRotation().angle;
+                    page.setRotation(PDFLib.degrees(rot + item.currentRot));
                 }
             }
 
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'processed_document.pdf';
-            link.click();
-        } catch (e) {
-            console.error(e);
-            alert('An error occurred during PDF processing: ' + e.message);
+            const outBytes = await organizedDoc.save();
+            const blob = new Blob([outBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'organized_document.pdf';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            alert('Failed to save organized PDF: ' + err.message);
         }
     });
-
-    function handleFiles(e) {
-        const files = Array.from(e.target.files);
-        if (files.length === 0) return;
-
-        selectedFiles = files;
-        fileList.innerHTML = selectedFiles.map((file) => `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background-color: var(--bg-primary);">
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span>📄</span>
-                    <span style="font-weight: 500; font-size: 0.9rem;">${file.name}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-tertiary);">(dots KB)</span>
-                </div>
-            </div>
-        `).join('');
-
-        uploadZone.style.display = 'none';
-        workspace.style.display = 'flex';
-    }
 }
