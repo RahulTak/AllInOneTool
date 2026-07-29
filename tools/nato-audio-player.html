@@ -26,19 +26,32 @@
         
             <div class="tool-workspace">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="audio-input">Input Word / Text to Spell</label>
+                    <textarea id="audio-input" class="input-control" style="min-height:100px;" placeholder="Type text to spell out with NATO audio...">hello</textarea>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label for="audio-voice">Voice Selection</label>
+                        <select id="audio-voice" class="input-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="audio-speed">Playback Speed (<span id="speed-val">1.0</span>x)</label>
+                        <input type="range" id="audio-speed" class="input-control" min="0.5" max="2" step="0.1" value="1.0" style="padding:0.25rem 0; cursor:pointer;">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label>Spelling Sequence Preview</label>
+                    <div id="audio-preview-container" style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; min-height:80px; display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;"></div>
                 </div>
 
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="action-row" style="margin-top:1.5rem;">
+                    <button class="btn btn-primary" id="audio-play">▶ Play Audio</button>
+                    <button class="btn btn-secondary" id="audio-pause" disabled>⏸ Pause</button>
+                    <button class="btn btn-secondary" id="audio-stop" disabled>⏹ Stop</button>
+                    <button class="btn btn-secondary" id="audio-clear">Clear</button>
+                    <button class="btn btn-secondary" id="audio-reset">Reset</button>
                 </div>
             </div>
             

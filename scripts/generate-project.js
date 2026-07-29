@@ -1656,12 +1656,17 @@ function generateProject() {
             <div class="tool-workspace">
                 <div class="form-group">
                     <label for="nato-input">Input Word / Text</label>
-                    <input type="text" id="nato-input" class="input-control" value="hello">
+                    <textarea id="nato-input" class="input-control" style="min-height:100px;" placeholder="Enter text here...">hello</textarea>
+                </div>
+
+                <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; margin-bottom:1rem;">
+                    <input type="checkbox" id="nato-pronounce-nums" style="cursor:pointer;">
+                    <label for="nato-pronounce-nums" style="cursor:pointer; margin:0;">Pronounce numbers (e.g. Wun, Too)</label>
                 </div>
 
                 <div class="form-group">
                     <label>NATO Speller Output</label>
-                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.2rem; min-height: 50px; white-space: pre-wrap; word-break: break-all;" id="nato-output">-</div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.1rem; min-height: 80px; white-space: pre-wrap; word-break: break-all;" id="nato-output">-</div>
                 </div>
 
                 <div class="action-row">
@@ -1674,37 +1679,110 @@ function generateProject() {
             logicJS = `export function init() {
     const input = document.getElementById('nato-input');
     const output = document.getElementById('nato-output');
+    const pronounceCheckbox = document.getElementById('nato-pronounce-nums');
     const clearBtn = document.getElementById('nato-clear');
     const resetBtn = document.getElementById('nato-reset');
     const copyBtn = document.getElementById('nato-copy');
 
     const dict = {
-        'A': 'Alpha', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo', 'F': 'Foxtrot',
+        'A': 'Alfa', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo', 'F': 'Foxtrot',
         'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliett', 'K': 'Kilo', 'L': 'Lima',
         'M': 'Mike', 'N': 'November', 'O': 'Oscar', 'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo',
         'S': 'Sierra', 'T': 'Tango', 'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray',
-        'Y': 'Yankee', 'Z': 'Zulu', 
-        '0': 'Zero', '1': 'Wun', '2': 'Too', '3': 'Tree', '4': 'Fower', 
+        'Y': 'Yankee', 'Z': 'Zulu'
+    };
+    const numDict = {
+        '0': 'Zero', '1': 'Wun', '2': 'Too', '3': 'Tree', '4': 'Fower',
         '5': 'Fife', '6': 'Six', '7': 'Seven', '8': 'Ait', '9': 'Niner'
     };
 
     if (!input) return;
 
-    function render() {
-        const val = input.value.toUpperCase();
-        let result = [];
-        for (let i = 0; i < val.length; i++) {
-            const ch = val.charAt(i);
-            if (dict[ch]) {
-                result.push(dict[ch]);
-            } else if (ch === ' ') {
-                result.push(' ');
+    function translateWord(word, pronounceNumbers) {
+        let tokens = [];
+        let currentPhonetic = '';
+        
+        for (let i = 0; i < word.length; i++) {
+            const char = word[i];
+            const upperChar = char.toUpperCase();
+            
+            if (dict[upperChar]) {
+                if (currentPhonetic) {
+                    tokens.push(currentPhonetic);
+                    currentPhonetic = '';
+                }
+                tokens.push(dict[upperChar]);
+            } else if (numDict[upperChar]) {
+                if (currentPhonetic) {
+                    tokens.push(currentPhonetic);
+                    currentPhonetic = '';
+                }
+                tokens.push(pronounceNumbers ? numDict[upperChar] : upperChar);
+            } else {
+                currentPhonetic += char;
             }
         }
-        output.textContent = result.length > 0 ? result.join(' ').replace(/\\s+/g, ' ').trim() : '-';
+        if (currentPhonetic) {
+            tokens.push(currentPhonetic);
+        }
+        
+        let formatted = '';
+        for (let i = 0; i < tokens.length; i++) {
+            const tok = tokens[i];
+            const isPunct = !/\\w/.test(tok);
+            
+            if (i === 0) {
+                formatted = tok;
+            } else {
+                const prevTok = tokens[i - 1];
+                const prevIsPunct = !/\\w/.test(prevTok);
+                
+                if (isPunct) {
+                    formatted += tok;
+                } else if (prevIsPunct && i === 1) {
+                    formatted += tok;
+                } else {
+                    formatted += ' ' + tok;
+                }
+            }
+        }
+        return formatted;
     }
 
-    input.addEventListener('input', render);
+    function render() {
+        const text = input.value;
+        if (!text.trim()) {
+            output.textContent = '-';
+            return;
+        }
+
+        const pronounceNumbers = pronounceCheckbox.checked;
+        const lines = text.split('\\n');
+        const outputLines = [];
+
+        lines.forEach(line => {
+            const words = line.split(/\\s+/);
+            const lineWords = [];
+
+            words.forEach(word => {
+                if (!word) return;
+                const translated = translateWord(word, pronounceNumbers);
+                if (translated) {
+                    lineWords.push(translated);
+                }
+            });
+
+            if (lineWords.length > 0) {
+                outputLines.push(lineWords.join('\\n'));
+            }
+        });
+
+        output.textContent = outputLines.length > 0 ? outputLines.join('\\n\\n') : '-';
+    }
+
+    [input, pronounceCheckbox].forEach(el => el.addEventListener('input', render));
+    pronounceCheckbox.addEventListener('change', render);
+
     clearBtn.addEventListener('click', () => {
         input.value = '';
         output.textContent = '-';
@@ -1712,14 +1790,281 @@ function generateProject() {
 
     resetBtn.addEventListener('click', () => {
         input.value = 'hello';
+        pronounceCheckbox.checked = false;
         render();
     });
 
     copyBtn.addEventListener('click', () => {
+        if (output.textContent === '-') return;
         navigator.clipboard.writeText(output.textContent).then(() => alert('Copied NATO speller output!'));
     });
 
     render();
+}
+`;
+        } else if (tool.id === 'nato-audio-player') {
+            workspaceHTML = `
+            <div class="tool-workspace">
+                <div class="form-group">
+                    <label for="audio-input">Input Word / Text to Spell</label>
+                    <textarea id="audio-input" class="input-control" style="min-height:100px;" placeholder="Type text to spell out with NATO audio...">hello</textarea>
+                </div>
+
+                <div class="options-grid" style="grid-template-columns: 1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label for="audio-voice">Voice Selection</label>
+                        <select id="audio-voice" class="input-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="audio-speed">Playback Speed (<span id="speed-val">1.0</span>x)</label>
+                        <input type="range" id="audio-speed" class="input-control" min="0.5" max="2" step="0.1" value="1.0" style="padding:0.25rem 0; cursor:pointer;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Spelling Sequence Preview</label>
+                    <div id="audio-preview-container" style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; min-height:80px; display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;"></div>
+                </div>
+
+                <div class="action-row" style="margin-top:1.5rem;">
+                    <button class="btn btn-primary" id="audio-play">▶ Play Audio</button>
+                    <button class="btn btn-secondary" id="audio-pause" disabled>⏸ Pause</button>
+                    <button class="btn btn-secondary" id="audio-stop" disabled>⏹ Stop</button>
+                    <button class="btn btn-secondary" id="audio-clear">Clear</button>
+                    <button class="btn btn-secondary" id="audio-reset">Reset</button>
+                </div>
+            </div>
+            `;
+            logicJS = `export function init() {
+    const input = document.getElementById('audio-input');
+    const previewContainer = document.getElementById('audio-preview-container');
+    const voiceSelect = document.getElementById('audio-voice');
+    const speedInput = document.getElementById('audio-speed');
+    const speedVal = document.getElementById('speed-val');
+    
+    const playBtn = document.getElementById('audio-play');
+    const pauseBtn = document.getElementById('audio-pause');
+    const stopBtn = document.getElementById('audio-stop');
+    const clearBtn = document.getElementById('audio-clear');
+    const resetBtn = document.getElementById('audio-reset');
+
+    const dict = {
+        'A': 'Alfa', 'B': 'Bravo', 'C': 'Charlie', 'D': 'Delta', 'E': 'Echo', 'F': 'Foxtrot',
+        'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliett', 'K': 'Kilo', 'L': 'Lima',
+        'M': 'Mike', 'N': 'November', 'O': 'Oscar', 'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo',
+        'S': 'Sierra', 'T': 'Tango', 'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray',
+        'Y': 'Yankee', 'Z': 'Zulu',
+        '0': 'Zero', '1': 'Wun', '2': 'Too', '3': 'Tree', '4': 'Fower',
+        '5': 'Fife', '6': 'Six', '7': 'Seven', '8': 'Ait', '9': 'Niner'
+    };
+
+    if (!input) return;
+
+    let voices = [];
+    function loadVoices() {
+        if (typeof speechSynthesis === 'undefined') return;
+        voices = speechSynthesis.getVoices();
+        voiceSelect.innerHTML = voices
+            .map((v, i) => '<option value="' + i + '">' + v.name + ' (' + v.lang + ')</option>')
+            .join('');
+    }
+    
+    loadVoices();
+    if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    let synthSequence = [];
+    let currentIdx = -1;
+    let isPlaying = false;
+    let isPaused = false;
+
+    function renderPreview() {
+        const text = input.value;
+        previewContainer.innerHTML = '';
+        synthSequence = [];
+
+        if (!text.trim()) {
+            previewContainer.innerHTML = '<span style="color:var(--text-secondary);">Type text to preview speller sequence...</span>';
+            return;
+        }
+
+        const words = text.split(/\\s+/);
+        let chipId = 0;
+        
+        words.forEach((word, wIdx) => {
+            if (!word) return;
+            
+            const wordSpan = document.createElement('div');
+            wordSpan.style.display = 'flex';
+            wordSpan.style.flexWrap = 'wrap';
+            wordSpan.style.gap = '0.2rem';
+            wordSpan.style.padding = '0.25rem 0.5rem';
+            wordSpan.style.border = '1px solid var(--border-color)';
+            wordSpan.style.borderRadius = 'var(--radius-sm)';
+            wordSpan.style.background = 'var(--bg-secondary)';
+            
+            for (let i = 0; i < word.length; i++) {
+                const char = word[i];
+                const upper = char.toUpperCase();
+                
+                if (dict[upper]) {
+                    const chip = document.createElement('span');
+                    chip.className = 'nato-chip';
+                    chip.id = 'nato-chip-' + chipId;
+                    chip.textContent = dict[upper];
+                    chip.style.padding = '0.1rem 0.3rem';
+                    chip.style.borderRadius = 'var(--radius-xs)';
+                    chip.style.fontSize = '0.85rem';
+                    chip.style.fontWeight = '600';
+                    chip.style.transition = 'all 0.2s';
+                    
+                    wordSpan.appendChild(chip);
+                    synthSequence.push({ id: chipId, text: dict[upper] });
+                    chipId++;
+                } else {
+                    const sym = document.createElement('span');
+                    sym.textContent = char;
+                    sym.style.padding = '0.1rem 0.1rem';
+                    sym.style.fontSize = '0.85rem';
+                    wordSpan.appendChild(sym);
+                }
+            }
+            
+            if (wordSpan.childNodes.length > 0) {
+                previewContainer.appendChild(wordSpan);
+            }
+        });
+        
+        if (synthSequence.length === 0) {
+            previewContainer.innerHTML = '<span style="color:var(--text-secondary);">No spellable characters found.</span>';
+        }
+    }
+
+    function speakNext() {
+        if (!isPlaying || isPaused) return;
+
+        if (currentIdx >= 0) {
+            const prevChip = document.getElementById('nato-chip-' + synthSequence[currentIdx].id);
+            if (prevChip) {
+                prevChip.style.background = '';
+                prevChip.style.color = '';
+            }
+        }
+
+        currentIdx++;
+        if (currentIdx >= synthSequence.length) {
+            stopPlayback();
+            return;
+        }
+
+        const currentItem = synthSequence[currentIdx];
+        const chip = document.getElementById('nato-chip-' + currentItem.id);
+        if (chip) {
+            chip.style.background = 'var(--primary-color)';
+            chip.style.color = '#fff';
+        }
+
+        const utterance = new SpeechSynthesisUtterance(currentItem.text);
+        
+        const selectedVoiceIdx = voiceSelect.value;
+        if (selectedVoiceIdx && voices[selectedVoiceIdx]) {
+            utterance.voice = voices[selectedVoiceIdx];
+        }
+        utterance.rate = parseFloat(speedInput.value) || 1.0;
+
+        utterance.onend = () => {
+            speakNext();
+        };
+
+        utterance.onerror = (e) => {
+            console.error('SpeechSynthesis error:', e);
+            speakNext();
+        };
+
+        speechSynthesis.speak(utterance);
+    }
+
+    function startPlayback() {
+        if (synthSequence.length === 0) return;
+        if (typeof speechSynthesis === 'undefined') {
+            alert('Web Speech API is not supported in this browser.');
+            return;
+        }
+
+        isPlaying = true;
+        isPaused = false;
+        
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+        
+        if (currentIdx < 0) {
+            speechSynthesis.cancel();
+            speakNext();
+        } else {
+            speechSynthesis.resume();
+        }
+    }
+
+    function pausePlayback() {
+        if (!isPlaying) return;
+        isPaused = true;
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        speechSynthesis.pause();
+    }
+
+    function stopPlayback() {
+        isPlaying = false;
+        isPaused = false;
+        
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        stopBtn.disabled = true;
+        
+        if (typeof speechSynthesis !== 'undefined') {
+            speechSynthesis.cancel();
+        }
+
+        if (currentIdx >= 0 && currentIdx < synthSequence.length) {
+            const chip = document.getElementById('nato-chip-' + synthSequence[currentIdx].id);
+            if (chip) {
+                chip.style.background = '';
+                chip.style.color = '';
+            }
+        }
+        currentIdx = -1;
+    }
+
+    input.addEventListener('input', () => {
+        stopPlayback();
+        renderPreview();
+    });
+
+    speedInput.addEventListener('input', () => {
+        speedVal.textContent = parseFloat(speedInput.value).toFixed(1);
+    });
+
+    playBtn.addEventListener('click', startPlayback);
+    pauseBtn.addEventListener('click', pausePlayback);
+    stopBtn.addEventListener('click', stopPlayback);
+
+    clearBtn.addEventListener('click', () => {
+        stopPlayback();
+        input.value = '';
+        renderPreview();
+    });
+
+    resetBtn.addEventListener('click', () => {
+        stopPlayback();
+        input.value = 'hello';
+        speedInput.value = '1.0';
+        speedVal.textContent = '1.0';
+        renderPreview();
+    });
+
+    renderPreview();
 }
 `;
         } else if (tool.id === 'serp-simulator') {
@@ -2116,6 +2461,16 @@ function generateProject() {
         } else if (tool.id === 'json-formatter') {
             workspaceHTML = `
             <div class="tool-workspace">
+                <div class="options-grid" style="grid-template-columns: 1fr; max-width: 250px; gap:1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="json-indent">Indentation</label>
+                        <select id="json-indent" class="input-control">
+                            <option value="2" selected>2 Spaces</option>
+                            <option value="4">4 Spaces</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="json-input">JSON String</label>
                     <textarea id="json-input" class="input-control" placeholder="Paste raw JSON string..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
@@ -2126,6 +2481,7 @@ function generateProject() {
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="json-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="json-minify">Minify</button>
+                    <button class="btn btn-secondary" id="json-clear">Clear</button>
                     <button class="btn btn-secondary" id="json-reset">Reset</button>
                 </div>
 
@@ -2144,14 +2500,41 @@ function generateProject() {
     const input = document.getElementById('json-input');
     const output = document.getElementById('json-output');
     const errorMsg = document.getElementById('json-error-msg');
+    const indentSel = document.getElementById('json-indent');
     const beauty = document.getElementById('json-beautify');
     const mini = document.getElementById('json-minify');
+    const clearBtn = document.getElementById('json-clear');
     const reset = document.getElementById('json-reset');
     const copy = document.getElementById('json-copy');
     const download = document.getElementById('json-download');
     const actionRow = document.getElementById('json-action-row');
 
     if (!input) return;
+
+    function preprocessInput(val) {
+        val = val.trim();
+        if (val.startsWith('"') && val.endsWith('"')) {
+            try {
+                return JSON.parse(val);
+            } catch (e) {
+                return val.slice(1, -1)
+                    .replace(/\\\\"/g, '"')
+                    .replace(/\\\\n/g, '\\n')
+                    .replace(/\\\\r/g, '\\r')
+                    .replace(/\\\\t/g, '\\t')
+                    .replace(/\\\\\\\\/g, '\\\\');
+            }
+        }
+        if (val.startsWith("'") && val.endsWith("'")) {
+            return val.slice(1, -1)
+                .replace(/\\\\'/g, "'")
+                .replace(/\\\\n/g, '\\n')
+                .replace(/\\\\r/g, '\\r')
+                .replace(/\\\\t/g, '\\t')
+                .replace(/\\\\\\\\/g, '\\\\');
+        }
+        return val;
+    }
 
     function showSuccess(result) {
         output.value = result;
@@ -2164,51 +2547,85 @@ function generateProject() {
         actionRow.style.display = 'none';
         
         let msg = err.message;
-        const posMatch = msg.match(/position\\s+(\\d+)/i);
-        if (posMatch) {
-            const pos = parseInt(posMatch[1]);
-            const val = input.value;
-            const lines = val.slice(0, pos).split('\\n');
-            msg += ' (at Line ' + lines.length + ', Col ' + (lines[lines.length - 1].length + 1) + ')';
+        let line = null;
+        let col = null;
+
+        const lineColMatch = msg.match(/line\\s+(\\d+)\\s+column\\s+(\\d+)/i);
+        if (lineColMatch) {
+            line = parseInt(lineColMatch[1], 10);
+            col = parseInt(lineColMatch[2], 10);
+        } else {
+            const posMatch = msg.match(/position\\s+(\\d+)/i);
+            if (posMatch) {
+                const pos = parseInt(posMatch[1], 10);
+                const prefix = input.value.slice(0, pos);
+                const lines = prefix.split('\\n');
+                line = lines.length;
+                col = lines[lines.length - 1].length + 1;
+            }
         }
-        errorMsg.textContent = '❌ ' + msg;
+
+        if (line !== null && col !== null) {
+            errorMsg.textContent = '❌ Syntax Error: ' + msg + ' (at Line ' + line + ', Col ' + col + ')';
+        } else {
+            errorMsg.textContent = '❌ Syntax Error: ' + msg;
+        }
         errorMsg.style.display = 'block';
     }
 
     beauty.addEventListener('click', () => {
-        const val = input.value.trim();
+        let val = input.value.trim();
         if (!val) return;
+        val = preprocessInput(val);
         try {
-            const parsed = JSON.parse(val);
-            showSuccess(JSON.stringify(parsed, null, 4));
+            let parsed = JSON.parse(val);
+            if (typeof parsed === 'string') {
+                parsed = JSON.parse(parsed);
+            }
+            const spaces = parseInt(indentSel.value, 10) || 2;
+            showSuccess(JSON.stringify(parsed, null, spaces));
         } catch(e) {
             showError(e);
         }
     });
 
     mini.addEventListener('click', () => {
-        const val = input.value.trim();
+        let val = input.value.trim();
         if (!val) return;
+        val = preprocessInput(val);
         try {
-            const parsed = JSON.parse(val);
+            let parsed = JSON.parse(val);
+            if (typeof parsed === 'string') {
+                parsed = JSON.parse(parsed);
+            }
             showSuccess(JSON.stringify(parsed));
         } catch(e) {
             showError(e);
         }
     });
 
-    reset.addEventListener('click', () => {
+    clearBtn.addEventListener('click', () => {
         input.value = '';
         output.value = '';
         errorMsg.style.display = 'none';
         actionRow.style.display = 'none';
     });
 
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        indentSel.value = '2';
+        errorMsg.style.display = 'none';
+        actionRow.style.display = 'none';
+    });
+
     copy.addEventListener('click', () => {
+        if (!output.value) return;
         navigator.clipboard.writeText(output.value).then(() => alert('Copied JSON to clipboard!'));
     });
 
     download.addEventListener('click', () => {
+        if (!output.value) return;
         const blob = new Blob([output.value], { type: 'application/json;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -2222,6 +2639,16 @@ function generateProject() {
         } else if (tool.id === 'xml-formatter') {
             workspaceHTML = `
             <div class="tool-workspace">
+                <div class="options-grid" style="grid-template-columns: 1fr; max-width: 250px; gap:1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="xml-indent">Indentation</label>
+                        <select id="xml-indent" class="input-control">
+                            <option value="2" selected>2 Spaces</option>
+                            <option value="4">4 Spaces</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="xml-input">XML Input</label>
                     <textarea id="xml-input" class="input-control" placeholder="Paste XML data here..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
@@ -2232,6 +2659,7 @@ function generateProject() {
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="xml-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="xml-minify">Minify</button>
+                    <button class="btn btn-secondary" id="xml-clear">Clear</button>
                     <button class="btn btn-secondary" id="xml-reset">Reset</button>
                 </div>
 
@@ -2250,8 +2678,10 @@ function generateProject() {
     const input = document.getElementById('xml-input');
     const output = document.getElementById('xml-output');
     const errorMsg = document.getElementById('xml-error-msg');
+    const indentSel = document.getElementById('xml-indent');
     const beauty = document.getElementById('xml-beautify');
     const mini = document.getElementById('xml-minify');
+    const clearBtn = document.getElementById('xml-clear');
     const reset = document.getElementById('xml-reset');
     const copy = document.getElementById('xml-copy');
     const download = document.getElementById('xml-download');
@@ -2259,102 +2689,225 @@ function generateProject() {
 
     if (!input) return;
 
-    function formatXMLNode(node, indent = 0) {
-        const padding = '  '.repeat(indent);
-        if (node.nodeType === 3) {
-            const text = node.nodeValue.trim();
-            return text ? padding + text + '\\n' : '';
+    function preprocessInput(val) {
+        val = val.trim();
+        if (val.startsWith('"') && val.endsWith('"')) {
+            try {
+                return JSON.parse(val);
+            } catch (e) {
+                return val.slice(1, -1)
+                    .replace(/\\\\"/g, '"')
+                    .replace(/\\\\n/g, '\\n')
+                    .replace(/\\\\r/g, '\\r')
+                    .replace(/\\\\t/g, '\\t')
+                    .replace(/\\\\\\\\/g, '\\\\');
+            }
         }
-        if (node.nodeType === 1) {
-            let xml = padding + '<' + node.nodeName;
-            for (let i = 0; i < node.attributes.length; i++) {
-                const attr = node.attributes[i];
-                xml += ' ' + attr.name + '="' + attr.value + '"';
-            }
-            if (node.childNodes.length === 0) {
-                return xml + ' />\\n';
-            }
-            let hasChildElements = false;
-            let childrenXml = '';
-            for (let i = 0; i < node.childNodes.length; i++) {
-                const child = node.childNodes[i];
-                if (child.nodeType === 1) {
-                    hasChildElements = true;
+        if (val.startsWith("'") && val.endsWith("'")) {
+            return val.slice(1, -1)
+                .replace(/\\\\'/g, "'")
+                .replace(/\\\\n/g, '\\n')
+                .replace(/\\\\r/g, '\\r')
+                .replace(/\\\\t/g, '\\t')
+                .replace(/\\\\\\\\/g, '\\\\');
+        }
+        return val;
+    }
+
+    function formatXml(doc, indentString) {
+        function escapeXmlText(str) {
+            return str.replace(/[<>&'"]/g, c => {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case "'": return '&apos;';
+                    case '"': return '&quot;';
+                    default: return c;
                 }
-                childrenXml += formatXMLNode(child, indent + 1);
-            }
-            if (hasChildElements) {
-                return xml + '>\\n' + childrenXml + padding + '</' + node.nodeName + '>\\n';
-            } else {
-                const textContent = node.textContent.trim();
-                return xml + '>' + textContent + '</' + node.nodeName + '>\\n';
-            }
+            });
         }
-        return '';
+        function serialize(node, depth = 0) {
+            const indent = indentString.repeat(depth);
+            if (node.nodeType === 1) {
+                let res = indent + '<' + node.tagName;
+                for (let i = 0; i < node.attributes.length; i++) {
+                    const attr = node.attributes[i];
+                    res += ' ' + attr.name + '="' + escapeXmlText(attr.value) + '"';
+                }
+                if (node.childNodes.length === 0) {
+                    return res + ' />';
+                }
+                const hasElements = Array.from(node.childNodes).some(c => c.nodeType === 1);
+                if (!hasElements) {
+                    let text = '';
+                    for (let i = 0; i < node.childNodes.length; i++) {
+                        const child = node.childNodes[i];
+                        if (child.nodeType === 3) {
+                            text += escapeXmlText(child.nodeValue);
+                        } else if (child.nodeType === 4) {
+                            text += '<![CDATA[' + child.nodeValue + ']]>';
+                        } else if (child.nodeType === 8) {
+                            text += '<!--' + child.nodeValue + '-->';
+                        }
+                    }
+                    text = text.trim();
+                    if (text.includes('\\n') || text.length > 80) {
+                        return res + '>\\n' + indent + indentString + text + '\\n' + indent + '</' + node.tagName + '>';
+                    }
+                    return res + '>' + text + '</' + node.tagName + '>';
+                }
+                res += '>\\n';
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    const childStr = serialize(node.childNodes[i], depth + 1);
+                    if (childStr) res += childStr + '\\n';
+                }
+                res += indent + '</' + node.tagName + '>';
+                return res;
+            } else if (node.nodeType === 3) {
+                const val = node.nodeValue.trim();
+                return val ? indent + escapeXmlText(val) : '';
+            } else if (node.nodeType === 4) {
+                return indent + '<![CDATA[' + node.nodeValue + ']]>';
+            } else if (node.nodeType === 8) {
+                return indent + '<!--' + node.nodeValue + '-->';
+            } else if (node.nodeType === 7) {
+                return indent + '<?' + node.target + ' ' + node.data + '?>';
+            } else if (node.nodeType === 10) {
+                return indent + '<!DOCTYPE ' + node.name + '>';
+            }
+            return '';
+        }
+        let result = '';
+        for (let i = 0; i < doc.childNodes.length; i++) {
+            const str = serialize(doc.childNodes[i], 0);
+            if (str) result += str + '\\n';
+        }
+        return result.trim();
+    }
+
+    function minifyXml(doc) {
+        function escapeXmlText(str) {
+            return str.replace(/[<>&'"]/g, c => {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case "'": return '&apos;';
+                    case '"': return '&quot;';
+                    default: return c;
+                }
+            });
+        }
+        function serialize(node) {
+            if (node.nodeType === 1) {
+                let res = '<' + node.tagName;
+                for (let i = 0; i < node.attributes.length; i++) {
+                    const attr = node.attributes[i];
+                    res += ' ' + attr.name + '="' + escapeXmlText(attr.value) + '"';
+                }
+                if (node.childNodes.length === 0) {
+                    return res + ' />';
+                }
+                res += '>';
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    res += serialize(node.childNodes[i]);
+                }
+                res += '</' + node.tagName + '>';
+                return res;
+            } else if (node.nodeType === 3) {
+                return escapeXmlText(node.nodeValue.trim());
+            } else if (node.nodeType === 4) {
+                return '<![CDATA[' + node.nodeValue + ']]>';
+            } else if (node.nodeType === 7) {
+                return '<?' + node.target + ' ' + node.data + '?>';
+            } else if (node.nodeType === 10) {
+                return '<!DOCTYPE ' + node.name + '>';
+            }
+            return '';
+        }
+        let result = '';
+        for (let i = 0; i < doc.childNodes.length; i++) {
+            result += serialize(doc.childNodes[i]);
+        }
+        return result.trim();
     }
 
     beauty.addEventListener('click', () => {
-        const val = input.value.trim();
+        let val = input.value.trim();
         if (!val) return;
+        val = preprocessInput(val);
         const parser = new DOMParser();
         const doc = parser.parseFromString(val, 'application/xml');
         const parseError = doc.querySelector('parsererror');
         if (parseError) {
             output.value = '';
-            errorMsg.textContent = '❌ XML Syntax Error: ' + parseError.textContent;
+            let errorText = parseError.textContent || 'XML parsing error';
+            errorText = errorText.replace(/\\bhttps?:\\/\\/\\S+\\b/g, '');
+            errorMsg.textContent = '❌ XML Syntax Error: ' + errorText.trim();
             errorMsg.style.display = 'block';
             actionRow.style.display = 'none';
             return;
         }
         errorMsg.style.display = 'none';
         
-        let result = '';
-        for (let i = 0; i < doc.childNodes.length; i++) {
-            const child = doc.childNodes[i];
-            if (child.nodeType === 1) {
-                result += formatXMLNode(child, 0);
-            } else if (child.nodeType === 8) {
-                result += '<!--' + child.nodeValue + '-->\\n';
-            } else if (child.nodeType === 10) {
-                result += '<!DOCTYPE ' + child.name + '>\\n';
-            }
-        }
-        output.value = result.trim();
+        const spaces = parseInt(indentSel.value, 10) || 2;
+        const indentString = ' '.repeat(spaces);
+        
+        const declMatch = val.match(/^\\s*(<\\?xml[^>]*\\?>)/i);
+        const decl = declMatch ? declMatch[1] + '\\n' : '';
+        
+        output.value = decl + formatXml(doc, indentString);
         actionRow.style.display = 'flex';
     });
 
     mini.addEventListener('click', () => {
-        const val = input.value.trim();
+        let val = input.value.trim();
         if (!val) return;
+        val = preprocessInput(val);
         const parser = new DOMParser();
         const doc = parser.parseFromString(val, 'application/xml');
         const parseError = doc.querySelector('parsererror');
         if (parseError) {
             output.value = '';
-            errorMsg.textContent = '❌ XML Syntax Error: ' + parseError.textContent;
+            let errorText = parseError.textContent || 'XML parsing error';
+            errorText = errorText.replace(/\\bhttps?:\\/\\/\\S+\\b/g, '');
+            errorMsg.textContent = '❌ XML Syntax Error: ' + errorText.trim();
             errorMsg.style.display = 'block';
             actionRow.style.display = 'none';
             return;
         }
         errorMsg.style.display = 'none';
         
-        let minified = val.replace(/\\s*<(\\/?[\\w\\-\\:]+)([^>]*)>\\s*/g, '<$1$2>');
-        output.value = minified.trim();
+        const declMatch = val.match(/^\\s*(<\\?xml[^>]*\\?>)/i);
+        const decl = declMatch ? declMatch[1] : '';
+        
+        output.value = decl + minifyXml(doc);
         actionRow.style.display = 'flex';
     });
 
-    reset.addEventListener('click', () => {
+    clearBtn.addEventListener('click', () => {
         input.value = '';
         output.value = '';
         errorMsg.style.display = 'none';
         actionRow.style.display = 'none';
     });
 
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        indentSel.value = '2';
+        errorMsg.style.display = 'none';
+        actionRow.style.display = 'none';
+    });
+
     copy.addEventListener('click', () => {
+        if (!output.value) return;
         navigator.clipboard.writeText(output.value).then(() => alert('Copied XML to clipboard!'));
     });
 
     download.addEventListener('click', () => {
+        if (!output.value) return;
         const blob = new Blob([output.value], { type: 'application/xml;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');

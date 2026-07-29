@@ -25,6 +25,16 @@
     <div id="tool-workspace">
         
             <div class="tool-workspace">
+                <div class="options-grid" style="grid-template-columns: 1fr; max-width: 250px; gap:1rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="xml-indent">Indentation</label>
+                        <select id="xml-indent" class="input-control">
+                            <option value="2" selected>2 Spaces</option>
+                            <option value="4">4 Spaces</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="xml-input">XML Input</label>
                     <textarea id="xml-input" class="input-control" placeholder="Paste XML data here..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
@@ -35,6 +45,7 @@
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="xml-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="xml-minify">Minify</button>
+                    <button class="btn btn-secondary" id="xml-clear">Clear</button>
                     <button class="btn btn-secondary" id="xml-reset">Reset</button>
                 </div>
 

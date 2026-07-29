@@ -27,12 +27,17 @@
             <div class="tool-workspace">
                 <div class="form-group">
                     <label for="nato-input">Input Word / Text</label>
-                    <input type="text" id="nato-input" class="input-control" value="hello">
+                    <textarea id="nato-input" class="input-control" style="min-height:100px;" placeholder="Enter text here...">hello</textarea>
+                </div>
+
+                <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; margin-bottom:1rem;">
+                    <input type="checkbox" id="nato-pronounce-nums" style="cursor:pointer;">
+                    <label for="nato-pronounce-nums" style="cursor:pointer; margin:0;">Pronounce numbers (e.g. Wun, Too)</label>
                 </div>
 
                 <div class="form-group">
                     <label>NATO Speller Output</label>
-                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.2rem; min-height: 50px; white-space: pre-wrap; word-break: break-all;" id="nato-output">-</div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.1rem; min-height: 80px; white-space: pre-wrap; word-break: break-all;" id="nato-output">-</div>
                 </div>
 
                 <div class="action-row">
