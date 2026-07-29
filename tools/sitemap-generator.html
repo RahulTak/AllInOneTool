@@ -24,24 +24,27 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
-                </div>
+        <div class="tool-workspace">
+            <div style="margin-bottom:1.5rem;">
+                <h3 style="margin-bottom: 0.5rem; font-size:1.1rem;">Sitemap URLs</h3>
+                <div id="site-urls-container" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1rem;"></div>
+                <button class="btn btn-secondary" id="site-add-url" type="button">+ Add URL Row</button>
             </div>
-            
+
+            <div id="site-warning" style="display:none; color:var(--error-color); font-size:0.85rem; margin-top:1rem; font-weight:700;"></div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label>Generated sitemap.xml Preview</label>
+                <textarea readonly id="site-output" class="input-control" style="font-family:var(--font-mono); min-height:220px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="site-btn-reset">Reset</button>
+                <button class="btn btn-secondary" id="site-btn-copy">Copy Output</button>
+                <button class="btn btn-primary" id="site-btn-download">Download XML</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

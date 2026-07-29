@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../assets/css/tool.css">
     
     <!-- Libraries -->
-    
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
     
     <!-- Script Dependency -->
     <script src="../assets/js/app.js" type="module" defer></script>
@@ -24,69 +24,33 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="upload-zone" id="img-upload-zone">
-                    <span class="upload-icon">📁</span>
-                    <div class="upload-text">
-                        <h4>Click or Drag & Drop Image here</h4>
-                        <p>Supports JPG, PNG, WEBP files up to 20MB</p>
-                    </div>
-                    <input type="file" class="upload-input" id="img-file-input" accept="image/jpeg,image/png,image/webp">
-                </div>
+        <div class="tool-workspace">
+            <div class="upload-zone" id="qr-upload-zone" style="border: 2px dashed var(--border-color); border-radius: var(--radius-sm); padding: 2rem; text-align: center; cursor: pointer; background: var(--bg-primary); transition: all 0.3s ease;">
+                <p>Drag & Drop QR Code Image or Click to Upload</p>
+                <input type="file" id="qr-file" style="display:none;" accept="image/*">
+            </div>
 
-                <div id="image-workspace" style="display: none; flex-direction: column; gap: 1.5rem;">
-                    <div class="tool-panels">
-                        <div class="form-group">
-                            <label>Original Preview</label>
-                            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; min-height: 200px;">
-                                <img id="original-preview" style="max-height: 300px; object-fit: contain;">
-                            </div>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;" id="original-info"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>Processed Output</label>
-                            <div style="border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; min-height: 200px;">
-                                <img id="processed-preview" style="max-height: 300px; object-fit: contain;">
-                            </div>
-                            <p style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;" id="processed-info"></p>
-                        </div>
-                    </div>
+            <div id="qr-preview-container" style="display:none; text-align:center; margin-top:1.5rem;">
+                <img id="qr-preview" style="max-height: 200px; border:1px solid var(--border-color); border-radius:var(--radius-sm);" />
+            </div>
 
-                    <div class="options-grid">
-                        <div class="form-group" id="opt-size-group">
-                            <label for="size-width">Resize Dimensions</label>
-                            <div style="display: flex; gap: 0.5rem; align-items: center;">
-                                <input type="number" id="size-width" placeholder="Width" class="input-control" value="800">
-                                <span>×</span>
-                                <input type="number" id="size-height" placeholder="Height" class="input-control" value="600">
-                            </div>
-                        </div>
-                        <div class="form-group" id="opt-rotation-group">
-                            <label for="rotate-select">Rotate Angle</label>
-                            <select id="rotate-select" class="input-control">
-                                <option value="0">0°</option>
-                                <option value="90">90° Clockwise</option>
-                                <option value="180">180° Half Turn</option>
-                                <option value="270">270° Counter-Clockwise</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="opt-format-group">
-                            <label for="format-select">Export Format</label>
-                            <select id="format-select" class="input-control">
-                                <option value="image/jpeg">JPEG</option>
-                                <option value="image/png">PNG</option>
-                                <option value="image/webp">WebP</option>
-                            </select>
-                        </div>
-                    </div>
+            <div id="qr-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); margin-top:1.5rem; font-size:0.85rem; font-weight:700;"></div>
 
-                    <div class="action-row">
-                        <button class="btn btn-secondary" id="reset-image">Reset</button>
-                        <a class="btn btn-primary" id="download-processed" href="#" download="processed_image.png">Download Image</a>
-                    </div>
+            <div id="qr-results" style="display:none; margin-top:1.5rem; background:var(--bg-primary); padding:1rem; border:1px solid var(--border-color); border-radius:var(--radius-sm);">
+                <h3 style="margin-bottom:0.75rem;">Decoded Contents</h3>
+                <div style="font-family:var(--font-mono); font-size:1.1rem; font-weight:700; word-break:break-all; padding:0.5rem; background:var(--bg-secondary); border-radius:var(--radius-sm); border:1px solid var(--border-color);" id="qr-text"></div>
+                
+                <div class="action-row" style="margin-top:1rem;">
+                    <button class="btn btn-secondary btn-sm" id="qr-btn-copy">Copy Output</button>
+                    <a href="#" target="_blank" class="btn btn-primary btn-sm" id="qr-btn-link" style="display:none;">Open Link</a>
                 </div>
             </div>
-            
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-secondary" id="qr-btn-reset">Reset</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

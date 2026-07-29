@@ -25,7 +25,6 @@ export function init() {
             tips.textContent = 'Matches standard lowercase lowercase alphanumeric and hyphen criteria.';
         }
     }
-
     input.addEventListener('input', verify);
     verify();
 }

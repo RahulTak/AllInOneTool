@@ -1661,11 +1661,12 @@ function generateProject() {
 
                 <div class="form-group">
                     <label>NATO Speller Output</label>
-                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.2rem;" id="nato-output">-</div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; font-weight:700; font-size:1.2rem; min-height: 50px; white-space: pre-wrap; word-break: break-all;" id="nato-output">-</div>
                 </div>
 
                 <div class="action-row">
                     <button class="btn btn-secondary" id="nato-clear">Clear</button>
+                    <button class="btn btn-secondary" id="nato-reset">Reset</button>
                     <button class="btn btn-primary" id="nato-copy">Copy Output</button>
                 </div>
             </div>
@@ -1674,6 +1675,7 @@ function generateProject() {
     const input = document.getElementById('nato-input');
     const output = document.getElementById('nato-output');
     const clearBtn = document.getElementById('nato-clear');
+    const resetBtn = document.getElementById('nato-reset');
     const copyBtn = document.getElementById('nato-copy');
 
     const dict = {
@@ -1681,8 +1683,9 @@ function generateProject() {
         'G': 'Golf', 'H': 'Hotel', 'I': 'India', 'J': 'Juliett', 'K': 'Kilo', 'L': 'Lima',
         'M': 'Mike', 'N': 'November', 'O': 'Oscar', 'P': 'Papa', 'Q': 'Quebec', 'R': 'Romeo',
         'S': 'Sierra', 'T': 'Tango', 'U': 'Uniform', 'V': 'Victor', 'W': 'Whiskey', 'X': 'X-ray',
-        'Y': 'Yankee', 'Z': 'Zulu', '0': 'Zero', '1': 'One', '2': 'Two', '3': 'Three',
-        '4': 'Four', '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine'
+        'Y': 'Yankee', 'Z': 'Zulu', 
+        '0': 'Zero', '1': 'Wun', '2': 'Too', '3': 'Tree', '4': 'Fower', 
+        '5': 'Fife', '6': 'Six', '7': 'Seven', '8': 'Ait', '9': 'Niner'
     };
 
     if (!input) return;
@@ -1692,16 +1695,24 @@ function generateProject() {
         let result = [];
         for (let i = 0; i < val.length; i++) {
             const ch = val.charAt(i);
-            if (dict[ch]) result.push(dict[ch]);
-            else if (ch === ' ') result.push('/');
+            if (dict[ch]) {
+                result.push(dict[ch]);
+            } else if (ch === ' ') {
+                result.push(' ');
+            }
         }
-        output.textContent = result.length > 0 ? result.join(' ') : '-';
+        output.textContent = result.length > 0 ? result.join(' ').replace(/\\s+/g, ' ').trim() : '-';
     }
 
     input.addEventListener('input', render);
     clearBtn.addEventListener('click', () => {
         input.value = '';
         output.textContent = '-';
+    });
+
+    resetBtn.addEventListener('click', () => {
+        input.value = 'hello';
+        render();
     });
 
     copyBtn.addEventListener('click', () => {
@@ -2110,41 +2121,101 @@ function generateProject() {
                     <textarea id="json-input" class="input-control" placeholder="Paste raw JSON string..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
                 </div>
 
+                <div id="json-error-msg" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); margin-bottom:1rem; font-size:0.85rem; font-family:var(--font-mono);"></div>
+
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="json-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="json-minify">Minify</button>
+                    <button class="btn btn-secondary" id="json-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="json-output">Result Output</label>
                     <textarea id="json-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
                 </div>
+
+                <div class="action-row" id="json-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="json-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="json-download">Download JSON</button>
+                </div>
             </div>
             `;
             logicJS = `export function init() {
     const input = document.getElementById('json-input');
     const output = document.getElementById('json-output');
+    const errorMsg = document.getElementById('json-error-msg');
     const beauty = document.getElementById('json-beautify');
     const mini = document.getElementById('json-minify');
+    const reset = document.getElementById('json-reset');
+    const copy = document.getElementById('json-copy');
+    const download = document.getElementById('json-download');
+    const actionRow = document.getElementById('json-action-row');
 
     if (!input) return;
 
+    function showSuccess(result) {
+        output.value = result;
+        errorMsg.style.display = 'none';
+        actionRow.style.display = 'flex';
+    }
+
+    function showError(err) {
+        output.value = '';
+        actionRow.style.display = 'none';
+        
+        let msg = err.message;
+        const posMatch = msg.match(/position\\s+(\\d+)/i);
+        if (posMatch) {
+            const pos = parseInt(posMatch[1]);
+            const val = input.value;
+            const lines = val.slice(0, pos).split('\\n');
+            msg += ' (at Line ' + lines.length + ', Col ' + (lines[lines.length - 1].length + 1) + ')';
+        }
+        errorMsg.textContent = '❌ ' + msg;
+        errorMsg.style.display = 'block';
+    }
+
     beauty.addEventListener('click', () => {
+        const val = input.value.trim();
+        if (!val) return;
         try {
-            const parsed = JSON.parse(input.value);
-            output.value = JSON.stringify(parsed, null, 4);
+            const parsed = JSON.parse(val);
+            showSuccess(JSON.stringify(parsed, null, 4));
         } catch(e) {
-            alert('Invalid JSON: ' + e.message);
+            showError(e);
         }
     });
 
     mini.addEventListener('click', () => {
+        const val = input.value.trim();
+        if (!val) return;
         try {
-            const parsed = JSON.parse(input.value);
-            output.value = JSON.stringify(parsed);
+            const parsed = JSON.parse(val);
+            showSuccess(JSON.stringify(parsed));
         } catch(e) {
-            alert('Invalid JSON: ' + e.message);
+            showError(e);
         }
+    });
+
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        errorMsg.style.display = 'none';
+        actionRow.style.display = 'none';
+    });
+
+    copy.addEventListener('click', () => {
+        navigator.clipboard.writeText(output.value).then(() => alert('Copied JSON to clipboard!'));
+    });
+
+    download.addEventListener('click', () => {
+        const blob = new Blob([output.value], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'formatted.json';
+        a.click();
+        URL.revokeObjectURL(url);
     });
 }
 `;
@@ -2156,46 +2227,141 @@ function generateProject() {
                     <textarea id="xml-input" class="input-control" placeholder="Paste XML data here..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
                 </div>
 
+                <div id="xml-error-msg" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); margin-bottom:1rem; font-size:0.85rem; font-family:var(--font-mono);"></div>
+
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="xml-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="xml-minify">Minify</button>
+                    <button class="btn btn-secondary" id="xml-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="xml-output">Formatted XML</label>
                     <textarea id="xml-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
                 </div>
+
+                <div class="action-row" id="xml-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="xml-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="xml-download">Download XML</button>
+                </div>
             </div>
             `;
             logicJS = `export function init() {
     const input = document.getElementById('xml-input');
     const output = document.getElementById('xml-output');
+    const errorMsg = document.getElementById('xml-error-msg');
     const beauty = document.getElementById('xml-beautify');
     const mini = document.getElementById('xml-minify');
+    const reset = document.getElementById('xml-reset');
+    const copy = document.getElementById('xml-copy');
+    const download = document.getElementById('xml-download');
+    const actionRow = document.getElementById('xml-action-row');
 
     if (!input) return;
 
-    beauty.addEventListener('click', () => {
-        let val = input.value.trim();
-        let formatted = '';
-        let reg = /(>)(<)(\\/*)/g;
-        val = val.replace(reg, '$1\\r\\n$2$3');
-        let pad = 0;
-        val.split('\\r\\n').forEach(line => {
-            let indent = 0;
-            if (line.match(/<\\/\\w/)) {
-                pad--;
-            } else if (line.match(/<\\w[^>]*>/) && !line.match(/<\\w[^>]*\\/>/) && !line.match(/<\\w[^>]*>.*<\\/\\w>/)) {
-                indent = 1;
+    function formatXMLNode(node, indent = 0) {
+        const padding = '  '.repeat(indent);
+        if (node.nodeType === 3) {
+            const text = node.nodeValue.trim();
+            return text ? padding + text + '\\n' : '';
+        }
+        if (node.nodeType === 1) {
+            let xml = padding + '<' + node.nodeName;
+            for (let i = 0; i < node.attributes.length; i++) {
+                const attr = node.attributes[i];
+                xml += ' ' + attr.name + '="' + attr.value + '"';
             }
-            formatted += '  '.repeat(Math.max(0, pad)) + line + '\\n';
-            pad += indent;
-        });
-        output.value = formatted.trim();
+            if (node.childNodes.length === 0) {
+                return xml + ' />\\n';
+            }
+            let hasChildElements = false;
+            let childrenXml = '';
+            for (let i = 0; i < node.childNodes.length; i++) {
+                const child = node.childNodes[i];
+                if (child.nodeType === 1) {
+                    hasChildElements = true;
+                }
+                childrenXml += formatXMLNode(child, indent + 1);
+            }
+            if (hasChildElements) {
+                return xml + '>\\n' + childrenXml + padding + '</' + node.nodeName + '>\\n';
+            } else {
+                const textContent = node.textContent.trim();
+                return xml + '>' + textContent + '</' + node.nodeName + '>\\n';
+            }
+        }
+        return '';
+    }
+
+    beauty.addEventListener('click', () => {
+        const val = input.value.trim();
+        if (!val) return;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(val, 'application/xml');
+        const parseError = doc.querySelector('parsererror');
+        if (parseError) {
+            output.value = '';
+            errorMsg.textContent = '❌ XML Syntax Error: ' + parseError.textContent;
+            errorMsg.style.display = 'block';
+            actionRow.style.display = 'none';
+            return;
+        }
+        errorMsg.style.display = 'none';
+        
+        let result = '';
+        for (let i = 0; i < doc.childNodes.length; i++) {
+            const child = doc.childNodes[i];
+            if (child.nodeType === 1) {
+                result += formatXMLNode(child, 0);
+            } else if (child.nodeType === 8) {
+                result += '<!--' + child.nodeValue + '-->\\n';
+            } else if (child.nodeType === 10) {
+                result += '<!DOCTYPE ' + child.name + '>\\n';
+            }
+        }
+        output.value = result.trim();
+        actionRow.style.display = 'flex';
     });
 
     mini.addEventListener('click', () => {
-        output.value = input.value.replace(/\\s*<(\\/*\\w+)([^>]*)>\\s*/g, '<$1$2>');
+        const val = input.value.trim();
+        if (!val) return;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(val, 'application/xml');
+        const parseError = doc.querySelector('parsererror');
+        if (parseError) {
+            output.value = '';
+            errorMsg.textContent = '❌ XML Syntax Error: ' + parseError.textContent;
+            errorMsg.style.display = 'block';
+            actionRow.style.display = 'none';
+            return;
+        }
+        errorMsg.style.display = 'none';
+        
+        let minified = val.replace(/\\s*<(\\/?[\\w\\-\\:]+)([^>]*)>\\s*/g, '<$1$2>');
+        output.value = minified.trim();
+        actionRow.style.display = 'flex';
+    });
+
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        errorMsg.style.display = 'none';
+        actionRow.style.display = 'none';
+    });
+
+    copy.addEventListener('click', () => {
+        navigator.clipboard.writeText(output.value).then(() => alert('Copied XML to clipboard!'));
+    });
+
+    download.addEventListener('click', () => {
+        const blob = new Blob([output.value], { type: 'application/xml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'formatted.xml';
+        a.click();
+        URL.revokeObjectURL(url);
     });
 }
 `;
@@ -2268,11 +2434,17 @@ function generateProject() {
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="css-minify">Minify CSS</button>
                     <button class="btn btn-secondary" id="css-beautify">Beautify CSS</button>
+                    <button class="btn btn-secondary" id="css-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="css-output">Result CSS</label>
                     <textarea id="css-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row" id="css-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="css-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="css-download">Download CSS</button>
                 </div>
             </div>
             `;
@@ -2281,25 +2453,57 @@ function generateProject() {
     const output = document.getElementById('css-output');
     const mini = document.getElementById('css-minify');
     const beauty = document.getElementById('css-beautify');
+    const reset = document.getElementById('css-reset');
+    const copy = document.getElementById('css-copy');
+    const download = document.getElementById('css-download');
+    const actionRow = document.getElementById('css-action-row');
 
     if (!input) return;
+
+    function showResult(val) {
+        output.value = val;
+        actionRow.style.display = 'flex';
+    }
 
     mini.addEventListener('click', () => {
         let val = input.value;
         val = val.replace(/\\/\\*[\\s\\S]*?\\*\\//g, '');
         val = val.replace(/\\s*([{}|:;,])\\s*/g, '$1');
         val = val.replace(/\\s+/g, ' ');
-        output.value = val.trim();
+        showResult(val.trim());
     });
 
     beauty.addEventListener('click', () => {
         let val = input.value;
+        val = val.replace(/\\\\n/g, '\\n');
         val = val.replace(/\\s*([{}|:;,])\\s*/g, '$1');
         val = val.replace(/{/g, ' {\\n  ');
         val = val.replace(/;/g, ';\\n  ');
         val = val.replace(/\\n\\s*}/g, '\\n}\\n\\n');
         val = val.replace(/  }/g, '}');
-        output.value = val.trim();
+        showResult(val.trim());
+    });
+
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        actionRow.style.display = 'none';
+    });
+
+    copy.addEventListener('click', () => {
+        navigator.clipboard.writeText(output.value).then(() => alert('Copied CSS to clipboard!'));
+    });
+
+    download.addEventListener('click', () => {
+        const isMin = output.value.length < input.value.length;
+        const filename = isMin ? 'minified.css' : 'beautified.css';
+        const blob = new Blob([output.value], { type: 'text/css;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
     });
 }
 `;
@@ -2314,11 +2518,17 @@ function generateProject() {
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="js-minify">Minify JS</button>
                     <button class="btn btn-secondary" id="js-beautify">Beautify JS</button>
+                    <button class="btn btn-secondary" id="js-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="js-output">Result JavaScript</label>
                     <textarea id="js-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row" id="js-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="js-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="js-download">Download JS</button>
                 </div>
             </div>
             `;
@@ -2327,8 +2537,17 @@ function generateProject() {
     const output = document.getElementById('js-output');
     const mini = document.getElementById('js-minify');
     const beauty = document.getElementById('js-beautify');
+    const reset = document.getElementById('js-reset');
+    const copy = document.getElementById('js-copy');
+    const download = document.getElementById('js-download');
+    const actionRow = document.getElementById('js-action-row');
 
     if (!input) return;
+
+    function showResult(val) {
+        output.value = val;
+        actionRow.style.display = 'flex';
+    }
 
     mini.addEventListener('click', () => {
         let val = input.value;
@@ -2336,11 +2555,12 @@ function generateProject() {
         val = val.replace(/\\/\\/[^\\n]*\\n/g, '');
         val = val.replace(/\\s*([{}|:;,()=+\\-*/])\\s*/g, '$1');
         val = val.replace(/\\s+/g, ' ');
-        output.value = val.trim();
+        showResult(val.trim());
     });
 
     beauty.addEventListener('click', () => {
         let val = input.value;
+        val = val.replace(/\\\\n/g, '\\n');
         let pad = 0;
         let formatted = '';
         val.split('\\n').forEach(line => {
@@ -2349,7 +2569,29 @@ function generateProject() {
             formatted += '  '.repeat(Math.max(0, pad)) + trimmed + '\\n';
             if (trimmed.match(/{/)) pad++;
         });
-        output.value = formatted.trim();
+        showResult(formatted.trim());
+    });
+
+    reset.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        actionRow.style.display = 'none';
+    });
+
+    copy.addEventListener('click', () => {
+        navigator.clipboard.writeText(output.value).then(() => alert('Copied JS to clipboard!'));
+    });
+
+    download.addEventListener('click', () => {
+        const isMin = output.value.length < input.value.length;
+        const filename = isMin ? 'minified.js' : 'beautified.js';
+        const blob = new Blob([output.value], { type: 'application/javascript;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
     });
 }
 `;
@@ -4821,7 +5063,7 @@ function generateProject() {
             }
         } else if (tool.id === 'qr-code-generator') {
             librariesStr = '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>';
-        } else if (tool.id === 'qr-code-scanner') {
+        } else if (tool.id === 'qr-code-scanner' || tool.id === 'qr-code-decoder') {
             librariesStr = '<script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>';
         } else if (tool.id === 'barcode-generator') {
             librariesStr = '<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>';

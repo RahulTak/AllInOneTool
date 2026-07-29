@@ -1,138 +1,99 @@
 export function init() {
-    const uploadZone = document.getElementById('img-upload-zone');
-    const fileInput = document.getElementById('img-file-input');
-    const workspace = document.getElementById('image-workspace');
-    const originalPreview = document.getElementById('original-preview');
-    const processedPreview = document.getElementById('processed-preview');
-    const originalInfo = document.getElementById('original-info');
-    const processedInfo = document.getElementById('processed-info');
-    const widthInput = document.getElementById('size-width');
-    const heightInput = document.getElementById('size-height');
-    const rotateSelect = document.getElementById('rotate-select');
-    const formatSelect = document.getElementById('format-select');
-    const downloadBtn = document.getElementById('download-processed');
-    const resetBtn = document.getElementById('reset-image');
+    const zone = document.getElementById('qr-upload-zone');
+    const fileInput = document.getElementById('qr-file');
+    const previewContainer = document.getElementById('qr-preview-container');
+    const previewImg = document.getElementById('qr-preview');
+    const errorMsg = document.getElementById('qr-error');
+    const results = document.getElementById('qr-results');
+    const resultText = document.getElementById('qr-text');
+    
+    const copyBtn = document.getElementById('qr-btn-copy');
+    const linkBtn = document.getElementById('qr-btn-link');
+    const resetBtn = document.getElementById('qr-btn-reset');
 
-    let originalFile = null;
-    let canvas = document.createElement('canvas');
+    if (!zone) return;
 
-    if (!fileInput) return;
+    zone.addEventListener('click', () => fileInput.click());
+    
+    zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.style.borderColor = 'var(--primary-color)';
+    });
+
+    zone.addEventListener('dragleave', () => {
+        zone.style.borderColor = 'var(--border-color)';
+    });
+
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.style.borderColor = 'var(--border-color)';
+        const file = e.dataTransfer.files[0];
+        if (file) handleFile(file);
+    });
 
     fileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (file) processFile(file);
+        if (file) handleFile(file);
     });
 
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
+    function handleFile(file) {
+        errorMsg.style.display = 'none';
+        results.style.display = 'none';
+        linkBtn.style.display = 'none';
 
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            processFile(files[0]);
-        }
-    });
-
-    resetBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        originalFile = null;
-        workspace.style.display = 'none';
-        uploadZone.style.display = 'flex';
-    });
-
-    [widthInput, heightInput, rotateSelect, formatSelect].forEach(el => {
-        if (el) el.addEventListener('input', updateProcessedImage);
-    });
-
-    function processFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Unsupported format. Please select an image file.');
-            return;
-        }
-
-        originalFile = file;
         const reader = new FileReader();
-        reader.onload = function(evt) {
-            originalPreview.src = evt.target.result;
-            originalInfo.textContent = 'Size: ' + formatBytes(file.size);
-            uploadZone.style.display = 'none';
-            workspace.style.display = 'flex';
-
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewContainer.style.display = 'block';
+            
             const img = new Image();
-            img.src = evt.target.result;
             img.onload = () => {
-                widthInput.value = img.naturalWidth;
-                heightInput.value = img.naturalHeight;
-                updateProcessedImage();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                
+                try {
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    if (typeof jsQR !== 'undefined') {
+                        const code = jsQR(imgData.data, imgData.width, imgData.height);
+                        if (code) {
+                            resultText.textContent = code.data;
+                            results.style.display = 'block';
+                            
+                            if (code.data.startsWith('http://') || code.data.startsWith('https://')) {
+                                linkBtn.href = code.data;
+                                linkBtn.style.display = 'inline-block';
+                            }
+                        } else {
+                            errorMsg.textContent = '❌ Could not decode QR code. Make sure the image is clear and contains a valid QR code.';
+                            errorMsg.style.display = 'block';
+                        }
+                    } else {
+                        errorMsg.textContent = '❌ jsQR library was not loaded. Please ensure you are online.';
+                        errorMsg.style.display = 'block';
+                    }
+                } catch(err) {
+                    errorMsg.textContent = '❌ Error processing image pixels: ' + err.message;
+                    errorMsg.style.display = 'block';
+                }
             };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    function updateProcessedImage() {
-        const img = new Image();
-        img.src = originalPreview.src;
-        img.onload = function() {
-            const ctx = canvas.getContext('2d');
-            const targetW = parseInt(widthInput.value) || img.naturalWidth;
-            const targetH = parseInt(heightInput.value) || img.naturalHeight;
-            const angle = parseInt(rotateSelect.value) || 0;
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(resultText.textContent).then(() => alert('Copied QR output!'));
+    });
 
-            if (angle === 90 || angle === 270) {
-                canvas.width = targetH;
-                canvas.height = targetW;
-            } else {
-                canvas.width = targetW;
-                canvas.height = targetH;
-            }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(canvas.width / 2, canvas.height / 2);
-            ctx.rotate((angle * Math.PI) / 180);
-            ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
-            ctx.restore();
-
-            if (window.location.pathname.includes('grayscale-filter')) {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;
-                    data[i + 1] = avg;
-                    data[i + 2] = avg;
-                }
-                ctx.putImageData(imgData, 0, 0);
-            }
-
-            const mime = formatSelect.value;
-            const dataUrl = canvas.toDataURL(mime, 0.85);
-            processedPreview.src = dataUrl;
-
-            const head = 'data:' + mime + ';base64,';
-            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'Size: ' + formatBytes(sizeInBytes);
-
-            downloadBtn.href = dataUrl;
-            downloadBtn.download = 'processed_' + originalFile.name.replace(/\.[^/.]+$/, "") + '.' + mime.split('/')[1];
-        };
-    }
-
-    function formatBytes(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const dm = 2;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-    }
+    resetBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        previewContainer.style.display = 'none';
+        previewImg.src = '';
+        errorMsg.style.display = 'none';
+        results.style.display = 'none';
+        linkBtn.style.display = 'none';
+    });
 }

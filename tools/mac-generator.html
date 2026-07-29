@@ -24,24 +24,51 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="mac-type">MAC Type</label>
+                    <select id="mac-type" class="input-control">
+                        <option value="random">Random MAC Address</option>
+                        <option value="local">Locally Administered</option>
+                        <option value="unicast">Unicast MAC Address</option>
+                        <option value="multicast">Multicast MAC Address</option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="mac-sep">Octet Separator</label>
+                    <select id="mac-sep" class="input-control">
+                        <option value=":">Colon (:)</option>
+                        <option value="-">Hyphen (-)</option>
+                        <option value=".">Dot (.)</option>
+                        <option value="">None</option>
+                    </select>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="mac-qty">Quantity (1-100)</label>
+                    <input type="number" id="mac-qty" class="input-control" value="5" min="1" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="mac-case">Letter Case</label>
+                    <select id="mac-case" class="input-control">
+                        <option value="upper">UPPERCASE</option>
+                        <option value="lower">lowercase</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div class="form-group" style="margin-top:1.5rem;">
+                <label>Generated MAC Addresses</label>
+                <textarea readonly id="mac-output" class="input-control" style="font-family:var(--font-mono); min-height:180px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-primary" id="mac-btn-gen">Generate Again</button>
+                <button class="btn btn-secondary" id="mac-btn-copy">Copy List</button>
+                <button class="btn btn-secondary" id="mac-btn-download">Download List</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

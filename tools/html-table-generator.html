@@ -27,22 +27,58 @@
         <div class="tool-workspace">
             <div class="options-grid">
                 <div class="form-group">
-                    <label for="tbl-rows">Rows</label>
+                    <label for="tbl-rows">Rows (1-100)</label>
                     <input type="number" id="tbl-rows" class="input-control" value="3" min="1" max="100">
                 </div>
                 <div class="form-group">
-                    <label for="tbl-cols">Columns</label>
+                    <label for="tbl-cols">Columns (1-100)</label>
                     <input type="number" id="tbl-cols" class="input-control" value="3" min="1" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="tbl-align">Text Alignment</label>
+                    <select id="tbl-align" class="input-control">
+                        <option value="none">None</option>
+                        <option value="left">Left</option>
+                        <option value="center" selected>Center</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+                <div class="form-group" style="display:flex; align-items:center; height:100%;">
+                    <label style="cursor:pointer;"><input type="checkbox" id="tbl-header" checked> Include Header Row</label>
+                </div>
+                <div class="form-group">
+                    <label for="tbl-border-width">Border Width (px)</label>
+                    <input type="number" id="tbl-border-width" class="input-control" value="1" min="0" max="20">
+                </div>
+                <div class="form-group">
+                    <label for="tbl-border-color">Border Color</label>
+                    <input type="color" id="tbl-border-color" class="input-control" value="#cccccc" style="height:38px; padding:0.2rem;">
+                </div>
+                <div class="form-group">
+                    <label for="tbl-padding">Cell Padding (px)</label>
+                    <input type="number" id="tbl-padding" class="input-control" value="8" min="0" max="50">
+                </div>
+                <div class="form-group">
+                    <label for="tbl-spacing">Cell Spacing (px)</label>
+                    <input type="number" id="tbl-spacing" class="input-control" value="0" min="0" max="50">
                 </div>
             </div>
 
-            <div class="form-group" style="margin-top:1rem;">
+            <!-- Table Preview Box -->
+            <div style="margin-top:1.5rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; background:#ffffff; overflow-x:auto;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); margin-bottom:0.75rem;">Live Preview</div>
+                <div id="tbl-preview-container"></div>
+            </div>
+
+            <div class="form-group" style="margin-top:1.5rem;">
                 <label>HTML Code Result</label>
                 <textarea readonly id="tbl-code-output" class="input-control" style="font-family:var(--font-mono); min-height:180px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
             </div>
 
             <div class="action-row">
-                <button class="btn btn-primary" id="tbl-btn-copy">Copy HTML Table</button>
+                <button class="btn btn-secondary" id="tbl-btn-reset">Reset</button>
+                <button class="btn btn-secondary" id="tbl-btn-copy">Copy HTML Table</button>
+                <button class="btn btn-primary" id="tbl-btn-download">Download HTML File</button>
             </div>
         </div>
         

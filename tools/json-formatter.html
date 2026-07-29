@@ -30,14 +30,22 @@
                     <textarea id="json-input" class="input-control" placeholder="Paste raw JSON string..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
                 </div>
 
+                <div id="json-error-msg" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); margin-bottom:1rem; font-size:0.85rem; font-family:var(--font-mono);"></div>
+
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="json-beautify">Beautify</button>
                     <button class="btn btn-secondary" id="json-minify">Minify</button>
+                    <button class="btn btn-secondary" id="json-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="json-output">Result Output</label>
                     <textarea id="json-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row" id="json-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="json-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="json-download">Download JSON</button>
                 </div>
             </div>
             

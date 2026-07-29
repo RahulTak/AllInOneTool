@@ -24,24 +24,27 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
-                </div>
+        <div class="tool-workspace">
+            <div style="background:var(--bg-primary); border-left:4px solid var(--accent-color); padding:1rem; margin-bottom:1.5rem; font-size:0.9rem; line-height:1.5;">
+                <strong>💡 Note on Browser Redirect Checks:</strong> Due to security restrictions (CORS), web browsers block scripts from tracking redirection paths across foreign domains. Real-time path tracing is only possible using server-side proxies or backend APIs. 
+                <br><br>
+                For educational purposes, you can build, simulate, and analyze custom redirect chains below to test hops, loop detection, and crawlers policies.
             </div>
-            
+
+            <div style="margin-bottom:1.5rem;">
+                <h4>Build Redirect Hop Chain</h4>
+                <div id="red-chain-container" style="display:flex; flex-direction:column; gap:0.75rem; margin-top:0.75rem; margin-bottom:1rem;"></div>
+                <button class="btn btn-secondary" id="red-add-hop" type="button">+ Add Next Hop</button>
+            </div>
+
+            <div id="red-analysis" style="display:none; background:var(--bg-primary); padding:1rem; border:1px solid var(--border-color); border-radius:var(--radius-sm);">
+                <h3 style="margin-bottom:0.75rem;">Analysis Summary</h3>
+                <div id="red-visual-flow" style="display:flex; flex-wrap:wrap; align-items:center; gap:0.5rem; margin-bottom:1.5rem; font-family:var(--font-mono); font-size:0.85rem;"></div>
+                
+                <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.9rem;" id="red-checklists"></div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

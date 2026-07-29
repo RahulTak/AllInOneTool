@@ -24,24 +24,28 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
-                </div>
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="html-input">HTML Input</label>
+                <textarea id="html-input" class="input-control" placeholder="Paste HTML content to minify..." style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem;"></textarea>
             </div>
-            
+
+            <div class="action-row" style="margin-bottom:1.5rem;">
+                <button class="btn btn-primary" id="html-minify">Minify HTML</button>
+                <button class="btn btn-secondary" id="html-reset">Reset</button>
+            </div>
+
+            <div class="form-group">
+                <label for="html-output">Result Output</label>
+                <textarea id="html-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+            </div>
+
+            <div class="action-row" id="html-action-row" style="display:none;">
+                <button class="btn btn-secondary" id="html-copy">Copy Output</button>
+                <button class="btn btn-secondary" id="html-download">Download Minified HTML</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

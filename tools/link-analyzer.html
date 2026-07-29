@@ -24,24 +24,58 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="link-html-input">Paste HTML Content</label>
+                <textarea id="link-html-input" class="input-control" placeholder="Paste raw <html> structure here..." style="min-height: 120px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
+            <div class="form-group">
+                <label for="link-file-input">Or Upload HTML File</label>
+                <input type="file" id="link-file-input" class="input-control" accept=".html,.htm">
+            </div>
 
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+            <div class="options-grid">
+                <div class="form-group">
+                    <label for="link-base-url">Base Website URL (for Internal recognition)</label>
+                    <input type="text" id="link-base-url" class="input-control" value="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label for="link-search">Search Links</label>
+                    <input type="text" id="link-search" class="input-control" placeholder="Search URL or anchor text...">
                 </div>
             </div>
-            
+
+            <div class="action-row" style="margin-top:1rem;">
+                <button class="btn btn-primary" id="link-btn-analyze">Analyze Links</button>
+                <button class="btn btn-secondary" id="link-btn-reset">Reset</button>
+            </div>
+
+            <div id="link-results" style="display:none; margin-top:1.5rem;">
+                <h3>Link Extraction Summary</h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; margin:1rem 0;" id="link-stats"></div>
+
+                <div class="action-row" style="margin-bottom:0.75rem;">
+                    <button class="btn btn-secondary btn-sm" id="link-btn-copy-all">Copy All Link URLs</button>
+                    <button class="btn btn-secondary btn-sm" id="link-btn-download-csv">Download CSV Report</button>
+                </div>
+
+                <div style="max-height:300px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm);">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left;">
+                        <thead>
+                            <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-color);">
+                                <th style="padding:0.5rem;">URL</th>
+                                <th style="padding:0.5rem; width:150px;">Anchor Text</th>
+                                <th style="padding:0.5rem; width:120px;">Type</th>
+                                <th style="padding:0.5rem; width:80px;">Occurs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="link-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

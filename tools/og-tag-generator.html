@@ -24,24 +24,67 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="og-title">Title</label>
+                    <input type="text" id="og-title" class="input-control" value="My Website Homepage">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="og-sitename">Site Name</label>
+                    <input type="text" id="og-sitename" class="input-control" value="AllInOneTool">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="og-url">Page URL</label>
+                    <input type="text" id="og-url" class="input-control" value="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label for="og-image">Image URL</label>
+                    <input type="text" id="og-image" class="input-control" value="https://example.com/assets/banner.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="og-locale">Locale</label>
+                    <input type="text" id="og-locale" class="input-control" value="en_US">
+                </div>
+                <div class="form-group">
+                    <label for="og-type">Type</label>
+                    <select id="og-type" class="input-control">
+                        <option value="website">website</option>
+                        <option value="article">article</option>
+                        <option value="book">book</option>
+                        <option value="profile">profile</option>
+                    </select>
                 </div>
             </div>
-            
+            <div class="form-group" style="margin-top:0.75rem;">
+                <label for="og-desc">Description</label>
+                <textarea id="og-desc" class="input-control" style="min-height:60px;" placeholder="Describe your website...">AllInOneTool provides free, secure, and client-side conversion utilities directly inside your browser memory.</textarea>
+            </div>
+
+            <div style="margin-top:1.5rem; border:1px solid var(--border-color); border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-secondary);">
+                <div style="padding:0.5rem 1rem; border-bottom:1px solid var(--border-color); font-size:0.8rem; font-weight:700; color:var(--text-secondary);">Social Share Preview Mock</div>
+                <div style="display:flex; flex-direction:column;">
+                    <div id="mock-og-image-div" style="height:160px; background:#ccc; background-size:cover; background-position:center;"></div>
+                    <div style="padding:1rem; background:#fff; color:#000; border-top:1px solid #ddd;">
+                        <div id="mock-og-site" style="font-size:0.75rem; color:#606770; text-transform:uppercase; margin-bottom:0.25rem;">allinonetool</div>
+                        <strong id="mock-og-title" style="font-size:1rem; display:block; margin-bottom:0.25rem;">My Website Homepage</strong>
+                        <span id="mock-og-desc" style="font-size:0.85rem; color:#606770; line-height:1.4; display:block;">AllInOneTool provides free, secure...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:1.5rem;">
+                <label>Generated OG Tags Output</label>
+                <textarea readonly id="og-output" class="input-control" style="font-family:var(--font-mono); min-height:180px; font-size:0.85rem; background:var(--bg-primary);"></textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="og-btn-reset">Reset</button>
+                <button class="btn btn-secondary" id="og-btn-copy">Copy Tags</button>
+                <button class="btn btn-primary" id="og-btn-download">Download HTML snippet</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

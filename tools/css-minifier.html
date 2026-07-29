@@ -33,11 +33,17 @@
                 <div class="action-row" style="margin-bottom:1.5rem;">
                     <button class="btn btn-primary" id="css-minify">Minify CSS</button>
                     <button class="btn btn-secondary" id="css-beautify">Beautify CSS</button>
+                    <button class="btn btn-secondary" id="css-reset">Reset</button>
                 </div>
 
                 <div class="form-group">
                     <label for="css-output">Result CSS</label>
                     <textarea id="css-output" readonly class="input-control" style="min-height: 150px; font-family:var(--font-mono); font-size:0.85rem; background:var(--bg-primary);"></textarea>
+                </div>
+
+                <div class="action-row" id="css-action-row" style="display:none;">
+                    <button class="btn btn-secondary" id="css-copy">Copy Output</button>
+                    <button class="btn btn-secondary" id="css-download">Download CSS</button>
                 </div>
             </div>
             

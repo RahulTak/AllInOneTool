@@ -24,24 +24,43 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div class="form-group">
+                <label for="hmac-key">Secret Key (Hex or Text)</label>
+                <input type="text" id="hmac-key" class="input-control" placeholder="Enter secret HMAC key...">
+            </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
+            <div class="form-group">
+                <label for="hmac-message">Message String</label>
+                <textarea id="hmac-message" class="input-control" placeholder="Enter message to generate HMAC for..." style="min-height:100px;"></textarea>
+            </div>
 
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+            <div class="options-grid">
+                <div class="form-group">
+                    <label for="hmac-algo">HMAC Algorithm</label>
+                    <select id="hmac-algo" class="input-control">
+                        <option value="MD5">HMAC-MD5</option>
+                        <option value="SHA-1">HMAC-SHA1</option>
+                        <option value="SHA-256" selected>HMAC-SHA256</option>
+                        <option value="SHA-384">HMAC-SHA384</option>
+                        <option value="SHA-512">HMAC-SHA512</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1rem; margin-top:1.5rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Generated HMAC Hash:</span>
+                    <button class="btn btn-secondary btn-sm" id="hmac-btn-copy">Copy Hash</button>
+                </div>
+                <div id="hmac-output" style="font-family:var(--font-mono); font-size:1.1rem; font-weight:700; word-break:break-all; padding-top:0.5rem; color:var(--primary-color);">-</div>
+            </div>
+
+            <div class="action-row" style="margin-top:1.5rem;">
+                <button class="btn btn-secondary" id="hmac-btn-reset">Reset</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>
