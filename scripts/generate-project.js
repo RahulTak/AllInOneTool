@@ -3,6 +3,7 @@ const path = require('path');
 const newToolsDefs = require('./new-tools-definitions.js');
 const imageToolsDefs = require('./image-tools-definitions.js');
 const pdfToolsDefs = require('./pdf-tools-definitions.js');
+const pdfToolsFixDefs = require('./pdf-tools-fix-definitions.js');
 const calculatorToolsDefs = require('./calculator-tools-definitions.js');
 const imageConvertersFixDefs = require('./image-converters-fix-definitions.js');
 const textToolsDefs = require('./text-tools-definitions.js');
@@ -290,7 +291,11 @@ function generateProject() {
         let workspaceHTML = '';
         let logicJS = '';
 
-        if (imageToolsDefs[tool.id]) {
+        if (pdfToolsFixDefs[tool.id]) {
+            const def = pdfToolsFixDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (imageToolsDefs[tool.id]) {
             const def = imageToolsDefs[tool.id]();
             workspaceHTML = def.workspaceHTML;
             logicJS = def.logicJS;
