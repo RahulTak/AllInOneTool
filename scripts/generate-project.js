@@ -4,6 +4,8 @@ const newToolsDefs = require('./new-tools-definitions.js');
 const imageToolsDefs = require('./image-tools-definitions.js');
 const pdfToolsDefs = require('./pdf-tools-definitions.js');
 const calculatorToolsDefs = require('./calculator-tools-definitions.js');
+const imageConvertersFixDefs = require('./image-converters-fix-definitions.js');
+const textToolsDefs = require('./text-tools-definitions.js');
 
 const CATEGORIES = [
     { id: 'image', name: 'Image Tools', icon: '🖼️' },
@@ -302,6 +304,14 @@ function generateProject() {
             logicJS = def.logicJS;
         } else if (calculatorToolsDefs[tool.id]) {
             const def = calculatorToolsDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (imageConvertersFixDefs[tool.id]) {
+            const def = imageConvertersFixDefs[tool.id]();
+            workspaceHTML = def.workspaceHTML;
+            logicJS = def.logicJS;
+        } else if (textToolsDefs[tool.id]) {
+            const def = textToolsDefs[tool.id]();
             workspaceHTML = def.workspaceHTML;
             logicJS = def.logicJS;
         } else if (tool.id === 'password-hash-checker') {

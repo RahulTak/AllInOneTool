@@ -24,25 +24,31 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace" style="display:flex; flex-direction:column; gap:1.5rem;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
-                    <div class="form-group">
-                        <label for="markdown-input">Markdown Input</label>
-                        <textarea id="markdown-input" class="input-control" placeholder="Type Markdown here... e.g. # Hello World" style="min-height: 350px; font-family:var(--font-mono); font-size:0.85rem; line-height:1.6;"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Live HTML Preview</label>
-                        <div id="html-preview" style="min-height: 350px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding:1rem; overflow-y:auto; background:#ffffff; color:#000;"></div>
-                    </div>
+        <div class="tool-workspace" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="mth-input">Markdown Input</label>
+                    <textarea id="mth-input" class="input-control" placeholder="Type Markdown here... e.g. # Hello World" style="min-height: 350px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;"></textarea>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="md-clear">Clear</button>
-                    <button class="btn btn-primary" id="md-copy">Copy HTML Code</button>
-                    <button class="btn btn-secondary" id="md-download">Download HTML File</button>
+                <div class="form-group">
+                    <label for="mth-output-code">Generated HTML Code</label>
+                    <textarea id="mth-output-code" class="input-control" readonly placeholder="HTML code will appear here..." style="min-height: 350px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; background: var(--bg-primary);"></textarea>
                 </div>
             </div>
-            
+
+            <div class="form-group">
+                <label>Live HTML Preview</label>
+                <div id="mth-preview" style="min-height: 180px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem; overflow-y: auto; background: var(--bg-primary);"></div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="mth-btn-clear">Clear</button>
+                <button class="btn btn-secondary" id="mth-btn-reset">Reset Example</button>
+                <button class="btn btn-secondary" id="mth-btn-download">Download HTML</button>
+                <button class="btn btn-primary" id="mth-btn-copy">Copy HTML Code</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

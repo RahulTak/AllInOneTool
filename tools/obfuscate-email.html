@@ -24,24 +24,37 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid" style="margin-bottom: 1.5rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="obf-mode">Obfuscation Format</label>
+                    <select id="obf-mode" class="input-control">
+                        <option value="readable" selected>Human Readable: user [at] example [dot] com</option>
+                        <option value="entities">HTML Decimal Entities: &amp;#117;&amp;#115;&amp;#101;&amp;#114;...</option>
+                        <option value="mailto">URL-Encoded mailto Link: &lt;a href="mailto:%75..."&gt;</option>
+                        <option value="js">JavaScript Concatenation Snippet</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="obf-input">Input Email(s) or Text</label>
+                    <textarea id="obf-input" class="input-control" placeholder="Enter email address... e.g. hello@example.com" style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="obf-output">Obfuscated Anti-Scrape Output</label>
+                    <textarea id="obf-output" class="input-control" readonly placeholder="Obfuscated address will appear here..." style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; background: var(--bg-primary);"></textarea>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="obf-btn-clear">Clear</button>
+                <button class="btn btn-secondary" id="obf-btn-reset">Reset Example</button>
+                <button class="btn btn-primary" id="obf-btn-copy">Copy Result</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

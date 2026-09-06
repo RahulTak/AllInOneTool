@@ -24,24 +24,80 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="wfc-input">Text Content to Analyze</label>
+                <textarea id="wfc-input" class="input-control" placeholder="Type or paste paragraphs here to analyze word occurrences and frequencies..." style="min-height: 180px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;"></textarea>
+            </div>
 
+            <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="wfc-sort">Sort Frequency Table By</label>
+                    <select id="wfc-sort" class="input-control">
+                        <option value="freq-desc" selected>Frequency (High to Low)</option>
+                        <option value="freq-asc">Frequency (Low to High)</option>
+                        <option value="alpha-asc">Alphabetical (A to Z)</option>
+                        <option value="alpha-desc">Alphabetical (Z to A)</option>
+                    </select>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="wfc-min-len">Minimum Word Length</label>
+                    <input type="number" id="wfc-min-len" class="input-control" value="1" min="1" max="20">
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem;">
+                        <input type="checkbox" id="wfc-stop-words"> Ignore Stop Words (the, a, is...)
+                    </label>
                 </div>
             </div>
-            
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Total Words</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color); margin-top: 0.25rem;" id="wfc-total-words">0</h3>
+                </div>
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Unique Words</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;" id="wfc-unique-words">0</h3>
+                </div>
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Total Characters</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;" id="wfc-total-chars">0</h3>
+                </div>
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Top Word</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color); margin-top: 0.25rem;" id="wfc-top-word">-</h3>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Word Frequency Distribution</label>
+                <div style="max-height: 320px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-primary);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                        <thead style="background: var(--bg-secondary); position: sticky; top: 0;">
+                            <tr>
+                                <th style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color);">Word</th>
+                                <th style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); width: 100px;">Count</th>
+                                <th style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); width: 120px;">Percentage</th>
+                                <th style="padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-color); width: 160px;">Density</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wfc-table-body">
+                            <tr>
+                                <td colspan="4" style="padding: 2rem; text-align: center; color: var(--text-secondary);">No words analyzed yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="wfc-btn-clear">Clear</button>
+                <button class="btn btn-secondary" id="wfc-btn-reset">Reset Example</button>
+                <button class="btn btn-primary" id="wfc-btn-copy">Copy Frequency Table</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

@@ -9,7 +9,6 @@ export function init() {
     const widthInput = document.getElementById('size-width');
     const heightInput = document.getElementById('size-height');
     const rotateSelect = document.getElementById('rotate-select');
-    const formatSelect = document.getElementById('format-select');
     const downloadBtn = document.getElementById('download-processed');
     const resetBtn = document.getElementById('reset-image');
 
@@ -49,13 +48,13 @@ export function init() {
         uploadZone.style.display = 'flex';
     });
 
-    [widthInput, heightInput, rotateSelect, formatSelect].forEach(el => {
+    [widthInput, heightInput, rotateSelect].forEach(el => {
         if (el) el.addEventListener('input', updateProcessedImage);
     });
 
     function processFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Unsupported format. Please select an image file.');
+        if (!file.type.match(/^image\/(jpeg|jpg)$/) && !file.name.match(/\.(jpe?g)$/i)) {
+            alert('Please upload a valid JPG or JPEG image.');
             return;
         }
 
@@ -63,7 +62,7 @@ export function init() {
         const reader = new FileReader();
         reader.onload = function(evt) {
             originalPreview.src = evt.target.result;
-            originalInfo.textContent = 'Size: ' + formatBytes(file.size);
+            originalInfo.textContent = 'Original: ' + formatBytes(file.size);
             uploadZone.style.display = 'none';
             workspace.style.display = 'flex';
 
@@ -79,6 +78,7 @@ export function init() {
     }
 
     function updateProcessedImage() {
+        if (!originalPreview.src) return;
         const img = new Image();
         img.src = originalPreview.src;
         img.onload = function() {
@@ -102,28 +102,17 @@ export function init() {
             ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
             ctx.restore();
 
-            if (window.location.pathname.includes('grayscale-filter')) {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;
-                    data[i + 1] = avg;
-                    data[i + 2] = avg;
-                }
-                ctx.putImageData(imgData, 0, 0);
-            }
-
-            const mime = formatSelect.value;
-            const dataUrl = canvas.toDataURL(mime, 0.85);
+            const mime = 'image/png';
+            const dataUrl = canvas.toDataURL(mime);
             processedPreview.src = dataUrl;
 
             const head = 'data:' + mime + ';base64,';
             const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'Size: ' + formatBytes(sizeInBytes);
+            processedInfo.textContent = 'PNG Size: ' + formatBytes(sizeInBytes);
 
             downloadBtn.href = dataUrl;
-            downloadBtn.download = 'processed_' + originalFile.name.replace(/\.[^/.]+$/, "") + '.' + mime.split('/')[1];
+            const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
+            downloadBtn.download = baseName + '.png';
         };
     }
 

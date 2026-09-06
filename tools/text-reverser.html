@@ -24,24 +24,37 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid" style="margin-bottom: 1.5rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="rev-mode">Reversal Mode</label>
+                    <select id="rev-mode" class="input-control">
+                        <option value="chars" selected>Reverse Characters (e.g. Hello World → dlroW olleH)</option>
+                        <option value="words">Reverse Words (e.g. Hello World → World Hello)</option>
+                        <option value="each-word">Reverse Each Word (e.g. Hello World → olleH dlroW)</option>
+                        <option value="lines">Reverse Lines (first line becomes last)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="rev-input">Input Text</label>
+                    <textarea id="rev-input" class="input-control" placeholder="Type or paste text to reverse..." style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="rev-output">Reversed Output</label>
+                    <textarea id="rev-output" class="input-control" readonly placeholder="Reversed text will appear here..." style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; background: var(--bg-primary);"></textarea>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="rev-btn-clear">Clear</button>
+                <button class="btn btn-secondary" id="rev-btn-reset">Reset Example</button>
+                <button class="btn btn-primary" id="rev-btn-copy">Copy Result</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

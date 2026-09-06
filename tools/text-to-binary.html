@@ -24,24 +24,41 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div class="options-grid" style="margin-bottom: 1.5rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="ttb-sep">Byte Delimiter</label>
+                    <select id="ttb-sep" class="input-control">
+                        <option value="space" selected>Space Separated (e.g. 01001000 01100101)</option>
+                        <option value="none">None (Continuous binary)</option>
+                        <option value="comma">Comma Separated</option>
+                        <option value="prefix">0b Prefix (e.g. 0b01001000, 0b01100101)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="ttb-input">Input Text (ASCII &amp; UTF-8)</label>
+                    <textarea id="ttb-input" class="input-control" placeholder="Type text here to convert into binary bytes..." style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ttb-output">8-Bit Binary Output</label>
+                    <textarea id="ttb-output" class="input-control" readonly placeholder="Binary byte sequence will appear here..." style="min-height: 250px; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6; background: var(--bg-primary);"></textarea>
+                </div>
+            </div>
+
+            <div id="ttb-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">
+                Stats: <strong id="ttb-stats">0 characters, 0 bytes, 0 bits</strong>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="ttb-btn-clear">Clear</button>
+                <button class="btn btn-secondary" id="ttb-btn-reset">Reset Example</button>
+                <button class="btn btn-primary" id="ttb-btn-copy">Copy Binary</button>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

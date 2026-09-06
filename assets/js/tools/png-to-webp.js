@@ -9,7 +9,11 @@ export function init() {
     const widthInput = document.getElementById('size-width');
     const heightInput = document.getElementById('size-height');
     const rotateSelect = document.getElementById('rotate-select');
-    const formatSelect = document.getElementById('format-select');
+    const qualityInput = document.getElementById('webp-quality');
+    const qualityVal = document.getElementById('quality-val');
+    const cardOrigSize = document.getElementById('card-orig-size');
+    const cardWebpSize = document.getElementById('card-webp-size');
+    const cardSavingsBadge = document.getElementById('card-savings-badge');
     const downloadBtn = document.getElementById('download-processed');
     const resetBtn = document.getElementById('reset-image');
 
@@ -49,13 +53,20 @@ export function init() {
         uploadZone.style.display = 'flex';
     });
 
-    [widthInput, heightInput, rotateSelect, formatSelect].forEach(el => {
+    if (qualityInput && qualityVal) {
+        qualityInput.addEventListener('input', () => {
+            qualityVal.textContent = qualityInput.value + '%';
+            updateProcessedImage();
+        });
+    }
+
+    [widthInput, heightInput, rotateSelect].forEach(el => {
         if (el) el.addEventListener('input', updateProcessedImage);
     });
 
     function processFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Unsupported format. Please select an image file.');
+        if (file.type !== 'image/png' && !file.name.match(/\.png$/i)) {
+            alert('Please upload a valid PNG image.');
             return;
         }
 
@@ -63,7 +74,9 @@ export function init() {
         const reader = new FileReader();
         reader.onload = function(evt) {
             originalPreview.src = evt.target.result;
-            originalInfo.textContent = 'Size: ' + formatBytes(file.size);
+            const origSizeFormatted = formatBytes(file.size);
+            originalInfo.textContent = 'Original PNG: ' + origSizeFormatted;
+            cardOrigSize.textContent = origSizeFormatted;
             uploadZone.style.display = 'none';
             workspace.style.display = 'flex';
 
@@ -79,6 +92,7 @@ export function init() {
     }
 
     function updateProcessedImage() {
+        if (!originalPreview.src) return;
         const img = new Image();
         img.src = originalPreview.src;
         img.onload = function() {
@@ -95,6 +109,7 @@ export function init() {
                 canvas.height = targetH;
             }
 
+            // Preserves alpha channel transparency
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -102,28 +117,40 @@ export function init() {
             ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
             ctx.restore();
 
-            if (window.location.pathname.includes('grayscale-filter')) {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg;
-                    data[i + 1] = avg;
-                    data[i + 2] = avg;
-                }
-                ctx.putImageData(imgData, 0, 0);
-            }
-
-            const mime = formatSelect.value;
-            const dataUrl = canvas.toDataURL(mime, 0.85);
+            const quality = qualityInput ? (parseInt(qualityInput.value, 10) / 100) : 0.8;
+            const mime = 'image/webp';
+            const dataUrl = canvas.toDataURL(mime, quality);
             processedPreview.src = dataUrl;
 
             const head = 'data:' + mime + ';base64,';
-            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'Size: ' + formatBytes(sizeInBytes);
+            const webpBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
+            const webpSizeFormatted = formatBytes(webpBytes);
+            processedInfo.textContent = 'WebP Size: ' + webpSizeFormatted;
+            cardWebpSize.textContent = webpSizeFormatted;
+
+            // Mathematically accurate size difference calculation
+            if (originalFile && originalFile.size > 0) {
+                const origBytes = originalFile.size;
+                if (webpBytes < origBytes) {
+                    const savedPct = ((origBytes - webpBytes) / origBytes * 100).toFixed(1);
+                    cardSavingsBadge.textContent = 'Saved: ' + savedPct + '%';
+                    cardSavingsBadge.style.background = 'rgba(34,197,94,0.15)';
+                    cardSavingsBadge.style.color = '#16a34a';
+                } else if (webpBytes > origBytes) {
+                    const incPct = ((webpBytes - origBytes) / origBytes * 100).toFixed(1);
+                    cardSavingsBadge.textContent = 'Size: +' + incPct + '%';
+                    cardSavingsBadge.style.background = 'rgba(234,179,8,0.15)';
+                    cardSavingsBadge.style.color = '#ca8a04';
+                } else {
+                    cardSavingsBadge.textContent = 'Size unchanged (0.0%)';
+                    cardSavingsBadge.style.background = 'rgba(100,116,139,0.15)';
+                    cardSavingsBadge.style.color = 'var(--text-secondary)';
+                }
+            }
 
             downloadBtn.href = dataUrl;
-            downloadBtn.download = 'processed_' + originalFile.name.replace(/\.[^/.]+$/, "") + '.' + mime.split('/')[1];
+            const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
+            downloadBtn.download = baseName + '.webp';
         };
     }
 
