@@ -86,9 +86,217 @@ export function init() {
         previewGrid.innerHTML = tableHtml;
     }
 
+    async function generateDataDrivenPdf(rows, sheetName, originalName) {
+        const PDFLib = window.PDFLib;
+        if (!PDFLib) {
+            throw new Error('PDFLib library is required for data-driven PDF generation.');
+        }
+
+        const { PDFDocument, rgb, StandardFonts } = PDFLib;
+        const pdfDoc = await PDFDocument.create();
+        const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+        // Filter out completely empty rows
+        const cleanRows = rows.filter(r => r && r.some(c => c !== null && c !== undefined && String(c).trim() !== ''));
+        if (cleanRows.length === 0) {
+            throw new Error('No data found in sheet to export.');
+        }
+
+        // Determine column count
+        const colCount = Math.max(...cleanRows.map(r => r.length));
+        if (colCount === 0) {
+            throw new Error('No columns found in sheet data.');
+        }
+
+        // Normalize all rows to have colCount cells and sanitize text for StandardFonts
+        const normalizedRows = cleanRows.map(r => {
+            const row = [];
+            for (let i = 0; i < colCount; i++) {
+                const val = r[i] !== undefined && r[i] !== null ? String(r[i]).trim() : '';
+                // Sanitize text for standard font (WinAnsi encoding)
+                row.push(val.replace(/[^\x20-\x7E\xA0-\xFF]/g, ' '));
+            }
+            return row;
+        });
+
+        // Use landscape orientation for spreadsheets to provide ample width
+        const pageWidth = 792;  // Letter landscape: 11in = 792 pt
+        const pageHeight = 612; // 8.5in = 612 pt
+        const marginLeft = 36;
+        const marginRight = 36;
+        const marginTop = 45;
+        const marginBottom = 40;
+        const tableWidth = pageWidth - marginLeft - marginRight;
+
+        // Calculate column widths based on content lengths
+        const colMaxLens = new Array(colCount).fill(1);
+        normalizedRows.forEach(row => {
+            row.forEach((cell, i) => {
+                colMaxLens[i] = Math.max(colMaxLens[i], cell.length);
+            });
+        });
+
+        const totalLenScore = colMaxLens.reduce((sum, len) => sum + Math.min(len, 40), 0);
+        let colWidths = colMaxLens.map(len => {
+            const ratio = Math.min(len, 40) / (totalLenScore || 1);
+            return Math.max(50, Math.floor(ratio * tableWidth));
+        });
+
+        // Adjust sum of column widths to exactly match tableWidth
+        const currentSum = colWidths.reduce((a, b) => a + b, 0);
+        const diff = tableWidth - currentSum;
+        colWidths[colWidths.length - 1] += diff;
+
+        // Row metrics
+        const headerRowHeight = 22;
+        const dataRowHeight = 18;
+        const fontSizeHeader = 8.5;
+        const fontSizeData = 8;
+
+        // Calculate rows per page
+        // Page 1 has title block (~32pt)
+        const firstPageAvailableHeight = pageHeight - marginTop - marginBottom - 32;
+        const firstPageRowsCount = Math.max(1, Math.floor((firstPageAvailableHeight - headerRowHeight) / dataRowHeight));
+        const subPageAvailableHeight = pageHeight - marginTop - marginBottom;
+        const subPageRowsCount = Math.max(1, Math.floor((subPageAvailableHeight - headerRowHeight) / dataRowHeight));
+
+        // Data rows: index 0 is header, 1..N are data
+        const headerRow = normalizedRows[0];
+        const dataRows = normalizedRows.slice(1);
+
+        // Group data rows into pages
+        const pagesData = [];
+        let rIndex = 0;
+        pagesData.push(dataRows.slice(0, firstPageRowsCount));
+        rIndex = firstPageRowsCount;
+        while (rIndex < dataRows.length) {
+            pagesData.push(dataRows.slice(rIndex, rIndex + subPageRowsCount));
+            rIndex += subPageRowsCount;
+        }
+
+        const totalPages = pagesData.length;
+
+        function truncate(text, font, size, maxWidth) {
+            if (!text) return '';
+            let current = text;
+            while (current.length > 0 && font.widthOfTextAtSize(current, size) > maxWidth) {
+                current = current.slice(0, -1);
+            }
+            if (current.length < text.length && current.length > 3) {
+                current = current.slice(0, -3) + '...';
+            }
+            return current;
+        }
+
+        // Draw each page
+        pagesData.forEach((pageRows, pageIdx) => {
+            const page = pdfDoc.addPage([pageWidth, pageHeight]);
+            let currentY = pageHeight - marginTop;
+
+            // Header info on first page
+            if (pageIdx === 0) {
+                const title = sheetName ? ('Sheet: ' + sheetName) : 'Spreadsheet Export';
+                page.drawText(title, {
+                    x: marginLeft,
+                    y: currentY,
+                    size: 13,
+                    font: fontBold,
+                    color: rgb(0.06, 0.09, 0.16)
+                });
+                const sub = 'Workbook: ' + originalName + ' | Total Records: ' + dataRows.length;
+                page.drawText(sub, {
+                    x: marginLeft,
+                    y: currentY - 14,
+                    size: 8,
+                    font: fontRegular,
+                    color: rgb(0.4, 0.45, 0.52)
+                });
+                currentY -= 32;
+            }
+
+            // Draw Table Header
+            let currentX = marginLeft;
+            colWidths.forEach((w, colIdx) => {
+                page.drawRectangle({
+                    x: currentX,
+                    y: currentY - headerRowHeight,
+                    width: w,
+                    height: headerRowHeight,
+                    color: rgb(0.93, 0.95, 0.98),
+                    borderColor: rgb(0.8, 0.84, 0.88),
+                    borderWidth: 0.5
+                });
+                const text = truncate(headerRow[colIdx] || '', fontBold, fontSizeHeader, w - 8);
+                if (text) {
+                    page.drawText(text, {
+                        x: currentX + 4,
+                        y: currentY - headerRowHeight + 6,
+                        size: fontSizeHeader,
+                        font: fontBold,
+                        color: rgb(0.06, 0.09, 0.16)
+                    });
+                }
+                currentX += w;
+            });
+            currentY -= headerRowHeight;
+
+            // Draw Data Rows
+            pageRows.forEach((row, rowInPageIdx) => {
+                const isEven = rowInPageIdx % 2 === 0;
+                const bgColor = isEven ? rgb(1, 1, 1) : rgb(0.97, 0.98, 0.99);
+                let colX = marginLeft;
+
+                colWidths.forEach((w, colIdx) => {
+                    page.drawRectangle({
+                        x: colX,
+                        y: currentY - dataRowHeight,
+                        width: w,
+                        height: dataRowHeight,
+                        color: bgColor,
+                        borderColor: rgb(0.88, 0.9, 0.93),
+                        borderWidth: 0.5
+                    });
+                    const cellVal = row[colIdx] || '';
+                    const text = truncate(cellVal, fontRegular, fontSizeData, w - 8);
+                    if (text) {
+                        page.drawText(text, {
+                            x: colX + 4,
+                            y: currentY - dataRowHeight + 5,
+                            size: fontSizeData,
+                            font: fontRegular,
+                            color: rgb(0.12, 0.16, 0.22)
+                        });
+                    }
+                    colX += w;
+                });
+                currentY -= dataRowHeight;
+            });
+
+            // Footer (Page Number)
+            const footerText = 'Page ' + (pageIdx + 1) + ' of ' + totalPages;
+            const footerWidth = fontRegular.widthOfTextAtSize(footerText, 8);
+            page.drawText(footerText, {
+                x: (pageWidth - footerWidth) / 2,
+                y: 18,
+                size: 8,
+                font: fontRegular,
+                color: rgb(0.45, 0.5, 0.55)
+            });
+        });
+
+        // Save PDF and validate non-empty binary
+        const pdfBytes = await pdfDoc.save();
+        if (!pdfBytes || pdfBytes.length < 500) {
+            throw new Error('Generated PDF byte buffer is empty or invalid.');
+        }
+
+        return new Blob([pdfBytes], { type: 'application/pdf' });
+    }
+
     action.addEventListener('click', async () => {
         const rows = getSheetData();
-        if (rows.length === 0) {
+        if (!rows || rows.length === 0) {
             alert('No spreadsheet data to export.');
             return;
         }
@@ -97,54 +305,23 @@ export function init() {
         action.textContent = 'Generating PDF...';
 
         try {
-            // Build a clean, unconstrained DOM container for multi-page PDF generation
-            const printContainer = document.createElement('div');
-            printContainer.id = 'xls-print-container';
-            printContainer.style.background = '#ffffff';
-            printContainer.style.color = '#0f172a';
-            printContainer.style.padding = '20px';
-            printContainer.style.fontFamily = 'Arial, sans-serif';
-            printContainer.style.width = '1000px'; // Wide landscape layout
-            printContainer.style.boxSizing = 'border-box';
-
             const sheetName = sheetSelect.value || 'Sheet1';
-            let printHtml = '<h2 style="margin-bottom:8px; color:#1e293b; font-size:18px;">' + sheetName + '</h2>';
-            printHtml += '<p style="font-size:11px; color:#64748b; margin-bottom:16px;">Exported from: ' + (fileName.textContent || 'Workbook') + '</p>';
-            printHtml += '<table style="width:100%; border-collapse:collapse; font-size:11px;">';
+            const blob = await generateDataDrivenPdf(rows, sheetName, originalName || 'spreadsheet');
 
-            rows.forEach((row, rIdx) => {
-                printHtml += '<tr style="page-break-inside:avoid;">';
-                row.forEach(cell => {
-                    if (rIdx === 0) {
-                        printHtml += '<th style="border:1px solid #cbd5e1; padding:8px 10px; background:#f1f5f9; color:#0f172a; text-align:left; font-weight:bold;">' + String(cell) + '</th>';
-                    } else {
-                        printHtml += '<td style="border:1px solid #cbd5e1; padding:7px 10px; color:#1e293b; background:' + (rIdx % 2 === 0 ? '#f8fafc' : '#ffffff') + ';">' + String(cell) + '</td>';
-                    }
-                });
-                printHtml += '</tr>';
-            });
-            printHtml += '</table>';
+            if (!blob || blob.size < 500) {
+                throw new Error('PDF output is empty or invalid.');
+            }
 
-            printContainer.innerHTML = printHtml;
-            document.body.appendChild(printContainer);
-
-            // Wait a moment for DOM attachment
-            await new Promise(r => setTimeout(r, 100));
-
-            const opt = {
-                margin:       [0.4, 0.4, 0.4, 0.4],
-                filename:     (originalName || 'excel_sheet') + '.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-
-            await html2pdf().set(opt).from(printContainer).save();
-
-            // Clean up
-            document.body.removeChild(printContainer);
+            const downloadUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = (originalName || 'spreadsheet') + '.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(downloadUrl), 2000);
         } catch (err) {
+            console.error('Excel to PDF error:', err);
             alert('Failed to generate PDF: ' + err.message);
         } finally {
             action.disabled = false;
