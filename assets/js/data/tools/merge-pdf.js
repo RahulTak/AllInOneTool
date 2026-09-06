@@ -4,32 +4,57 @@ export const config = {
     "slug": "merge-pdf",
     "category": "pdf",
     "categoryName": "PDF Tools",
-    "description": "Combine multiple PDF files into a single document.",
-    "seoTitle": "Merge PDF - Free Online PDF Tools | AllInOneTool",
-    "metaDescription": "Use our free, premium Merge PDF to combine multiple pdf files into a single document in your browser securely.",
-    "keywords": [
-        "merge pdf",
-        "pdf tools",
-        "online merge pdf"
+    "seoTitle": "Merge PDF Online – Combine Multiple PDF Files Free",
+    "metaDescription": "Merge PDF files online for free. Combine multiple PDF documents into a single organized PDF file in seconds. 100% private client-side processing.",
+    "primaryKeyword": "merge pdf",
+    "secondaryKeywords": [
+        "combine pdf",
+        "join pdf",
+        "merge pdf files online",
+        "combine pdf files free"
+    ],
+    "searchIntent": "Commercial / Informational – Combine multiple PDF files into one document",
+    "howToUse": [
+        "Select or drag and drop two or more PDF files into the merge upload zone.",
+        "Review the loaded document list and verify total page counts.",
+        "Click Merge PDF Files to combine all pages into one sequential document.",
+        "Download your consolidated PDF file immediately."
+    ],
+    "benefits": [
+        "Strict Document Confidentiality: Legal contracts and tax records never leave your computer.",
+        "Vector Text Preservation: Retains selectable text, original fonts, and sharp graphics.",
+        "No Page Limits: Merge large manuals, bank statements, or invoices effortlessly.",
+        "Fast Client-Side Engine: Powered by WebAssembly and PDF-Lib in your browser."
+    ],
+    "features": [
+        "Multi-file queue management",
+        "Page count summary calculation",
+        "Native vector stream merging",
+        "Direct browser download"
     ],
     "faqs": [
         {
-            "question": "Is this tool free?",
-            "answer": "Yes, all our tools are completely free to use without limits."
+            "question": "In what order are the merged PDF pages placed?",
+            "answer": "Pages are merged sequentially in the exact order you select your input documents."
         },
         {
-            "question": "Are my files uploaded?",
-            "answer": "No, everything runs offline locally inside your browser memory for maximum privacy."
+            "question": "Will merging PDFs degrade text or image quality?",
+            "answer": "No. The tool copies original PDF page streams and embedded assets without re-compressing them, maintaining 100% original quality."
+        },
+        {
+            "question": "Is it safe to merge confidential bank statements or contracts?",
+            "answer": "Yes. Because merging runs entirely client-side via PDF-Lib, no data ever leaves your device."
+        },
+        {
+            "question": "Can I merge password-protected PDFs?",
+            "answer": "Protected PDFs must first be unlocked with our Unlock PDF tool before merging."
         }
     ],
-    "howToUse": [
-        "Select your input configurations and configure settings.",
-        "Input or upload the files you wish to process in the designated area.",
-        "Click the calculate or compile action buttons to generate outputs locally."
-    ],
-    "benefits": [
-        "100% Secure & Client-Side: Files never leave your local browser memory.",
-        "Accurate Results: Powered by native equations, canvas engines, or standard modules.",
-        "Completely Free: Unlimited daily usage with no sign-ups or payments."
+    "relatedTools": [
+        "split-pdf",
+        "pdf-to-jpg",
+        "jpg-to-pdf",
+        "compress-pdf",
+        "rotate-pdf"
     ]
 };

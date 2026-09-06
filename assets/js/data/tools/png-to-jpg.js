@@ -4,32 +4,57 @@ export const config = {
     "slug": "png-to-jpg",
     "category": "image",
     "categoryName": "Image Tools",
-    "description": "Convert PNG images to JPG format instantly.",
-    "seoTitle": "PNG to JPG Converter - Free Online Image Tools | AllInOneTool",
-    "metaDescription": "Use our free, premium PNG to JPG Converter to convert png images to jpg format instantly in your browser securely.",
-    "keywords": [
-        "png to jpg converter",
-        "image tools",
-        "online png to jpg converter"
+    "seoTitle": "PNG to JPG Converter – Convert PNG Images to JPG Online Free",
+    "metaDescription": "Convert PNG images to JPG format online for free. Select custom JPEG quality, optimize background colors, and reduce file size with zero uploads.",
+    "primaryKeyword": "png to jpg converter",
+    "secondaryKeywords": [
+        "convert png to jpg",
+        "png to jpeg",
+        "compress png to jpg",
+        "image format converter"
+    ],
+    "searchIntent": "Commercial / Informational – Convert PNG assets to lightweight JPG photos",
+    "howToUse": [
+        "Select or drag and drop your PNG image file into the tool.",
+        "Adjust the JPEG output quality slider (from 10% to 100%).",
+        "Transparent areas are automatically rendered with a clean solid white background.",
+        "Click Convert to JPG to download your lightweight JPEG file."
+    ],
+    "benefits": [
+        "Massive File Size Reduction: Save up to 70% storage by switching to JPG compression.",
+        "Configurable Quality Slider: Fine-tune visual clarity versus target byte size.",
+        "Automatic Transparency Fill: Replaces transparent pixels with a crisp white background.",
+        "Zero Server Uploads: Safe for private photos, confidential charts, and client designs."
+    ],
+    "features": [
+        "Interactive JPEG quality slider",
+        "Automated alpha transparency blending",
+        "Real-time canvas preview",
+        "Instant local conversion"
     ],
     "faqs": [
         {
-            "question": "Is this tool free?",
-            "answer": "Yes, all our tools are completely free to use without limits."
+            "question": "What happens to transparent backgrounds in PNG?",
+            "answer": "Since standard JPEG does not support alpha transparency, transparent areas are cleanly blended onto a solid white background."
         },
         {
-            "question": "Are my files uploaded?",
-            "answer": "No, everything runs offline locally inside your browser memory for maximum privacy."
+            "question": "How much smaller will the JPG file be?",
+            "answer": "Converting photographic PNGs to JPG typically reduces file size by 50% to 80% with minimal visible difference."
+        },
+        {
+            "question": "What quality setting should I choose?",
+            "answer": "A quality level of 85% to 92% provides the optimal balance of sharp details and low file weight."
+        },
+        {
+            "question": "Is my data secure?",
+            "answer": "Yes. All image processing takes place purely in browser memory without sending data to our servers."
         }
     ],
-    "howToUse": [
-        "Select your input configurations and configure settings.",
-        "Input or upload the files you wish to process in the designated area.",
-        "Click the calculate or compile action buttons to generate outputs locally."
-    ],
-    "benefits": [
-        "100% Secure & Client-Side: Files never leave your local browser memory.",
-        "Accurate Results: Powered by native equations, canvas engines, or standard modules.",
-        "Completely Free: Unlimited daily usage with no sign-ups or payments."
+    "relatedTools": [
+        "image-compressor",
+        "image-resizer",
+        "jpg-to-png",
+        "webp-to-png",
+        "crop-image"
     ]
 };

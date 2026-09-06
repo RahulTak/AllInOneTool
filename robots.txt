@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap index
+Sitemap: https://allinonetool.com/sitemap.xml

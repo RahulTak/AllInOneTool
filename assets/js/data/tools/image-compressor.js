@@ -4,32 +4,58 @@ export const config = {
     "slug": "image-compressor",
     "category": "image",
     "categoryName": "Image Tools",
-    "description": "Compress JPEG, PNG, and WebP images client-side without quality loss.",
-    "seoTitle": "Image Compressor - Free Online Image Tools | AllInOneTool",
-    "metaDescription": "Use our free, premium Image Compressor to compress jpeg, png, and webp images client-side without quality loss in your browser securely.",
-    "keywords": [
-        "image compressor",
-        "image tools",
-        "online image compressor"
+    "seoTitle": "Image Compressor – Compress JPG, PNG & WebP Online Free",
+    "metaDescription": "Compress JPG, PNG, and WebP images online for free without losing quality. Reduce image file sizes locally in your browser with zero server uploads.",
+    "primaryKeyword": "image compressor",
+    "secondaryKeywords": [
+        "compress image",
+        "compress jpg",
+        "compress png",
+        "reduce image size",
+        "image size reducer"
+    ],
+    "searchIntent": "Commercial / Informational – Reduce image file size without quality loss",
+    "howToUse": [
+        "Drag and drop or select your JPG, PNG, or WebP photo into the upload area.",
+        "Select your target compression strength (Low, Medium, or High compression).",
+        "Review real-time file size savings, reduction percentage, and visual preview.",
+        "Click Download Compressed Image to save your optimized photo instantly."
+    ],
+    "benefits": [
+        "100% Client-Side Privacy: Your photos stay in your browser and are never uploaded.",
+        "Quality Preservation: Smart optimization preserves sharp text and vivid colors.",
+        "Significant Savings: Reduce file sizes by up to 80% to accelerate website load speed.",
+        "Multi-Format Support: Seamlessly compress JPEG, WebP, and PNG assets with one tool."
+    ],
+    "features": [
+        "Real-time byte savings breakdown",
+        "Three intelligent compression levels",
+        "Interactive image canvas preview",
+        "Instant local file download"
     ],
     "faqs": [
         {
-            "question": "Is this tool free?",
-            "answer": "Yes, all our tools are completely free to use without limits."
+            "question": "Does image compression reduce visual quality?",
+            "answer": "Our compressor removes invisible metadata and optimizes color quantization, delivering significant file size reduction with virtually indistinguishable visual changes."
         },
         {
-            "question": "Are my files uploaded?",
-            "answer": "No, everything runs offline locally inside your browser memory for maximum privacy."
+            "question": "Which image formats are supported?",
+            "answer": "We support JPEG/JPG, PNG, and modern WebP image formats."
+        },
+        {
+            "question": "Is there a limit on image size or count?",
+            "answer": "Because compression executes directly in your browser memory, there are no artificial server limits or daily caps."
+        },
+        {
+            "question": "Are my images stored or logged on a server?",
+            "answer": "No. All processing happens 100% client-side in your browser tab. Your files never touch a remote server."
         }
     ],
-    "howToUse": [
-        "Select your input configurations and configure settings.",
-        "Input or upload the files you wish to process in the designated area.",
-        "Click the calculate or compile action buttons to generate outputs locally."
-    ],
-    "benefits": [
-        "100% Secure & Client-Side: Files never leave your local browser memory.",
-        "Accurate Results: Powered by native equations, canvas engines, or standard modules.",
-        "Completely Free: Unlimited daily usage with no sign-ups or payments."
+    "relatedTools": [
+        "image-resizer",
+        "jpg-to-png",
+        "png-to-jpg",
+        "webp-to-png",
+        "crop-image"
     ]
 };

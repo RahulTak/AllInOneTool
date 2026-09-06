@@ -4,32 +4,58 @@ export const config = {
     "slug": "tip-calculator",
     "category": "calculator",
     "categoryName": "Calculators",
-    "description": "Split dinner tips and checks evenly between guests.",
-    "seoTitle": "Tip Calculator - Free Online Calculators | AllInOneTool",
-    "metaDescription": "Use our free, premium Tip Calculator to split dinner tips and checks evenly between guests in your browser securely.",
-    "keywords": [
-        "tip calculator",
+    "seoTitle": "Tip Calculator – Calculate Online Free | AllInOneTool",
+    "metaDescription": "Use our free, premium Tip Calculator to split dinner tips and checks evenly between guests. Fast, accurate, and 100% client-side with zero server uploads.",
+    "primaryKeyword": "tip calculator",
+    "secondaryKeywords": [
+        "online tip calculator",
+        "free tip calculator",
         "calculator tools",
-        "online tip calculator"
+        "tip calculator online free"
+    ],
+    "searchIntent": "Commercial / Informational – Split dinner tips and checks evenly between guests",
+    "shortDescription": "Split dinner tips and checks evenly between guests.",
+    "howToUse": [
+        "Enter, paste, or upload your numeric values into the designated area.",
+        "Configure any applicable settings, options, or operation modes to suit your requirements.",
+        "Click the action button to process and generate your output immediately.",
+        "Review the result and copy or download your finalized output with one click."
+    ],
+    "benefits": [
+        "Client-Side Security: All operations execute in your browser memory without uploading files to external servers.",
+        "Instant Performance: Zero server roundtrips or queue waiting times for high-speed processing.",
+        "100% Free & Unlimited: No subscriptions, sign-ups, watermarks, or usage restrictions.",
+        "Responsive Interface: Works seamlessly across desktop computers, tablets, and smartphones."
+    ],
+    "features": [
+        "Interactive input controls and real-time validation",
+        "Accurate calculations and standards-compliant formatting",
+        "Clean visual display with instant output feedback",
+        "One-click copy and download functionality"
     ],
     "faqs": [
         {
-            "question": "Is this tool free?",
-            "answer": "Yes, all our tools are completely free to use without limits."
+            "question": "How does the Tip Calculator work?",
+            "answer": "The Tip Calculator runs entirely in your local browser using modern web standards. It takes your input, executes the computation or transformation, and displays the result without sending any data over the internet."
         },
         {
-            "question": "Are my files uploaded?",
-            "answer": "No, everything runs offline locally inside your browser memory for maximum privacy."
+            "question": "Is the Tip Calculator completely free?",
+            "answer": "Yes. All tools on AllInOneTool are completely free to use with unlimited daily access and no registration requirements."
+        },
+        {
+            "question": "Are my files or data uploaded to your server?",
+            "answer": "No. All processing occurs locally within your browser tab. Your files, texts, and calculations never leave your device."
+        },
+        {
+            "question": "Can I use this tool on my mobile phone?",
+            "answer": "Yes. The tool features a fully responsive layout optimized for mobile screens, tablets, and desktop workstations."
         }
     ],
-    "howToUse": [
-        "Select your input configurations and configure settings.",
-        "Input or upload the files you wish to process in the designated area.",
-        "Click the calculate or compile action buttons to generate outputs locally."
-    ],
-    "benefits": [
-        "100% Secure & Client-Side: Files never leave your local browser memory.",
-        "Accurate Results: Powered by native equations, canvas engines, or standard modules.",
-        "Completely Free: Unlimited daily usage with no sign-ups or payments."
+    "relatedTools": [
+        "age-calculator",
+        "emi-calculator",
+        "percentage-calculator",
+        "compound-interest-calculator",
+        "bmi-calculator"
     ]
 };

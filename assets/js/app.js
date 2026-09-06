@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const path = window.location.pathname;
     const isToolPage = path.includes('/tools/');
     const isBlogPage = path.includes('/blog/');
-    const pathPrefix = (isToolPage || isBlogPage) ? '../' : './';
+    const isCategoryPage = path.includes('/categories/');
+    const pathPrefix = (isToolPage || isBlogPage || isCategoryPage) ? '../' : './';
 
     // Load tools summary dynamically
     let toolsSummary = [];

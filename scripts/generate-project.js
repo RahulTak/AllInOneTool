@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const seoCatalog = require('./seo-catalog.js');
+const { SITE_URL, SITE_NAME, DEFAULT_OG_IMAGE, TWITTER_HANDLE, CATEGORIES_SEO } = require('../config/seo.js');
 const newToolsDefs = require('./new-tools-definitions.js');
 const imageToolsDefs = require('./image-tools-definitions.js');
 const pdfToolsDefs = require('./pdf-tools-definitions.js');
@@ -224,23 +226,11 @@ function ensureDirectoryExistence(filePath) {
     fs.mkdirSync(dirname);
 }
 
-// Generate highly specialized metadata based on exact tool ID
+// Retrieve specialized SEO metadata from centralized catalog
 function getToolMetadata(tool, catName) {
-    let howToUse = [
-        "Select your input configurations and configure settings.",
-        "Input or upload the files you wish to process in the designated area.",
-        "Click the calculate or compile action buttons to generate outputs locally."
-    ];
-    let benefits = [
-        "100% Secure & Client-Side: Files never leave your local browser memory.",
-        "Accurate Results: Powered by native equations, canvas engines, or standard modules.",
-        "Completely Free: Unlimited daily usage with no sign-ups or payments."
-    ];
-    let faqs = [
-        { question: "Is this tool free?", answer: "Yes, all our tools are completely free to use without limits." },
-        { question: "Are my files uploaded?", answer: "No, everything runs offline locally inside your browser memory for maximum privacy." }
-    ];
-
+    if (seoCatalog && seoCatalog[tool.id]) {
+        return seoCatalog[tool.id];
+    }
     return {
         id: tool.id,
         name: tool.name,
@@ -248,14 +238,34 @@ function getToolMetadata(tool, catName) {
         category: tool.cat,
         categoryName: catName,
         description: tool.desc,
-        seoTitle: `${tool.name} - Free Online ${catName} | AllInOneTool`,
-        metaDescription: `Use our free, premium ${tool.name} to ${tool.desc.toLowerCase().replace('.', '')} in your browser securely.`,
+        seoTitle: `${tool.name} – Free Online ${catName} | AllInOneTool`,
+        metaDescription: `Use our free, premium ${tool.name} to ${tool.desc.toLowerCase().replace('.', '')}. Fast, accurate, and 100% client-side with zero uploads.`,
         keywords: [tool.name.toLowerCase(), `${tool.cat} tools`, `online ${tool.name.toLowerCase()}`],
-        faqs,
-        howToUse,
-        benefits
+        primaryKeyword: tool.name.toLowerCase(),
+        secondaryKeywords: [`online ${tool.name.toLowerCase()}`, `free ${tool.name.toLowerCase()}`],
+        searchIntent: `Commercial / Informational – ${tool.desc}`,
+        shortDescription: tool.desc,
+        faqs: [
+            { question: `How does the ${tool.name} work?`, answer: `The ${tool.name} runs entirely in your local browser using modern web standards without uploading files to any server.` },
+            { question: `Is the ${tool.name} free?`, answer: 'Yes, all our tools are completely free to use without limits.' }
+        ],
+        howToUse: [
+            'Input or upload your files or data into the workspace.',
+            'Configure your desired settings or preferences.',
+            'Click the action button to process the output locally.',
+            'Copy or download your finalized results immediately.'
+        ],
+        benefits: [
+            '100% Client-Side Privacy: Files never leave your local browser memory.',
+            'Instant Performance: No server queues or network latency.',
+            'Completely Free: Unlimited daily usage with zero hidden charges.',
+            'Responsive Design: Functions smoothly on mobile, tablet, and desktop devices.'
+        ],
+        features: ['Interactive controls', 'Real-time processing', 'Instant download'],
+        relatedTools: []
     };
 }
+
 
 // Generate files for all tools
 function generateProject() {
@@ -5653,15 +5663,125 @@ function generateProject() {
             librariesStr = '<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>';
         }
 
+        const canonicalUrl = `${SITE_URL}/tools/${tool.id}.html`;
+        const keywordsStr = [metadata.primaryKeyword].concat(metadata.secondaryKeywords || []).join(', ');
+        const catSlug = CATEGORIES_SEO[tool.cat]?.slug || `${tool.cat}-tools`;
+        const catPageUrl = `${SITE_URL}/categories/${catSlug}.html`;
+
+        // JSON-LD Structured Data
+        const schema = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "BreadcrumbList",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": "Home",
+                            "item": `${SITE_URL}/`
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": catName,
+                            "item": catPageUrl
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": tool.name,
+                            "item": canonicalUrl
+                        }
+                    ]
+                },
+                {
+                    "@type": "WebApplication",
+                    "name": tool.name,
+                    "url": canonicalUrl,
+                    "description": metadata.metaDescription,
+                    "applicationCategory": `${catName}Application`,
+                    "operatingSystem": "All",
+                    "browserRequirements": "Requires JavaScript and modern web browser",
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "USD"
+                    }
+                },
+                {
+                    "@type": "FAQPage",
+                    "mainEntity": (metadata.faqs || []).map(faq => ({
+                        "@type": "Question",
+                        "name": faq.question,
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": faq.answer
+                        }
+                    }))
+                }
+            ]
+        };
+
+        const relatedLinksHtml = (metadata.relatedTools || []).map(relId => {
+            const relTool = TOOLS.find(t => t.id === relId);
+            const relName = relTool ? relTool.name : relId;
+            return `<li><a href="./${relId}.html" style="color:var(--primary-color); text-decoration:none; font-weight:500;">${relName}</a></li>`;
+        }).join('');
+
+        const howToUseHtml = (metadata.howToUse || []).map((step, idx) => `
+            <div style="display:flex; gap:1rem; margin-bottom:1rem; align-items:flex-start;">
+                <div style="width:28px; height:28px; border-radius:50%; background:var(--primary-color); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.85rem; flex-shrink:0;">${idx + 1}</div>
+                <p style="margin:0; font-size:0.95rem; line-height:1.6; color:var(--text-secondary);">${step}</p>
+            </div>
+        `).join('');
+
+        const benefitsHtml = (metadata.benefits || []).map(b => `
+            <li style="margin-bottom:0.5rem; font-size:0.95rem; line-height:1.6; color:var(--text-secondary);">${b}</li>
+        `).join('');
+
+        const faqsHtml = (metadata.faqs || []).map(faq => `
+            <div class="faq-item" style="border:1px solid var(--border-color); border-radius:var(--radius-sm); margin-bottom:0.75rem; background:var(--bg-primary); overflow:hidden;">
+                <div class="faq-question" style="padding:1rem 1.25rem; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${faq.question}</span>
+                    <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-answer" style="padding:0 1.25rem 1rem; font-size:0.9rem; line-height:1.6; color:var(--text-secondary);">
+                    <p>${faq.answer}</p>
+                </div>
+            </div>
+        `).join('');
+
         const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${tool.name} - Free Online ${catName} | AllInOneTool</title>
-    <meta name="description" content="Use our free, premium ${tool.name} to ${tool.desc.toLowerCase().replace('.', '')} in your browser securely.">
-    <meta name="keywords" content="${tool.name.toLowerCase()}, ${tool.cat} tools, online ${tool.name.toLowerCase()}">
+    <title>${metadata.seoTitle}</title>
+    <meta name="description" content="${metadata.metaDescription}">
+    <meta name="keywords" content="${keywordsStr}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="${canonicalUrl}">
     <meta name="tool-id" content="${tool.id}">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="${metadata.seoTitle}">
+    <meta property="og:description" content="${metadata.metaDescription}">
+    <meta property="og:url" content="${canonicalUrl}">
+    <meta property="og:image" content="${DEFAULT_OG_IMAGE}">
+    <meta property="og:site_name" content="${SITE_NAME}">
+    
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${metadata.seoTitle}">
+    <meta name="twitter:description" content="${metadata.metaDescription}">
+    <meta name="twitter:image" content="${DEFAULT_OG_IMAGE}">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+${JSON.stringify(schema, null, 4)}
+    </script>
     
     <!-- CSS Dependencies -->
     <link rel="stylesheet" href="../assets/css/variables.css">
@@ -5680,6 +5800,32 @@ function generateProject() {
     <div id="tool-workspace">
         ${workspaceHTML}
     </div>
+    
+    <!-- Static Crawlable Content for Search Engines -->
+    <noscript>
+        <div style="max-width: 900px; margin: 2rem auto; padding: 0 1.5rem;">
+            <nav aria-label="Breadcrumb">
+                <ol style="display:flex; gap:0.5rem; list-style:none; padding:0; margin-bottom:1.5rem; font-size:0.875rem;">
+                    <li><a href="../index.html">Home</a></li>
+                    <li>/</li>
+                    <li><a href="${catPageUrl}">${catName}</a></li>
+                    <li>/</li>
+                    <li aria-current="page">${tool.name}</li>
+                </ol>
+            </nav>
+            <h1>${metadata.seoTitle}</h1>
+            <p style="font-size:1.1rem; line-height:1.7; color:var(--text-secondary);">${metadata.shortDescription}</p>
+            <hr style="margin:2rem 0; border:0; border-top:1px solid var(--border-color);">
+            <h2>How to Use ${tool.name}</h2>
+            <div>${howToUseHtml}</div>
+            <h2>Key Benefits</h2>
+            <ul>${benefitsHtml}</ul>
+            <h2>Frequently Asked Questions</h2>
+            <div>${faqsHtml}</div>
+            <h2>Related Tools</h2>
+            <ul style="list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:1rem;">${relatedLinksHtml}</ul>
+        </div>
+    </noscript>
 </body>
 </html>
 `;
