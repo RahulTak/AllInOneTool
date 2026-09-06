@@ -24,24 +24,70 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="sal-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="sal-amount">Annual Salary</label>
+                    <input type="number" id="sal-amount" class="input-control" value="65000" min="0" step="any" placeholder="e.g. 65000">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="sal-currency">Currency Symbol</label>
+                    <select id="sal-currency" class="input-control">
+                        <option value="$" selected>$ (USD, CAD, AUD)</option>
+                        <option value="€">€ (EUR)</option>
+                        <option value="£">£ (GBP)</option>
+                        <option value="₹">₹ (INR)</option>
+                        <option value="¥">¥ (JPY)</option>
+                    </select>
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="sal-hours-day">Hours / Day</label>
+                    <input type="number" id="sal-hours-day" class="input-control" value="8" min="1" max="24" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label for="sal-days-week">Days / Week</label>
+                    <input type="number" id="sal-days-week" class="input-control" value="5" min="1" max="7" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="sal-weeks-year">Working Weeks / Year</label>
+                    <input type="number" id="sal-weeks-year" class="input-control" value="52" min="1" max="52" step="1">
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="sal-reset">Reset</button>
+                <button class="btn btn-primary" id="sal-calc">Calculate Hourly Equivalent</button>
+            </div>
+
+            <div id="sal-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Hourly Wage Equivalent</span>
+                        <h2 style="font-size:2.25rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="sal-res-hourly">$31.25</h2>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);" id="sal-res-annual-hrs">2,080 hours / year</span>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Monthly Salary Equivalent</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="sal-res-monthly">$5,416.67</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Comprehensive Pay Schedule</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                        <div>Hourly: <strong id="sal-sch-hour">$31.25</strong></div>
+                        <div>Daily: <strong id="sal-sch-day">$250.00</strong></div>
+                        <div>Weekly: <strong id="sal-sch-week">$1,250.00</strong></div>
+                        <div>Bi-Weekly: <strong id="sal-sch-biweek">$2,500.00</strong></div>
+                        <div>Monthly: <strong id="sal-sch-month">$5,416.67</strong></div>
+                        <div>Annual: <strong id="sal-sch-year">$65,000.00</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

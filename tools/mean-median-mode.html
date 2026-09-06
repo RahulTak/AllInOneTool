@@ -24,24 +24,52 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+        <div class="tool-workspace">
+            <div id="mmm-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="form-group">
+                <label for="mmm-input">Enter Dataset Numbers (separated by commas, spaces, or newlines)</label>
+                <textarea id="mmm-input" class="input-control" style="min-height:110px;" placeholder="e.g. 12, 15, 12, 19, 24, 15, 30, 12">12, 15, 12, 19, 24, 15, 30, 12</textarea>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="mmm-reset">Reset</button>
+                <button class="btn btn-primary" id="mmm-calc">Calculate Statistics</button>
+            </div>
+
+            <div id="mmm-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Mean (Average)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="mmm-res-mean">17.38</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Median (Middle Value)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="mmm-res-median">15</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Mode (Most Frequent)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="mmm-res-mode">12</h2>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Statistical Properties</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                        <div>Count (N): <strong id="mmm-count">8</strong></div>
+                        <div>Sum (Σx): <strong id="mmm-sum">139</strong></div>
+                        <div>Minimum: <strong id="mmm-min">12</strong></div>
+                        <div>Maximum: <strong id="mmm-max">30</strong></div>
+                        <div>Range (Max − Min): <strong id="mmm-range">18</strong></div>
+                    </div>
+                    <div style="margin-top:1rem; padding-top:0.75rem; border-top:1px solid var(--border-color); font-size:0.85rem;">
+                        <span>Sorted Values:</span>
+                        <div id="mmm-sorted" style="font-family:var(--font-mono); margin-top:0.25rem; word-break:break-all;">12, 12, 12, 15, 15, 19, 24, 30</div>
+                    </div>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

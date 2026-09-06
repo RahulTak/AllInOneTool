@@ -24,24 +24,57 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="lt-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="lt-amount">Loan Amount ($)</label>
+                    <input type="number" id="lt-amount" class="input-control" value="50000" min="1" step="any" placeholder="e.g. 50000">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="lt-rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="lt-rate" class="input-control" value="8.5" min="0" step="0.01" placeholder="e.g. 8.5">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="lt-emi">Desired Monthly EMI Payment ($)</label>
+                    <input type="number" id="lt-emi" class="input-control" value="1000" min="1" step="any" placeholder="e.g. 1000">
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="lt-reset">Reset</button>
+                <button class="btn btn-primary" id="lt-calc">Calculate Loan Tenure</button>
+            </div>
+
+            <div id="lt-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Repayment Period (Tenure)</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="lt-res-tenure">--</h2>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);" id="lt-res-months">-- months</span>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Interest Payable</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="lt-res-interest">$0.00</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Loan Payment</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="lt-res-total">$0.00</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Amortization Details</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                        <div>Minimum EMI Required: <strong id="lt-min-emi">$0.00</strong></div>
+                        <div>Principal Amount: <strong id="lt-break-p">$0.00</strong></div>
+                        <div>Monthly Interest Rate: <strong id="lt-break-r">0.00%</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

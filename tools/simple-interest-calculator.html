@@ -24,24 +24,60 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="si-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="si-principal">Principal Amount ($)</label>
+                    <input type="number" id="si-principal" class="input-control" value="10000" min="0" step="any" placeholder="e.g. 10000">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="si-rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="si-rate" class="input-control" value="5" min="0" step="0.01" placeholder="e.g. 5">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="si-time">Time Duration</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="number" id="si-time" class="input-control" value="3" min="0" step="any" style="flex:1;">
+                        <select id="si-unit" class="input-control" style="width:110px;">
+                            <option value="years" selected>Years</option>
+                            <option value="months">Months</option>
+                            <option value="days">Days</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="si-reset">Reset</button>
+                <button class="btn btn-primary" id="si-calc">Calculate Interest</button>
+            </div>
+
+            <div id="si-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Interest Earned</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="si-res-interest">$0.00</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Amount (Principal + Interest)</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="si-res-total">$0.00</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Calculation Breakdown</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                        <div>Principal (P): <strong id="si-break-p">$0.00</strong></div>
+                        <div>Interest Rate (R): <strong id="si-break-r">0% per year</strong></div>
+                        <div>Time Period (T): <strong id="si-break-t">0 years</strong></div>
+                        <div>Formula: <strong style="font-family:var(--font-mono);">SI = P × R × T</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

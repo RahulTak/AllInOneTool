@@ -24,24 +24,84 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="prob-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid" style="grid-template-columns:1fr; margin-bottom:1rem;">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="prob-mode">Calculation Mode</label>
+                    <select id="prob-mode" class="input-control">
+                        <option value="single" selected>Single Event: P(A) = Favorable / Total</option>
+                        <option value="two">Two Independent Events: P(A) & P(B)</option>
+                        <option value="series">Event in N Attempts (at least once)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <!-- Single Event Mode -->
+            <div class="options-grid" id="prob-single-fields">
+                <div class="form-group">
+                    <label for="prob-favorable">Number of Favorable Outcomes</label>
+                    <input type="number" id="prob-favorable" class="input-control" value="1" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="prob-total">Total Possible Outcomes</label>
+                    <input type="number" id="prob-total" class="input-control" value="6" min="1" step="1">
+                </div>
+            </div>
+
+            <!-- Two Independent Events Mode -->
+            <div class="options-grid" id="prob-two-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="prob-pa">Probability of Event A (0 to 1, or %)</label>
+                    <input type="number" id="prob-pa" class="input-control" value="0.5" min="0" max="1" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="prob-pb">Probability of Event B (0 to 1, or %)</label>
+                    <input type="number" id="prob-pb" class="input-control" value="0.5" min="0" max="1" step="0.01">
+                </div>
+            </div>
+
+            <!-- Series Mode -->
+            <div class="options-grid" id="prob-series-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="prob-single-p">Probability of Success Per Trial (0 to 1)</label>
+                    <input type="number" id="prob-single-p" class="input-control" value="0.2" min="0" max="1" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="prob-trials">Number of Trials (n)</label>
+                    <input type="number" id="prob-trials" class="input-control" value="5" min="1" max="1000" step="1">
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="prob-reset">Reset</button>
+                <button class="btn btn-primary" id="prob-calc">Calculate Probability</button>
+            </div>
+
+            <div id="prob-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Primary Probability</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="prob-res-dec">0.1667</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Percentage Likelihood</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="prob-res-pct">16.67%</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Odds Representation</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="prob-res-odds">1 in 6</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Associated Probabilities</h4>
+                    <div id="prob-breakdown" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;"></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

@@ -24,24 +24,74 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div id="bmi-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                <button type="button" class="btn btn-primary" id="bmi-tab-metric">Metric Units (kg, cm)</button>
+                <button type="button" class="btn btn-secondary" id="bmi-tab-imperial">Imperial Units (lb, ft/in)</button>
+            </div>
 
+            <!-- Metric Inputs -->
+            <div class="options-grid" id="bmi-metric-fields">
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="bmi-weight-metric">Weight (kg)</label>
+                    <input type="number" id="bmi-weight-metric" class="input-control" value="70" min="1" max="500" step="0.1">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="bmi-height-metric">Height (cm)</label>
+                    <input type="number" id="bmi-height-metric" class="input-control" value="175" min="30" max="300" step="0.5">
                 </div>
             </div>
-            
+
+            <!-- Imperial Inputs -->
+            <div class="options-grid" id="bmi-imperial-fields" style="display:none;">
+                <div class="form-group">
+                    <label for="bmi-weight-imp">Weight (lbs)</label>
+                    <input type="number" id="bmi-weight-imp" class="input-control" value="154" min="2" max="1000" step="0.5">
+                </div>
+                <div class="form-group">
+                    <label>Height (Feet & Inches)</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="number" id="bmi-height-ft" class="input-control" value="5" min="1" max="9" placeholder="Feet">
+                        <input type="number" id="bmi-height-in" class="input-control" value="9" min="0" max="11" placeholder="Inches">
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="bmi-reset">Reset</button>
+                <button class="btn btn-primary" id="bmi-calc">Calculate BMI</button>
+            </div>
+
+            <div id="bmi-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Your BMI Score</span>
+                        <h2 style="font-size:2.5rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="bmi-score">22.9</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Weight Classification</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="bmi-category">Normal Weight</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Healthy Weight Range</span>
+                        <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-top:0.5rem;" id="bmi-healthy-range">56.7 kg – 76.3 kg</h3>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">WHO BMI Reference Scale</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:0.5rem; font-size:0.85rem;">
+                        <div style="padding:0.5rem; border-radius:var(--radius-xs); background:rgba(0,123,255,0.08); border:1px solid rgba(0,123,255,0.2);"><strong>&lt; 18.5:</strong> Underweight</div>
+                        <div style="padding:0.5rem; border-radius:var(--radius-xs); background:rgba(40,167,69,0.08); border:1px solid rgba(40,167,69,0.2);"><strong>18.5 – 24.9:</strong> Normal</div>
+                        <div style="padding:0.5rem; border-radius:var(--radius-xs); background:rgba(255,193,7,0.08); border:1px solid rgba(255,193,7,0.2);"><strong>25.0 – 29.9:</strong> Overweight</div>
+                        <div style="padding:0.5rem; border-radius:var(--radius-xs); background:rgba(220,53,69,0.08); border:1px solid rgba(220,53,69,0.2);"><strong>≥ 30.0:</strong> Obesity</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

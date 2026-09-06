@@ -24,24 +24,66 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="mat-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="mat-size">Matrix Size</label>
+                    <select id="mat-size" class="input-control">
+                        <option value="2" selected>2 × 2 Matrix</option>
+                        <option value="3">3 × 3 Matrix</option>
+                    </select>
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="mat-op">Operation</label>
+                    <select id="mat-op" class="input-control">
+                        <option value="add" selected>Matrix Addition (A + B)</option>
+                        <option value="sub">Matrix Subtraction (A − B)</option>
+                        <option value="mul">Matrix Multiplication (A × B)</option>
+                        <option value="detA">Determinant of A (|A|)</option>
+                        <option value="detB">Determinant of B (|B|)</option>
+                        <option value="transA">Transpose of A (Aᵀ)</option>
+                        <option value="invA">Inverse of A (A⁻¹)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; margin:1.5rem 0;">
+                <!-- Matrix A -->
+                <div style="display:flex; flex-direction:column; align-items:center;">
+                    <h4 style="margin-bottom:0.5rem;">Matrix A</h4>
+                    <div id="mat-grid-a" style="display:grid; gap:0.4rem; padding:0.5rem; border-left:3px solid var(--text-primary); border-right:3px solid var(--text-primary); border-radius:var(--radius-xs);"></div>
+                </div>
+
+                <!-- Matrix B -->
+                <div id="mat-wrapper-b" style="display:flex; flex-direction:column; align-items:center;">
+                    <h4 style="margin-bottom:0.5rem;">Matrix B</h4>
+                    <div id="mat-grid-b" style="display:grid; gap:0.4rem; padding:0.5rem; border-left:3px solid var(--text-primary); border-right:3px solid var(--text-primary); border-radius:var(--radius-xs);"></div>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="mat-reset">Reset</button>
+                <button class="btn btn-primary" id="mat-calc">Calculate Matrix</button>
+            </div>
+
+            <div id="mat-results" style="margin-top:1.5rem; text-align:center;">
+                <h4 style="margin-bottom:0.75rem; font-size:1rem;">Result</h4>
+                
+                <!-- Scalar result (for determinant) -->
+                <div id="mat-scalar-res" style="display:none; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; max-width:280px; margin:0 auto;">
+                    <span style="font-size:0.85rem; color:var(--text-secondary);">Determinant Value</span>
+                    <h2 style="font-size:2.25rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="mat-scalar-val">0</h2>
+                </div>
+
+                <!-- Matrix result grid -->
+                <div id="mat-grid-res-wrap" style="display:inline-flex; flex-direction:column; align-items:center; background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.5rem;">
+                    <div id="mat-grid-res" style="display:grid; gap:0.5rem; padding:0.5rem; border-left:3px solid var(--primary-color); border-right:3px solid var(--primary-color); border-radius:var(--radius-xs);"></div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

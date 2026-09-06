@@ -24,24 +24,53 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="disc-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="disc-price">Original Price ($)</label>
+                    <input type="number" id="disc-price" class="input-control" value="120" min="0" step="any" placeholder="e.g. 120">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="disc-percent">Discount (%)</label>
+                    <input type="number" id="disc-percent" class="input-control" value="25" min="0" max="100" step="any" placeholder="e.g. 25">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="disc-tax">Sales Tax % (Optional)</label>
+                    <input type="number" id="disc-tax" class="input-control" value="0" min="0" max="100" step="any" placeholder="e.g. 8">
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="disc-reset">Reset</button>
+                <button class="btn btn-primary" id="disc-calc">Calculate Discount</button>
+            </div>
+
+            <div id="disc-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Final Price</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="disc-res-final">$90.00</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">You Save (Discount)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="disc-res-savings">$30.00</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Summary Breakdown</h4>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                        <div>Original Price: <strong id="disc-break-orig">$120.00</strong></div>
+                        <div>Discount Applied: <strong id="disc-break-pct">25%</strong></div>
+                        <div>Discount Amount: <strong id="disc-break-amt">-$30.00</strong></div>
+                        <div>Sales Tax Added: <strong id="disc-break-tax">$0.00</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

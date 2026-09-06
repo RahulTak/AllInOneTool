@@ -24,24 +24,56 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="date-calc-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="date-start">Start Date</label>
+                    <input type="date" id="date-start" class="input-control">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                    <label for="date-op">Operation</label>
+                    <select id="date-op" class="input-control">
+                        <option value="add" selected>Add (+) to Date</option>
+                        <option value="subtract">Subtract (−) from Date</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div class="options-grid" style="grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));">
+                <div class="form-group">
+                    <label for="date-years">Years</label>
+                    <input type="number" id="date-years" class="input-control" value="0" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="date-months">Months</label>
+                    <input type="number" id="date-months" class="input-control" value="2" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="date-weeks">Weeks</label>
+                    <input type="number" id="date-weeks" class="input-control" value="0" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="date-days">Days</label>
+                    <input type="number" id="date-days" class="input-control" value="10" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="date-reset">Reset</button>
+                <button class="btn btn-primary" id="date-calc">Calculate Target Date</button>
+            </div>
+
+            <div id="date-results" style="margin-top:1.5rem;">
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.5rem; text-align:center;">
+                    <span style="font-size:0.85rem; color:var(--text-secondary);">Calculated Result Date</span>
+                    <h2 style="font-size:2.25rem; font-weight:800; color:var(--primary-color); margin:0.5rem 0;" id="date-res-main">--</h2>
+                    <p style="font-family:var(--font-mono); font-size:1rem; color:var(--text-secondary); margin:0;" id="date-res-iso">YYYY-MM-DD</p>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

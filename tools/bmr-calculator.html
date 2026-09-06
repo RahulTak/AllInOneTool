@@ -24,24 +24,103 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="bmr-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                <button type="button" class="btn btn-primary" id="bmr-tab-metric">Metric (kg, cm)</button>
+                <button type="button" class="btn btn-secondary" id="bmr-tab-imperial">Imperial (lb, ft/in)</button>
+            </div>
+
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="bmr-gender">Biological Sex</label>
+                    <select id="bmr-gender" class="input-control">
+                        <option value="male" selected>Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bmr-age">Age (Years)</label>
+                    <input type="number" id="bmr-age" class="input-control" value="28" min="15" max="120">
+                </div>
+                
+                <!-- Metric input block -->
+                <div class="form-group bmr-metric-unit">
+                    <label for="bmr-weight-kg">Weight (kg)</label>
+                    <input type="number" id="bmr-weight-kg" class="input-control" value="75" min="20" max="400" step="0.1">
+                </div>
+                <div class="form-group bmr-metric-unit">
+                    <label for="bmr-height-cm">Height (cm)</label>
+                    <input type="number" id="bmr-height-cm" class="input-control" value="178" min="50" max="260" step="0.5">
                 </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                <!-- Imperial input block -->
+                <div class="form-group bmr-imperial-unit" style="display:none;">
+                    <label for="bmr-weight-lb">Weight (lb)</label>
+                    <input type="number" id="bmr-weight-lb" class="input-control" value="165" min="40" max="900" step="0.5">
+                </div>
+                <div class="form-group bmr-imperial-unit" style="display:none;">
+                    <label>Height (Ft & In)</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="number" id="bmr-height-ft" class="input-control" value="5" min="1" max="8">
+                        <input type="number" id="bmr-height-in" class="input-control" value="10" min="0" max="11">
+                    </div>
                 </div>
 
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group" style="grid-column:1/-1;">
+                    <label for="bmr-activity">Daily Activity Level</label>
+                    <select id="bmr-activity" class="input-control">
+                        <option value="1.2">Sedentary (desk job, little or no exercise)</option>
+                        <option value="1.375" selected>Lightly Active (light exercise 1-3 days/week)</option>
+                        <option value="1.55">Moderately Active (moderate workout 3-5 days/week)</option>
+                        <option value="1.725">Very Active (hard exercise 6-7 days/week)</option>
+                        <option value="1.9">Extra Active (very intense daily exercise or physical job)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="bmr-reset">Reset</button>
+                <button class="btn btn-primary" id="bmr-calc">Calculate BMR & TDEE</button>
+            </div>
+
+            <div id="bmr-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Basal Metabolic Rate (BMR)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="bmr-res-val">1,735</h2>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Calories/day at complete rest</span>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Daily Calorie Need (TDEE)</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="bmr-res-tdee">2,386</h2>
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">To maintain current weight</span>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:0.75rem; font-size:1rem;">Calorie Intake for Weight Goals</h4>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; font-size:0.9rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.75rem;">
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Maintain Weight</span>
+                        <h3 id="bmr-goal-maintain" style="margin-top:0.2rem; font-size:1.2rem;">2,386 kcal</h3>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.75rem;">
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Mild Weight Loss (-0.25 kg/wk)</span>
+                        <h3 id="bmr-goal-mild-loss" style="margin-top:0.2rem; font-size:1.2rem; color:#1a7f37;">2,136 kcal</h3>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.75rem;">
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Weight Loss (-0.5 kg/wk)</span>
+                        <h3 id="bmr-goal-loss" style="margin-top:0.2rem; font-size:1.2rem; color:#d97706;">1,886 kcal</h3>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.75rem;">
+                        <span style="font-size:0.8rem; color:var(--text-secondary);">Weight Gain (+0.5 kg/wk)</span>
+                        <h3 id="bmr-goal-gain" style="margin-top:0.2rem; font-size:1.2rem; color:#007bff;">2,886 kcal</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>

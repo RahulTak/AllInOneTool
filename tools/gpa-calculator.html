@@ -24,24 +24,51 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
-                <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
-                </div>
+        <div class="tool-workspace">
+            <div id="gpa-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h4 style="font-size:1rem; margin:0;">Course Schedule & Grades</h4>
+                <button type="button" class="btn btn-secondary" id="gpa-add-row" style="font-size:0.85rem; padding:0.4rem 0.8rem;">+ Add Course</button>
+            </div>
 
-                <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
-                </div>
+            <div style="overflow-x:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm); background:var(--bg-primary);">
+                <table style="width:100%; border-collapse:collapse; font-size:0.9rem; text-align:left;">
+                    <thead>
+                        <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-color);">
+                            <th style="padding:0.6rem;">Course Name</th>
+                            <th style="padding:0.6rem; width:120px;">Credits / Hours</th>
+                            <th style="padding:0.6rem; width:160px;">Grade</th>
+                            <th style="padding:0.6rem; width:60px; text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gpa-course-rows"></tbody>
+                </table>
+            </div>
 
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+            <div class="action-row">
+                <button class="btn btn-secondary" id="gpa-reset">Reset</button>
+                <button class="btn btn-primary" id="gpa-calc">Calculate GPA</button>
+            </div>
+
+            <div id="gpa-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Cumulative GPA (4.0 Scale)</span>
+                        <h2 style="font-size:2.5rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="gpa-res-val">3.65</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Credits Attempted</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="gpa-res-credits">15</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Grade Points</span>
+                        <h2 style="font-size:2rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="gpa-res-points">54.75</h2>
+                    </div>
                 </div>
             </div>
-            
+        </div>
+        
     </div>
 </body>
 </html>

@@ -24,24 +24,78 @@
 <body>
     <div id="tool-workspace">
         
-            <div class="tool-workspace">
+        <div class="tool-workspace">
+            <div id="ci-error" style="display:none; color:var(--error-color); background:rgba(255,0,0,0.1); border:1px solid var(--error-color); padding:0.75rem; border-radius:var(--radius-sm); font-size:0.9rem;"></div>
+            
+            <div class="options-grid">
                 <div class="form-group">
-                    <label for="text-input">Input Area</label>
-                    <textarea class="input-control" id="text-input" placeholder="Type or paste your content here..." style="min-height: 150px;"></textarea>
+                    <label for="ci-principal">Initial Principal ($)</label>
+                    <input type="number" id="ci-principal" class="input-control" value="10000" min="0" step="any" placeholder="e.g. 10000">
                 </div>
-
                 <div class="form-group">
-                    <label for="text-output">Result Output</label>
-                    <div class="output-display" id="text-output" style="min-height: 100px;"></div>
+                    <label for="ci-rate">Annual Interest Rate (%)</label>
+                    <input type="number" id="ci-rate" class="input-control" value="7" min="0" step="0.01" placeholder="e.g. 7">
                 </div>
-
-                <div class="action-row">
-                    <button class="btn btn-secondary" id="clear-text">Clear</button>
-                    <button class="btn btn-primary" id="process-text">Process Text</button>
-                    <button class="btn btn-secondary" id="copy-text">Copy</button>
+                <div class="form-group">
+                    <label for="ci-time">Investment Time (Years)</label>
+                    <input type="number" id="ci-time" class="input-control" value="5" min="0.1" max="100" step="any" placeholder="e.g. 5">
+                </div>
+                <div class="form-group">
+                    <label for="ci-freq">Compounding Frequency</label>
+                    <select id="ci-freq" class="input-control">
+                        <option value="1">Annually (1/yr)</option>
+                        <option value="2">Semi-annually (2/yr)</option>
+                        <option value="4">Quarterly (4/yr)</option>
+                        <option value="12" selected>Monthly (12/yr)</option>
+                        <option value="365">Daily (365/yr)</option>
+                    </select>
                 </div>
             </div>
-            
+
+            <div class="action-row">
+                <button class="btn btn-secondary" id="ci-reset">Reset</button>
+                <button class="btn btn-primary" id="ci-calc">Calculate Compound Interest</button>
+            </div>
+
+            <div id="ci-results" style="margin-top:1.5rem;">
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1.5rem;">
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Final Future Value</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--primary-color); margin-top:0.25rem;" id="ci-res-final">$0.00</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Total Compound Interest</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:#1a7f37; margin-top:0.25rem;" id="ci-res-interest">$0.00</h2>
+                    </div>
+                    <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem;">
+                        <span style="font-size:0.85rem; color:var(--text-secondary);">Effective Annual Rate</span>
+                        <h2 style="font-size:1.75rem; font-weight:800; color:var(--text-primary); margin-top:0.25rem;" id="ci-res-ear">0.00%</h2>
+                    </div>
+                </div>
+
+                <div style="background:var(--bg-primary); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:1.25rem; margin-bottom:1.5rem;">
+                    <h4 style="margin-bottom:0.75rem; font-size:0.95rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-secondary);">Formula Reference</h4>
+                    <p style="font-family:var(--font-mono); font-size:0.9rem; margin:0;">A = P × (1 + r/n)<sup>n·t</sup></p>
+                    <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.25rem;">Where P = Principal, r = annual rate (decimal), n = compounding times per year, t = years.</p>
+                </div>
+
+                <h4 style="margin-bottom:0.5rem; font-size:1rem;">Year-by-Year Growth Schedule</h4>
+                <div style="max-height:280px; overflow-y:auto; border:1px solid var(--border-color); border-radius:var(--radius-sm);">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.85rem; text-align:left;">
+                        <thead>
+                            <tr style="background:var(--bg-secondary); border-bottom:1px solid var(--border-color);">
+                                <th style="padding:0.6rem;">Year</th>
+                                <th style="padding:0.6rem;">Starting Balance</th>
+                                <th style="padding:0.6rem;">Interest Earned</th>
+                                <th style="padding:0.6rem;">Ending Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ci-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </body>
 </html>
