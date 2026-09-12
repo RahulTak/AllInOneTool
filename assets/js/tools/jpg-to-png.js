@@ -1,3 +1,5 @@
+import { encodeCanvasToOptimizedPng } from './png-encoder.js';
+
 export function init() {
     const uploadZone = document.getElementById('img-upload-zone');
     const fileInput = document.getElementById('img-file-input');
@@ -14,6 +16,8 @@ export function init() {
 
     let originalFile = null;
     let canvas = document.createElement('canvas');
+    let currentObjectUrl = null;
+    let renderToken = 0;
 
     if (!fileInput) return;
 
@@ -44,6 +48,14 @@ export function init() {
     resetBtn.addEventListener('click', () => {
         fileInput.value = '';
         originalFile = null;
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+        }
+        originalPreview.src = '';
+        processedPreview.src = '';
+        originalInfo.textContent = '';
+        processedInfo.textContent = '';
         workspace.style.display = 'none';
         uploadZone.style.display = 'flex';
     });
@@ -79,9 +91,11 @@ export function init() {
 
     function updateProcessedImage() {
         if (!originalPreview.src) return;
+        const currentToken = ++renderToken;
         const img = new Image();
         img.src = originalPreview.src;
-        img.onload = function() {
+        img.onload = async function() {
+            if (currentToken !== renderToken) return;
             const ctx = canvas.getContext('2d');
             const targetW = parseInt(widthInput.value) || img.naturalWidth;
             const targetH = parseInt(heightInput.value) || img.naturalHeight;
@@ -102,15 +116,20 @@ export function init() {
             ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
             ctx.restore();
 
-            const mime = 'image/png';
-            const dataUrl = canvas.toDataURL(mime);
-            processedPreview.src = dataUrl;
+            processedInfo.textContent = 'Optimizing PNG...';
 
-            const head = 'data:' + mime + ';base64,';
-            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'PNG Size: ' + formatBytes(sizeInBytes);
+            const blob = await encodeCanvasToOptimizedPng(canvas, true);
+            if (currentToken !== renderToken) return;
 
-            downloadBtn.href = dataUrl;
+            if (currentObjectUrl) {
+                URL.revokeObjectURL(currentObjectUrl);
+            }
+            currentObjectUrl = URL.createObjectURL(blob);
+
+            processedPreview.src = currentObjectUrl;
+            processedInfo.textContent = 'PNG Size: ' + formatBytes(blob.size);
+
+            downloadBtn.href = currentObjectUrl;
             const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
             downloadBtn.download = baseName + '.png';
         };

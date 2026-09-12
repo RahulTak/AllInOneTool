@@ -1,3 +1,6 @@
+import { encodeCanvasToOptimizedPng } from './png-encoder.js';
+import { convertCanvasToWebpBlob } from './webp-encoder.js';
+
 export function init() {
     const uploadZone = document.getElementById('img-upload-zone');
     const fileInput = document.getElementById('img-file-input');
@@ -15,6 +18,8 @@ export function init() {
 
     let originalFile = null;
     let canvas = document.createElement('canvas');
+    let currentObjectUrl = null;
+    let renderToken = 0;
 
     if (!fileInput) return;
 
@@ -45,6 +50,14 @@ export function init() {
     resetBtn.addEventListener('click', () => {
         fileInput.value = '';
         originalFile = null;
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+        }
+        originalPreview.src = '';
+        processedPreview.src = '';
+        originalInfo.textContent = '';
+        processedInfo.textContent = '';
         workspace.style.display = 'none';
         uploadZone.style.display = 'flex';
     });
@@ -79,9 +92,12 @@ export function init() {
     }
 
     function updateProcessedImage() {
+        if (!originalPreview.src) return;
+        const currentToken = ++renderToken;
         const img = new Image();
         img.src = originalPreview.src;
-        img.onload = function() {
+        img.onload = async function() {
+            if (currentToken !== renderToken) return;
             const ctx = canvas.getContext('2d');
             const targetW = parseInt(widthInput.value) || img.naturalWidth;
             const targetH = parseInt(heightInput.value) || img.naturalHeight;
@@ -95,7 +111,14 @@ export function init() {
                 canvas.height = targetH;
             }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const mime = formatSelect.value;
+            if (mime === 'image/jpeg') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
             ctx.save();
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate((angle * Math.PI) / 180);
@@ -114,16 +137,29 @@ export function init() {
                 ctx.putImageData(imgData, 0, 0);
             }
 
-            const mime = formatSelect.value;
-            const dataUrl = canvas.toDataURL(mime, 0.85);
-            processedPreview.src = dataUrl;
+            let blob;
+            if (mime === 'image/png') {
+                blob = await encodeCanvasToOptimizedPng(canvas, false);
+            } else if (mime === 'image/webp') {
+                blob = await convertCanvasToWebpBlob(canvas, 85);
+            } else {
+                blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.85));
+            }
 
-            const head = 'data:' + mime + ';base64,';
-            const sizeInBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            processedInfo.textContent = 'Size: ' + formatBytes(sizeInBytes);
+            if (currentToken !== renderToken) return;
 
-            downloadBtn.href = dataUrl;
-            downloadBtn.download = 'processed_' + originalFile.name.replace(/\.[^/.]+$/, "") + '.' + mime.split('/')[1];
+            if (currentObjectUrl) {
+                URL.revokeObjectURL(currentObjectUrl);
+            }
+            currentObjectUrl = URL.createObjectURL(blob);
+
+            processedPreview.src = currentObjectUrl;
+            processedInfo.textContent = 'Size: ' + formatBytes(blob.size);
+
+            downloadBtn.href = currentObjectUrl;
+            const ext = mime === 'image/jpeg' ? 'jpg' : (mime.split('/')[1] || 'jpg');
+            const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
+            downloadBtn.download = 'processed_' + baseName + '.' + ext;
         };
     }
 
