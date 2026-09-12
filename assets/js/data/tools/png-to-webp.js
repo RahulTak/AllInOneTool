@@ -5,6 +5,7 @@ export const config = {
     "category": "image",
     "categoryName": "Image Tools",
     "seoTitle": "PNG to WebP Converter – Free Image Tool | AllInOneTool",
+    "description": "Use our free, premium PNG to WebP Converter to convert png images to webp format instantly. Fast, accurate, and 100% client-side with zero server uploads.",
     "metaDescription": "Use our free, premium PNG to WebP Converter to convert png images to webp format instantly. Fast, accurate, and 100% client-side with zero server uploads.",
     "primaryKeyword": "png to webp converter",
     "secondaryKeywords": [

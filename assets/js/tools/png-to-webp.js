@@ -1,3 +1,5 @@
+import { convertCanvasToWebpBlob } from './webp-encoder.js';
+
 export function init() {
     const uploadZone = document.getElementById('img-upload-zone');
     const fileInput = document.getElementById('img-file-input');
@@ -19,6 +21,8 @@ export function init() {
 
     let originalFile = null;
     let canvas = document.createElement('canvas');
+    let currentObjectUrl = null;
+    let conversionCounter = 0;
 
     if (!fileInput) return;
 
@@ -47,8 +51,14 @@ export function init() {
     });
 
     resetBtn.addEventListener('click', () => {
+        if (currentObjectUrl) {
+            URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = null;
+        }
         fileInput.value = '';
         originalFile = null;
+        processedPreview.src = '';
+        downloadBtn.href = '#';
         workspace.style.display = 'none';
         uploadZone.style.display = 'flex';
     });
@@ -93,9 +103,11 @@ export function init() {
 
     function updateProcessedImage() {
         if (!originalPreview.src) return;
+        const thisConversionId = ++conversionCounter;
+
         const img = new Image();
         img.src = originalPreview.src;
-        img.onload = function() {
+        img.onload = async function() {
             const ctx = canvas.getContext('2d');
             const targetW = parseInt(widthInput.value) || img.naturalWidth;
             const targetH = parseInt(heightInput.value) || img.naturalHeight;
@@ -117,40 +129,56 @@ export function init() {
             ctx.drawImage(img, -targetW / 2, -targetH / 2, targetW, targetH);
             ctx.restore();
 
-            const quality = qualityInput ? (parseInt(qualityInput.value, 10) / 100) : 0.8;
-            const mime = 'image/webp';
-            const dataUrl = canvas.toDataURL(mime, quality);
-            processedPreview.src = dataUrl;
+            const qualityPercent = qualityInput ? parseInt(qualityInput.value, 10) : 80;
 
-            const head = 'data:' + mime + ';base64,';
-            const webpBytes = Math.round((dataUrl.length - head.length) * 3 / 4);
-            const webpSizeFormatted = formatBytes(webpBytes);
-            processedInfo.textContent = 'WebP Size: ' + webpSizeFormatted;
-            cardWebpSize.textContent = webpSizeFormatted;
-
-            // Mathematically accurate size difference calculation
-            if (originalFile && originalFile.size > 0) {
-                const origBytes = originalFile.size;
-                if (webpBytes < origBytes) {
-                    const savedPct = ((origBytes - webpBytes) / origBytes * 100).toFixed(1);
-                    cardSavingsBadge.textContent = 'Saved: ' + savedPct + '%';
-                    cardSavingsBadge.style.background = 'rgba(34,197,94,0.15)';
-                    cardSavingsBadge.style.color = '#16a34a';
-                } else if (webpBytes > origBytes) {
-                    const incPct = ((webpBytes - origBytes) / origBytes * 100).toFixed(1);
-                    cardSavingsBadge.textContent = 'Size: +' + incPct + '%';
-                    cardSavingsBadge.style.background = 'rgba(234,179,8,0.15)';
-                    cardSavingsBadge.style.color = '#ca8a04';
-                } else {
-                    cardSavingsBadge.textContent = 'Size unchanged (0.0%)';
-                    cardSavingsBadge.style.background = 'rgba(100,116,139,0.15)';
-                    cardSavingsBadge.style.color = 'var(--text-secondary)';
+            try {
+                // Generates genuine WebP Blob via native canvas or WASM libwebp
+                const webpBlob = await convertCanvasToWebpBlob(canvas, qualityPercent);
+                if (!webpBlob || webpBlob.size === 0) {
+                    throw new Error('WebP conversion produced an empty blob');
                 }
-            }
 
-            downloadBtn.href = dataUrl;
-            const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
-            downloadBtn.download = baseName + '.webp';
+                // If user changed controls while conversion was running, ignore stale result
+                if (thisConversionId !== conversionCounter) return;
+
+                if (currentObjectUrl) {
+                    URL.revokeObjectURL(currentObjectUrl);
+                }
+                currentObjectUrl = URL.createObjectURL(webpBlob);
+
+                // Same WebP Blob is used for both preview and download
+                processedPreview.src = currentObjectUrl;
+                downloadBtn.href = currentObjectUrl;
+                const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, "") : 'image';
+                downloadBtn.download = baseName + '.webp';
+
+                const webpBytes = webpBlob.size;
+                const webpSizeFormatted = formatBytes(webpBytes);
+                processedInfo.textContent = 'WebP Size: ' + webpSizeFormatted;
+                cardWebpSize.textContent = webpSizeFormatted;
+
+                // Mathematically accurate size calculation from actual blob bytes
+                if (originalFile && originalFile.size > 0) {
+                    const origBytes = originalFile.size;
+                    if (webpBytes < origBytes) {
+                        const savedPct = (((origBytes - webpBytes) / origBytes) * 100).toFixed(1);
+                        cardSavingsBadge.textContent = 'Saved: ' + savedPct + '%';
+                        cardSavingsBadge.style.background = 'rgba(34,197,94,0.15)';
+                        cardSavingsBadge.style.color = '#16a34a';
+                    } else if (webpBytes > origBytes) {
+                        const incPct = (((webpBytes - origBytes) / origBytes) * 100).toFixed(1);
+                        cardSavingsBadge.textContent = 'Size increased: ' + incPct + '%';
+                        cardSavingsBadge.style.background = 'rgba(234,179,8,0.15)';
+                        cardSavingsBadge.style.color = '#ca8a04';
+                    } else {
+                        cardSavingsBadge.textContent = 'Size unchanged (0.0%)';
+                        cardSavingsBadge.style.background = 'rgba(100,116,139,0.15)';
+                        cardSavingsBadge.style.color = 'var(--text-secondary)';
+                    }
+                }
+            } catch (err) {
+                console.error('Error during WebP conversion:', err);
+            }
         };
     }
 

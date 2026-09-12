@@ -105,7 +105,7 @@ async function assembleToolPage(toolId, toolsSummary, pathPrefix) {
                         <!-- Tool Title Area -->
                         <div class="tool-title-row">
                             <h1>${config.seoTitle || config.name}</h1>
-                            <p>${config.description}</p>
+                            <p>${config.description || config.metaDescription || config.shortDescription || ''}</p>
                         </div>
 
                         <!-- Top Ad Placement -->
